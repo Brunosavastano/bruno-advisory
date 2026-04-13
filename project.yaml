@@ -1,0 +1,48 @@
+project:
+  name: Bruno Advisory
+  public_identity: Bruno Savastano
+  language: pt-BR
+  independence_mode: hard
+  legacy_dependency_allowed: false
+
+agents:
+  orchestrator: Zeus
+  builder: Vulcanus
+  additional_openclaws_allowed_before_t3: false
+
+state:
+  active_tranche: T0
+  tranche_status: active
+  stage_gate: foundation
+  release_mode: shadow
+  prod_ready: false
+
+stack:
+  frontend: Next.js
+  ui: React
+  language: TypeScript
+  database_dev: SQLite_optional
+  database_prod: PostgreSQL
+  jobs: Node_and_bash
+  deploy: independent
+  hosting: isolated
+  storage: independent
+  auth: project_local
+  billing: recurring_required
+  locale: pt-BR
+
+rules:
+  share_repo_with_vlh: false
+  share_db_with_vlh: false
+  share_workflows_with_vlh: false
+  share_deploy_with_vlh: false
+  share_identity_with_vlh: false
+  share_secrets_with_vlh: false
+  public_brand_is_agentic: false
+
+evidence:
+  required_per_tranche:
+    - code_or_config
+    - screenshot_or_log
+    - test_or_manual_verification
+    - state_update
