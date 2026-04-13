@@ -7,3 +7,6 @@ Artifacts expected in this cycle:
 - local run verification
 - health response capture
 - Control Room render proof derived from repo canon
+- two-pass audit log
+- local healthcheck capture
+- local backup path evidence

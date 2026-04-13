@@ -1,5 +1,7 @@
-[2026-04-13T03:43:45Z] Using ephemeral port 45779
-[2026-04-13T03:43:45Z] Running typecheck
+### run-1
+[2026-04-13T04:01:33Z] BEGIN run-1
+[2026-04-13T04:01:33Z] Using ephemeral port 60493
+[2026-04-13T04:01:33Z] Running typecheck
 
 > bruno-advisory@0.1.0 typecheck
 > npm run typecheck -w @bruno-advisory/web
@@ -8,7 +10,7 @@
 > @bruno-advisory/web@0.1.0 typecheck
 > tsc --project tsconfig.json --noEmit
 
-[2026-04-13T03:43:49Z] Running build
+[2026-04-13T04:01:35Z] Running build
 
 > bruno-advisory@0.1.0 build
 > npm run build -w @bruno-advisory/web
@@ -17,34 +19,85 @@
 > @bruno-advisory/web@0.1.0 build
 > next build
 
-  ▲ Next.js 14.2.35
+▲ Next.js 16.2.3 (Turbopack)
 
-   Creating an optimized production build ...
- ✓ Compiled successfully
-   Linting and checking validity of types ...
-   Collecting page data ...
-   Generating static pages (0/6) ...
-   Generating static pages (1/6) 
-   Generating static pages (2/6) 
-   Generating static pages (4/6) 
- ✓ Generating static pages (6/6)
-   Finalizing page optimization ...
-   Collecting build traces ...
+  Creating an optimized production build ...
+✓ Compiled successfully in 4.1s
+  Running TypeScript ...
+  Finished TypeScript in 3.4s ...
+  Collecting page data using 6 workers ...
+  Generating static pages using 6 workers (0/5) ...
+  Generating static pages using 6 workers (1/5) 
+  Generating static pages using 6 workers (2/5) 
+  Generating static pages using 6 workers (3/5) 
+✓ Generating static pages using 6 workers (5/5) in 729ms
+  Finalizing page optimization ...
 
-Route (app)                              Size     First Load JS
-┌ ○ /                                    142 B          87.4 kB
-├ ○ /_not-found                          873 B          88.1 kB
-├ ○ /api/health                          0 B                0 B
-└ ○ /health                              142 B          87.4 kB
-+ First Load JS shared by all            87.2 kB
-  ├ chunks/1dd3208c-82be33c4361f6614.js  53.6 kB
-  ├ chunks/528-66566e88b221e40c.js       31.7 kB
-  └ other shared chunks (total)          1.86 kB
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/health
+└ ○ /health
 
 
-○  (Static)  prerendered as static content
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
 
-[2026-04-13T03:44:33Z] Starting Next dev server
-[2026-04-13T03:44:39Z] Capturing health endpoint
-[2026-04-13T03:44:39Z] Capturing Control Room HTML
-[2026-04-13T03:44:43Z] T0 verification passed
+[2026-04-13T04:01:47Z] Starting built app server
+[2026-04-13T04:01:48Z] Capturing health endpoint
+[2026-04-13T04:01:48Z] Capturing Control Room HTML
+[2026-04-13T04:01:48Z] T0 verification passed
+[2026-04-13T04:01:48Z] END run-1 OK
+
+### run-2
+[2026-04-13T04:01:49Z] BEGIN run-2
+[2026-04-13T04:01:49Z] Using ephemeral port 54021
+[2026-04-13T04:01:49Z] Running typecheck
+
+> bruno-advisory@0.1.0 typecheck
+> npm run typecheck -w @bruno-advisory/web
+
+
+> @bruno-advisory/web@0.1.0 typecheck
+> tsc --project tsconfig.json --noEmit
+
+[2026-04-13T04:01:51Z] Running build
+
+> bruno-advisory@0.1.0 build
+> npm run build -w @bruno-advisory/web
+
+
+> @bruno-advisory/web@0.1.0 build
+> next build
+
+▲ Next.js 16.2.3 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 5.0s
+  Running TypeScript ...
+  Finished TypeScript in 4.7s ...
+  Collecting page data using 6 workers ...
+  Generating static pages using 6 workers (0/5) ...
+  Generating static pages using 6 workers (1/5) 
+  Generating static pages using 6 workers (2/5) 
+  Generating static pages using 6 workers (3/5) 
+✓ Generating static pages using 6 workers (5/5) in 864ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ƒ /api/health
+└ ○ /health
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+[2026-04-13T04:02:06Z] Starting built app server
+[2026-04-13T04:02:07Z] Capturing health endpoint
+[2026-04-13T04:02:07Z] Capturing Control Room HTML
+[2026-04-13T04:02:07Z] T0 verification passed
+[2026-04-13T04:02:07Z] END run-2 OK
+
+[2026-04-13T04:02:07Z] AUDIT_T0_TWO_PASS_OK

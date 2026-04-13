@@ -2,29 +2,25 @@
 
 ## Current framework baseline
 
-- `next`: `14.2.35` (pinned exact)
+- `next`: `16.2.3` (pinned exact)
 - `react`: `18.3.1`
 - `react-dom`: `18.3.1`
 
-## Reason for the Next.js bump
+## Why this is the T0 baseline
 
-The prior T0 slice used `next@14.2.32`.
+The previous T0 hardening slice on `14.2.35` removed the specific 2025-12-11 advisory pressure in the 14.x line, but `npm audit` still reported one high vulnerability and pointed to `16.2.3` as the fixable non-vulnerable baseline.
 
-Per the official Next.js security advisory published on 2025-12-11, the patched 14.x line for the App Router React Server Components DoS issue is `14.2.35`.
+The app is still deliberately minimal, so the smallest truthful closure was to test the audit-recommended major bump directly.
 
-## Local mitigation boundary
+## Result
 
-The current app does **not** use:
+- the app installs cleanly on `next@16.2.3`
+- the existing local verification path still passes
+- `npm audit` reports zero vulnerabilities
+- React remained on the existing 18.x baseline because `next@16.2.3` accepts it and the app does not need a broader framework migration for T0
 
-- `next/image`
-- custom `rewrites`
-- custom `redirects`
-- custom `headers`
+## T0 stance
 
-This matters because generic `npm audit` advisories for newer Next.js issues can still flag broad 14.x ranges even when the current T0 app does not exercise the affected feature paths.
-
-## Audit stance for T0
-
-- Minimum real hardening applied now: exact bump from `14.2.32` to `14.2.35`
-- Verification path remains: `bash infra/scripts/verify-t0.sh`
-- Deferred beyond this cycle: evaluating a major-line Next.js upgrade once T0 hardening is stable and accepted
+- dependency posture is now honest with the live audit result
+- backup and healthcheck paths are explicit inside the repo under `infra/scripts/`
+- the single operator audit command is `bash infra/scripts/audit-t0.sh`

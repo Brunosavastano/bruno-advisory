@@ -3,8 +3,13 @@ node_modules
 **/.next
 out
 *.log
-!state/evidence/T0/verify.log
-!state/evidence/T0/dev-server.log
+!state/evidence/T0/*.log
+!state/evidence/T0/**/*.log
+state/evidence/T0/verify.combined.log
 *.tsbuildinfo
 coverage
+.DS_Store
+infra/backups/*.tar.gz
+infra/backups/*.sha256
+state/backups/*.tgz
 .DS_Store

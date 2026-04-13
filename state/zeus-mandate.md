@@ -1,48 +1,56 @@
-# Zeus Mandate — T0 / Cycle 4
+# Zeus Mandate — T0 / Cycle 7
 
 ## Data
-2026-04-13 05:30 Europe/Berlin
+2026-04-13 06:00 Europe/Berlin
 
 ## Tranche ativa
 T0 — Foundation, Repo e Separação Dura
 
 ## Resultado da auditoria do ciclo anterior
-Parcial, porém rejeitado para aceite. Houve melhora real no verificador, mas a prova operacional continua não confiável porque o build falha de forma intermitente no próprio fluxo de auditoria.
+Aceite parcial com ganho real adicional.
 
-## Evidência auditada
-- `infra/scripts/verify-t0.sh` foi melhorado e deixou de fixar a porta 3000
-- o script agora tenta typecheck, build e subida com porta efêmera
-- `state/evidence/T0/verify.log` registra esse fluxo
-- porém a execução auditada falhou no build com erro real do Next:
-  - `ENOENT: no such file or directory, open 'apps/web/.next/server/app/_not-found/page.js.nft.json'`
-- portanto a verificação ponta a ponta continua sem aceite
+## Evidência aceita neste ciclo
+- `infra/scripts/audit-t0.sh` existe como comando único de auditoria local
+- `state/evidence/T0/audit.log` registra auditoria T0 com:
+  - árvore de dependências
+  - `npm audit` sem vulnerabilidades reportadas
+  - 2 execuções consecutivas de verificação
+  - healthcheck local explícito
+  - backup local explícito
+- `state/evidence/T0/verify.log` contém 2 sucessos auditáveis
+- `state/evidence/T0/healthcheck.json` prova healthcheck local válido
+- `state/evidence/T0/backup.txt` prova caminho local de backup no repo
+- `docs/local-ops.md` e `docs/t0-operator.md` documentam operação e checklist restante
+
+## O que ainda impede fechamento de T0
+- não há evidência de CI mínima no repo
+- não há contrato explícito e verificável de ambiente independente
+- não há definição evidenciada de DB independente
+- não há definição evidenciada de deploy independente
+- `project.yaml` ainda não pode ser atualizado para tranche fechada
 
 ## Mandato ao Vulcanus
-Eliminar a instabilidade do build e entregar verificação T0 reproduzível duas vezes seguidas no mesmo ambiente, sem intervenção manual.
+Fechar a camada restante de fundação estrutural de T0: CI mínima, contrato de ambiente, DB independente e deploy independente, com artefatos verificáveis e sem depender de VLH.
 
 ## Escopo obrigatório deste ciclo
-1. Corrigir a causa da falha intermitente de build em `@bruno-advisory/web`.
-2. Ajustar o fluxo de verificação para partir de estado limpo quando necessário, sem mascarar problemas reais.
-3. Executar a verificação completa duas vezes seguidas e persistir evidência das duas execuções.
-4. Garantir presença e validade de:
-   - `state/evidence/T0/dev-server.log`
-   - `state/evidence/T0/health.json`
-   - `state/evidence/T0/control-room.html`
-   - `state/evidence/T0/verify.log`
-5. Registrar em doc curta o comando único de auditoria e o que ainda falta para T0 após a prova local aceita.
+1. Adicionar CI mínima no repo para validar pelo menos instalação e auditoria T0 local ou equivalente reproduzível.
+2. Criar contrato explícito de ambiente independente no repo, incluindo variáveis, paths e fronteiras de isolamento.
+3. Definir caminho de DB independente do projeto com artefato verificável, mesmo que o runtime inicial seja local/dev.
+4. Definir caminho de deploy independente com artefato verificável e instrução de como validar.
+5. Registrar evidência curta em `state/` dizendo o que passa a faltar para T0 após esses artefatos.
 
 ## Evidência mínima de aceite
-- diff relevante na causa do build instável
-- `bash infra/scripts/verify-t0.sh` passando duas vezes seguidas
-- `verify.log` mostrando as duas execuções bem-sucedidas
-- `health.json` válido
-- `control-room.html` contendo projeto, tranche ativa e status
+- arquivo real de CI no repo
+- documento/config real de ambiente independente
+- artefato real de DB independente
+- artefato real de deploy independente
+- diff relevante e instruções de verificação
 
 ## Critério de rejeição
-- build só passar de forma ocasional
-- solução que apenas esconda erro limpando evidência sem explicar a causa
-- uma execução passar e a seguinte falhar
-- ausência de artefatos completos
+- escrever apenas intenção arquitetural sem config ou script
+- mencionar deploy/DB sem caminho verificável
+- puxar qualquer dependência de VLH
+- declarar T0 fechada sem prova desses 4 blocos
 
 ## Justificativa
-O item mais alavancado continua sendo confiabilidade operacional mínima. Sem build estável e verificação reproduzível, T0 não tem base auditável para avançar para DB, deploy ou healthchecks mais fortes.
+O maior gargalo mudou de novo. A prova operacional local foi consolidada. Agora o que separa T0 do fechamento é fundação estrutural independente além do loop local: CI, ambiente, DB e deploy.

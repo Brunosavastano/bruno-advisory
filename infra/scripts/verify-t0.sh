@@ -4,13 +4,16 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
-EVIDENCE_DIR="state/evidence/T0"
+EVIDENCE_DIR="${EVIDENCE_DIR:-state/evidence/T0}"
 VERIFY_LOG="$EVIDENCE_DIR/verify.log"
 SERVER_LOG="$EVIDENCE_DIR/dev-server.log"
 HEALTH_JSON="$EVIDENCE_DIR/health.json"
 CONTROL_ROOM_HTML="$EVIDENCE_DIR/control-room.html"
 mkdir -p "$EVIDENCE_DIR"
-: > "$VERIFY_LOG"
+
+if [ "${VERIFY_APPEND:-0}" != "1" ]; then
+  : > "$VERIFY_LOG"
+fi
 : > "$SERVER_LOG"
 
 log() {
@@ -25,13 +28,15 @@ with socket.socket() as s:
 PY
 } | tr -d '\n')"
 
+RUN_LABEL="${VERIFY_RUN_LABEL:-single-run}"
+log "BEGIN $RUN_LABEL"
 log "Using ephemeral port $PORT"
 log "Running typecheck"
 npm run typecheck | tee -a "$VERIFY_LOG"
 log "Running build"
 npm run build | tee -a "$VERIFY_LOG"
-log "Starting Next dev server"
-npm run dev -w @bruno-advisory/web -- --hostname 127.0.0.1 --port "$PORT" > "$SERVER_LOG" 2>&1 &
+log "Starting built app server"
+npm run start -w @bruno-advisory/web -- --hostname 127.0.0.1 --port "$PORT" > "$SERVER_LOG" 2>&1 &
 PID=$!
 trap 'kill $PID >/dev/null 2>&1 || true' EXIT
 
@@ -63,8 +68,9 @@ grep -q '"tranche":"T0"' "$HEALTH_JSON"
 grep -q 'Bruno Advisory' "$CONTROL_ROOM_HTML"
 grep -q 'foundation' "$CONTROL_ROOM_HTML"
 grep -q 'Acoplamento invisível ao VLH' "$CONTROL_ROOM_HTML"
-grep -q 'Projeto será completamente separado do VLH' "$CONTROL_ROOM_HTML"
+grep -q 'caminhos locais explícitos de auditoria, backup e healthcheck' "$CONTROL_ROOM_HTML"
 grep -q 'state/risk-log.md' "$CONTROL_ROOM_HTML"
 grep -q 'state/decision-log.md' "$CONTROL_ROOM_HTML"
 
 log "T0 verification passed"
+log "END $RUN_LABEL OK"

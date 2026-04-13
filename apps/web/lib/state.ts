@@ -12,9 +12,20 @@ export type ProjectState = {
 };
 
 const repoRoot = path.resolve(process.cwd(), '../..');
+const projectYamlPath = path.join(repoRoot, 'project.yaml');
+const riskLogPath = path.join(repoRoot, 'state', 'risk-log.md');
+const decisionLogPath = path.join(repoRoot, 'state', 'decision-log.md');
 
-function readFile(relativePath: string) {
-  return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
+function readProjectYaml() {
+  return fs.readFileSync(projectYamlPath, 'utf8');
+}
+
+function readRiskLog() {
+  return fs.readFileSync(riskLogPath, 'utf8');
+}
+
+function readDecisionLog() {
+  return fs.readFileSync(decisionLogPath, 'utf8');
 }
 
 function matchValue(source: string, key: string) {
@@ -47,18 +58,18 @@ function parseTopRisks(markdown: string, limit = 5) {
 }
 
 function parseLatestDecision(markdown: string) {
-  return getSection(markdown, 'Entradas')
+  const decisions = getSection(markdown, 'Entradas')
     .split('\n')
     .map((line) => line.trim())
-    .find((line) => line.startsWith('- '))
-    ?.slice(2)
-    .trim() ?? 'Nenhuma decisão registrada';
+    .filter((line) => line.startsWith('- '));
+
+  return decisions.at(-1)?.slice(2).trim() ?? 'Nenhuma decisão registrada';
 }
 
 export function getProjectState(): ProjectState {
-  const projectYaml = readFile('project.yaml');
-  const riskLog = readFile('state/risk-log.md');
-  const decisionLog = readFile('state/decision-log.md');
+  const projectYaml = readProjectYaml();
+  const riskLog = readRiskLog();
+  const decisionLog = readDecisionLog();
 
   return {
     projectName: matchValue(projectYaml, 'name'),

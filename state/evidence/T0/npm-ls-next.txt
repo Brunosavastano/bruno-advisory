@@ -1,0 +1,6 @@
+bruno-advisory@0.1.0 /root/Bruno-Advisory/bruno-advisory
+└─┬ @bruno-advisory/web@0.1.0 -> ./apps/web
+  ├── next@16.2.3
+  ├── react-dom@18.3.1
+  └── react@18.3.1
+
