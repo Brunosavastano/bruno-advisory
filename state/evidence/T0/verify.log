@@ -1,5 +1,5 @@
-[2026-04-13T03:35:14Z] Using ephemeral port 56073
-[2026-04-13T03:35:14Z] Running typecheck
+[2026-04-13T03:36:11Z] Using ephemeral port 51401
+[2026-04-13T03:36:11Z] Running typecheck
 
 > bruno-advisory@0.1.0 typecheck
 > npm run typecheck -w @bruno-advisory/web
@@ -8,7 +8,7 @@
 > @bruno-advisory/web@0.1.0 typecheck
 > tsc --project tsconfig.json --noEmit
 
-[2026-04-13T03:35:17Z] Running build
+[2026-04-13T03:36:14Z] Running build
 
 > bruno-advisory@0.1.0 build
 > npm run build -w @bruno-advisory/web
@@ -30,3 +30,21 @@
  ✓ Generating static pages (6/6)
    Finalizing page optimization ...
    Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    142 B          87.2 kB
+├ ○ /_not-found                          873 B          87.9 kB
+├ ○ /api/health                          0 B                0 B
+└ ○ /health                              142 B          87.2 kB
++ First Load JS shared by all            87.1 kB
+  ├ chunks/1dd3208c-82be33c4361f6614.js  53.6 kB
+  ├ chunks/528-a897443854a5523a.js       31.6 kB
+  └ other shared chunks (total)          1.86 kB
+
+
+○  (Static)  prerendered as static content
+
+[2026-04-13T03:36:56Z] Starting Next dev server
+[2026-04-13T03:37:00Z] Capturing health endpoint
+[2026-04-13T03:37:00Z] Capturing Control Room HTML
+[2026-04-13T03:37:02Z] T0 verification passed

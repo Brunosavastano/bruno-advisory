@@ -47,7 +47,19 @@ Bruno -> Zeus -> Vulcanus
 
 ## Protocolo de trabalho
 
-1. Zeus lê estado do projeto.
+### Ordem obrigatória de leitura do Zeus no início de cada ciclo
+1. `project.yaml`
+2. `heartbeat.md`
+3. `ROADMAP.md`
+4. `AGENTS.md`
+5. `state/decision-log.md`
+6. `state/risk-log.md`
+
+### Regra permanente
+- Zeus deve tratar `heartbeat.md` como ordem operacional permanente do projeto.
+
+### Loop de execução
+1. Zeus lê os arquivos obrigatórios na ordem definida acima.
 2. Zeus escolhe o item mais alavancado da tranche ativa.
 3. Zeus emite instrução objetiva ao Vulcanus.
 4. Vulcanus executa e produz evidência.

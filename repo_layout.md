@@ -24,6 +24,7 @@ bruno-advisory/
   state/
     decision-log.md
     risk-log.md
+    zeus-mandate.md
     evidence/
       T0/
       T1/
@@ -55,6 +56,7 @@ bruno-advisory/
 - Um storage só para o projeto.
 - Um pipeline só para o projeto.
 - Um arquivo de estado legível por agente e por humano.
+- `state/` é a fonte canônica de estado operacional.
 
 ## Branching
 - `main` protegida

@@ -1,0 +1,16 @@
+
+> @bruno-advisory/web@0.1.0 dev
+> next dev --hostname 127.0.0.1 --port 51401
+
+  ▲ Next.js 14.2.32
+  - Local:        http://127.0.0.1:51401
+  - Network:      http://127.0.0.1:51401
+
+ ✓ Starting...
+ ✓ Ready in 2.1s
+ ✓ Compiled /api/health in 430ms (32 modules)
+ GET /api/health 200 in 563ms
+ GET /api/health 200 in 14ms
+ ○ Compiling / ...
+ ✓ Compiled / in 2s (446 modules)
+ GET / 200 in 2248ms
