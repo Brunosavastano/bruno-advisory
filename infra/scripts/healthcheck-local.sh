@@ -38,15 +38,18 @@ if [ "$READY" -ne 1 ]; then
   exit 1
 fi
 
+EXPECTED_STATUS="$(sed -n 's/^  tranche_status: //p' project.yaml | head -n1 | tr -d '\r')"
+
 curl -fsS "http://127.0.0.1:$PORT/api/health" > "$OUTPUT_JSON"
-python3 - "$OUTPUT_JSON" <<'PY'
+python3 - "$OUTPUT_JSON" "$EXPECTED_STATUS" <<'PY'
 import json, sys
 path = sys.argv[1]
+expected_status = sys.argv[2]
 with open(path, 'r', encoding='utf-8') as fh:
     data = json.load(fh)
 assert data.get('ok') is True, data
 assert data.get('project') == 'Bruno Advisory', data
 assert data.get('tranche') == 'T0', data
-assert data.get('status') == 'active', data
+assert data.get('status') == expected_status, data
 print(f"healthcheck ok: {path}")
 PY

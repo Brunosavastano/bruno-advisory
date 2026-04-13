@@ -63,12 +63,15 @@ curl -fsS "http://127.0.0.1:$PORT/" > "$CONTROL_ROOM_HTML"
 [ -s "$HEALTH_JSON" ]
 [ -s "$CONTROL_ROOM_HTML" ]
 
+EXPECTED_STATUS="$(sed -n 's/^  tranche_status: //p' project.yaml | head -n1 | tr -d '\r')"
+
 grep -q '"project":"Bruno Advisory"' "$HEALTH_JSON"
 grep -q '"tranche":"T0"' "$HEALTH_JSON"
+grep -q "\"status\":\"$EXPECTED_STATUS\"" "$HEALTH_JSON"
 grep -q 'Bruno Advisory' "$CONTROL_ROOM_HTML"
 grep -q 'foundation' "$CONTROL_ROOM_HTML"
 grep -q 'Acoplamento invisível ao VLH' "$CONTROL_ROOM_HTML"
-grep -q 'caminhos locais explícitos de auditoria, backup e healthcheck' "$CONTROL_ROOM_HTML"
+grep -q 'Última decisão canônica' "$CONTROL_ROOM_HTML"
 grep -q 'state/risk-log.md' "$CONTROL_ROOM_HTML"
 grep -q 'state/decision-log.md' "$CONTROL_ROOM_HTML"
 

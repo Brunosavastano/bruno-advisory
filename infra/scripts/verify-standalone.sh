@@ -39,8 +39,11 @@ if [ "$READY" -ne 1 ]; then
   exit 1
 fi
 
+EXPECTED_STATUS="$(sed -n 's/^  tranche_status: //p' project.yaml | head -n1 | tr -d '\r')"
+
 curl -fsS "http://127.0.0.1:$PORT/api/health" > "$HEALTH_JSON"
 grep -q '"ok":true' "$HEALTH_JSON"
 grep -q '"project":"Bruno Advisory"' "$HEALTH_JSON"
 grep -q '"tranche":"T0"' "$HEALTH_JSON"
+grep -q "\"status\":\"$EXPECTED_STATUS\"" "$HEALTH_JSON"
 printf 'standalone verification ok: %s\n' "$HEALTH_JSON"

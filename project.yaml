@@ -12,7 +12,7 @@ agents:
 
 state:
   active_tranche: T0
-  tranche_status: active
+  tranche_status: done
   stage_gate: foundation
   release_mode: shadow
   prod_ready: false

@@ -1,0 +1,3 @@
+hooksPath=.githooks
+hook=.githooks/pre-push
+command=bash infra/scripts/ci-local.sh

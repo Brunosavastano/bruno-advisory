@@ -1,4 +1,8 @@
-### run-1
+[2026-04-13T04:32:51Z] CI_LOCAL_START
+[2026-04-13T04:32:51Z] Recording dependency tree
+[2026-04-13T04:32:51Z] Running npm audit
+npm audit ok
+[2026-04-13T04:32:52Z] Running verification pass 1
 [2026-04-13T04:32:52Z] BEGIN run-1
 [2026-04-13T04:32:52Z] Using ephemeral port 45517
 [2026-04-13T04:32:52Z] Running typecheck
@@ -48,8 +52,7 @@ Route (app)
 [2026-04-13T04:33:09Z] Capturing Control Room HTML
 [2026-04-13T04:33:09Z] T0 verification passed
 [2026-04-13T04:33:09Z] END run-1 OK
-
-### run-2
+[2026-04-13T04:33:09Z] Running verification pass 2
 [2026-04-13T04:33:09Z] BEGIN run-2
 [2026-04-13T04:33:09Z] Using ephemeral port 58423
 [2026-04-13T04:33:09Z] Running typecheck
@@ -99,5 +102,13 @@ Route (app)
 [2026-04-13T04:33:26Z] Capturing Control Room HTML
 [2026-04-13T04:33:26Z] T0 verification passed
 [2026-04-13T04:33:26Z] END run-2 OK
-
 [2026-04-13T04:33:26Z] AUDIT_T0_TWO_PASS_OK
+[2026-04-13T04:33:26Z] Running explicit local healthcheck
+healthcheck ok: state/evidence/T0/healthcheck.json
+[2026-04-13T04:33:38Z] Local healthcheck passed
+[2026-04-13T04:33:38Z] Running explicit local backup
+backup=infra/backups/bruno-advisory-t0-local-latest.tar.gz
+sha256=d1ef0cc4c1010292491c1d4dd0639681e3b807c8ba377788c7c63618f569fa5d
+[2026-04-13T04:33:38Z] Local backup recorded
+[2026-04-13T04:33:38Z] T0 audit completed successfully
+[2026-04-13T04:33:38Z] CI_LOCAL_OK

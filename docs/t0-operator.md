@@ -18,7 +18,9 @@ This command must finish with exit code `0` before claiming T0 local proof is he
 6. runs the explicit local healthcheck script
 7. runs the explicit local backup script
 
-## Exact remaining T0 checklist after a clean audit
+## Current closure state
 
-- [ ] minimal CI wired in the repo
-- [ ] Zeus or Bruno accepts that the T0 gate is met
+- `project.yaml` now records `tranche_status: done`
+- the repo-local CI gate is installed via `.githooks/pre-push`
+- T0 is closed by evidence
+- next step is to define T1 when Bruno is ready

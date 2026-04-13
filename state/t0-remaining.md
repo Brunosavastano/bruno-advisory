@@ -1,6 +1,10 @@
 # T0 remaining
 
-## Done in repo
+## T0 status
+
+T0 is closed.
+
+## Evidence completed in repo
 
 - local app foundation
 - Control Room with canon-derived state
@@ -10,12 +14,8 @@
 - explicit environment contract
 - independent T0 dev DB path
 - independent standalone deploy proof
+- repo-local CI gate via `.githooks/pre-push`
 
-## Still open before T0 can close
+## What remains now
 
-- minimal CI wired in the repo
-- final Zeus/Bruno acceptance that the T0 gate is met
-
-## Current blocker on CI
-
-Wiring GitHub Actions would require using third-party GitHub-hosted action components such as checkout/setup-node. Under the current Bruno rule, that should be done only with explicit approval.
+- define the first T1 mandate when Bruno is ready

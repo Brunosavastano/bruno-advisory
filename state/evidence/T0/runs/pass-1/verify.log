@@ -1,6 +1,6 @@
-[2026-04-13T04:01:33Z] BEGIN run-1
-[2026-04-13T04:01:33Z] Using ephemeral port 60493
-[2026-04-13T04:01:33Z] Running typecheck
+[2026-04-13T04:32:52Z] BEGIN run-1
+[2026-04-13T04:32:52Z] Using ephemeral port 45517
+[2026-04-13T04:32:52Z] Running typecheck
 
 > bruno-advisory@0.1.0 typecheck
 > npm run typecheck -w @bruno-advisory/web
@@ -9,7 +9,7 @@
 > @bruno-advisory/web@0.1.0 typecheck
 > tsc --project tsconfig.json --noEmit
 
-[2026-04-13T04:01:35Z] Running build
+[2026-04-13T04:32:55Z] Running build
 
 > bruno-advisory@0.1.0 build
 > npm run build -w @bruno-advisory/web
@@ -21,15 +21,15 @@
 ▲ Next.js 16.2.3 (Turbopack)
 
   Creating an optimized production build ...
-✓ Compiled successfully in 4.1s
+✓ Compiled successfully in 3.3s
   Running TypeScript ...
-  Finished TypeScript in 3.4s ...
+  Finished TypeScript in 4.5s ...
   Collecting page data using 6 workers ...
   Generating static pages using 6 workers (0/5) ...
   Generating static pages using 6 workers (1/5) 
   Generating static pages using 6 workers (2/5) 
   Generating static pages using 6 workers (3/5) 
-✓ Generating static pages using 6 workers (5/5) in 729ms
+✓ Generating static pages using 6 workers (5/5) in 742ms
   Finalizing page optimization ...
 
 Route (app)
@@ -42,8 +42,8 @@ Route (app)
 ○  (Static)   prerendered as static content
 ƒ  (Dynamic)  server-rendered on demand
 
-[2026-04-13T04:01:47Z] Starting built app server
-[2026-04-13T04:01:48Z] Capturing health endpoint
-[2026-04-13T04:01:48Z] Capturing Control Room HTML
-[2026-04-13T04:01:48Z] T0 verification passed
-[2026-04-13T04:01:48Z] END run-1 OK
+[2026-04-13T04:33:08Z] Starting built app server
+[2026-04-13T04:33:09Z] Capturing health endpoint
+[2026-04-13T04:33:09Z] Capturing Control Room HTML
+[2026-04-13T04:33:09Z] T0 verification passed
+[2026-04-13T04:33:09Z] END run-1 OK
