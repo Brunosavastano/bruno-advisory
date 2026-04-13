@@ -20,7 +20,7 @@ main { max-width: 1080px; margin: 0 auto; padding: 32px 20px 64px; }
 .value { font-size: 28px; font-weight: 700; margin-top: 8px; }
 .list { margin: 0; padding-left: 18px; }
 .list li { margin: 8px 0; }
-.header { display: flex; justify-content: space-between; gap: 16px; align-items: end; margin-bottom: 24px; flex-wrap: wrap; }
+.header { display: flex; justify-content: space-between; gap: 16px; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; }
 .badge { display: inline-block; padding: 6px 10px; border-radius: 999px; background: rgba(56, 189, 248, 0.14); color: var(--accent); font-size: 12px; margin-right: 8px; }
 .status-ok { color: var(--ok); }
 .status-warn { color: var(--warn); }
