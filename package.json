@@ -1,0 +1,16 @@
+{
+  "name": "bruno-advisory",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "install:all": "npm install",
+    "dev": "npm run dev -w @bruno-advisory/web",
+    "build": "npm run build -w @bruno-advisory/web",
+    "start": "npm run start -w @bruno-advisory/web",
+    "typecheck": "npm run typecheck -w @bruno-advisory/web"
+  }
+}

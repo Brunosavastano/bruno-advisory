@@ -1,0 +1,10 @@
+node_modules
+.next
+**/.next
+out
+*.log
+!state/evidence/T0/verify.log
+!state/evidence/T0/dev-server.log
+*.tsbuildinfo
+coverage
+.DS_Store

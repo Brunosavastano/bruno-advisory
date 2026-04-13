@@ -1,0 +1,32 @@
+[2026-04-13T03:35:14Z] Using ephemeral port 56073
+[2026-04-13T03:35:14Z] Running typecheck
+
+> bruno-advisory@0.1.0 typecheck
+> npm run typecheck -w @bruno-advisory/web
+
+
+> @bruno-advisory/web@0.1.0 typecheck
+> tsc --project tsconfig.json --noEmit
+
+[2026-04-13T03:35:17Z] Running build
+
+> bruno-advisory@0.1.0 build
+> npm run build -w @bruno-advisory/web
+
+
+> @bruno-advisory/web@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.32
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/6) ...
+   Generating static pages (1/6) 
+   Generating static pages (2/6) 
+   Generating static pages (4/6) 
+ ✓ Generating static pages (6/6)
+   Finalizing page optimization ...
+   Collecting build traces ...
