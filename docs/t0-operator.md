@@ -21,7 +21,4 @@ This command must finish with exit code `0` before claiming T0 local proof is he
 ## Exact remaining T0 checklist after a clean audit
 
 - [ ] minimal CI wired in the repo
-- [ ] explicit independent environment contract documented in repo
-- [ ] independent DB path defined and evidenced
-- [ ] independent deploy path defined and evidenced
 - [ ] Zeus or Bruno accepts that the T0 gate is met

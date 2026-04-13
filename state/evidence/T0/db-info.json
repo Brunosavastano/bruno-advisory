@@ -1,0 +1,15 @@
+{
+  "dbPath": "data/dev/bruno-advisory-dev.sqlite3",
+  "exists": true,
+  "sizeBytes": 12288,
+  "rows": [
+    [
+      "project",
+      "Bruno Advisory"
+    ],
+    [
+      "tranche",
+      "T0"
+    ]
+  ]
+}
