@@ -1,9 +1,0 @@
-
-> @bruno-advisory/web@0.1.0 start
-> next start --hostname 127.0.0.1 --port 60995
-
-▲ Next.js 16.2.3
-- Local:         http://127.0.0.1:60995
-- Network:       http://127.0.0.1:60995
-✓ Ready in 189ms
-⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.

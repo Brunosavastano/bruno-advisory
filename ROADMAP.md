@@ -75,6 +75,21 @@ Construir o projeto em tranches pequenas, fechadas por evidência e não por ent
 
 ---
 
+## T3.5 — Hardening entre CRM/Billing e Portal
+**Objetivo:** endurecer a base operacional de T3 antes de abrir T4, sem adicionar features novas.
+
+**Inclui:**
+- refactor estrutural de storage sem mudança funcional
+- auth básica nas superfícies de cockpit
+- remoção de rotas legadas ambíguas
+- testes centrais de billing local
+- expansão de campos de CRM já definidos em T1
+- fechamento por evidência local auditável
+
+**Gate de saída:** dívida estrutural imediata de T3 reduzida, verificadores locais presentes e nenhuma abertura implícita de T4.
+
+---
+
 ## T4 — Portal do Cliente e Ledger
 **Objetivo:** dar ao cliente um espaço privado simples, funcional e auditável.
 

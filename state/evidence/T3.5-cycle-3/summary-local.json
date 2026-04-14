@@ -1,0 +1,335 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-14T02:37:16.776Z",
+  "note": "HTTP bind is blocked in this sandbox (listen EPERM); verification executed by invoking compiled Next route handlers directly after next build.",
+  "removedLegacyRoute": true,
+  "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+  "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+  "settlementId": "4932c041-c77b-4e35-adab-b39435d27c67",
+  "routeChecks": {
+    "legacyRouteFilePresent": false,
+    "manifestHasTargetedRoute": true,
+    "manifestHasLegacyRoute": false,
+    "leadDetailUsesTargetedAction": true
+  },
+  "responses": {
+    "intakeCreate": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782"
+      }
+    },
+    "taskCreate": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "task": {
+          "taskId": "25a9132d-3a93-4529-9d61-d50c047d1320",
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "title": "Checklist T3.5 C3",
+          "status": "todo",
+          "dueDate": "2026-05-01",
+          "createdAt": "2026-04-14T02:37:16.717Z"
+        }
+      }
+    },
+    "taskDone": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "taskId": "25a9132d-3a93-4529-9d61-d50c047d1320",
+        "status": "done",
+        "changedFrom": "todo",
+        "changedTo": "done",
+        "changedAt": "2026-04-14T02:37:16.721Z",
+        "changedBy": "verify_t35_cycle_3"
+      }
+    },
+    "stageChange": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+        "commercialStage": "cliente_convertido",
+        "changedFrom": "intake_novo",
+        "changedTo": "cliente_convertido",
+        "changedAt": "2026-04-14T02:37:16.730Z",
+        "note": null
+      }
+    },
+    "billingRecord": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "lead": {
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "fullName": "T3.5 Cycle 3 Verify",
+          "email": "t35-cycle3-1776134236676@example.com",
+          "phone": "11988991172",
+          "city": "Brasilia",
+          "state": "DF",
+          "investableAssetsBand": "3m_a_10m",
+          "primaryChallenge": "Remover settlement implicito por lead.",
+          "sourceChannel": "site_home",
+          "sourceLabel": "verify_t35_cycle_3",
+          "intakeFormVersion": "t2-cycle-1",
+          "privacyConsentAccepted": true,
+          "termsConsentAccepted": true,
+          "status": "new",
+          "commercialStage": "cliente_convertido",
+          "statusReason": null,
+          "fitSummary": null,
+          "internalOwner": null,
+          "submittedAt": "2026-04-14T02:37:16.706Z",
+          "createdAt": "2026-04-14T02:37:16.706Z",
+          "updatedAt": "2026-04-14T02:37:16.730Z",
+          "firstCapturedAt": "2026-04-14T02:37:16.706Z",
+          "lastStatusChangedAt": "2026-04-14T02:37:16.730Z"
+        },
+        "readiness": {
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "isBillingReady": true,
+          "requiredCommercialStage": "cliente_convertido",
+          "currentCommercialStage": "cliente_convertido",
+          "totalTasks": 1,
+          "doneTasks": 1,
+          "pendingTasks": 0,
+          "unmetConditions": [],
+          "unmetConditionLabels": []
+        },
+        "billingRecord": {
+          "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "status": "active_local",
+          "currency": "BRL",
+          "entryFeeCents": 950000,
+          "monthlyFeeCents": 350000,
+          "minimumCommitmentMonths": 6,
+          "activatedAt": "2026-04-14T02:37:16.742Z",
+          "createdAt": "2026-04-14T02:37:16.742Z"
+        },
+        "billingEvents": [
+          {
+            "billingEventId": "f0a4c84e-d1b9-4242-83ba-622b28a57a11",
+            "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+            "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+            "eventType": "billing_record_created",
+            "occurredAt": "2026-04-14T02:37:16.742Z",
+            "actor": "verify_t35_cycle_3",
+            "note": null
+          },
+          {
+            "billingEventId": "e0cd4864-5b82-4033-b2dd-603875b90278",
+            "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+            "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+            "eventType": "billing_record_activated",
+            "occurredAt": "2026-04-14T02:37:16.742Z",
+            "actor": "verify_t35_cycle_3",
+            "note": "Lead entrou em operacao billable local."
+          }
+        ]
+      }
+    },
+    "billingCharge": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "lead": {
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "fullName": "T3.5 Cycle 3 Verify",
+          "email": "t35-cycle3-1776134236676@example.com",
+          "phone": "11988991172",
+          "city": "Brasilia",
+          "state": "DF",
+          "investableAssetsBand": "3m_a_10m",
+          "primaryChallenge": "Remover settlement implicito por lead.",
+          "sourceChannel": "site_home",
+          "sourceLabel": "verify_t35_cycle_3",
+          "intakeFormVersion": "t2-cycle-1",
+          "privacyConsentAccepted": true,
+          "termsConsentAccepted": true,
+          "status": "new",
+          "commercialStage": "cliente_convertido",
+          "statusReason": null,
+          "fitSummary": null,
+          "internalOwner": null,
+          "submittedAt": "2026-04-14T02:37:16.706Z",
+          "createdAt": "2026-04-14T02:37:16.706Z",
+          "updatedAt": "2026-04-14T02:37:16.730Z",
+          "firstCapturedAt": "2026-04-14T02:37:16.706Z",
+          "lastStatusChangedAt": "2026-04-14T02:37:16.730Z"
+        },
+        "billingRecord": {
+          "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "status": "active_local",
+          "currency": "BRL",
+          "entryFeeCents": 950000,
+          "monthlyFeeCents": 350000,
+          "minimumCommitmentMonths": 6,
+          "activatedAt": "2026-04-14T02:37:16.742Z",
+          "createdAt": "2026-04-14T02:37:16.742Z"
+        },
+        "charge": {
+          "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+          "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "chargeSequence": 1,
+          "chargeKind": "monthly_recurring",
+          "status": "pending_local",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "dueDate": "2026-05-14",
+          "postedAt": "2026-04-14T02:37:16.753Z",
+          "createdAt": "2026-04-14T02:37:16.753Z"
+        },
+        "chargeEvents": [
+          {
+            "chargeEventId": "ad65a6b4-77a7-4aaf-b8d0-3e9f7f3b8a3d",
+            "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+            "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+            "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+            "eventType": "charge_posted",
+            "occurredAt": "2026-04-14T02:37:16.753Z",
+            "actor": "verify_t35_cycle_3",
+            "note": "Primeira cobranca local recorrente entrou em estado de cobranca."
+          },
+          {
+            "chargeEventId": "08a51543-fd8d-47b4-a11d-7fed6340cb25",
+            "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+            "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+            "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+            "eventType": "charge_created",
+            "occurredAt": "2026-04-14T02:37:16.753Z",
+            "actor": "verify_t35_cycle_3",
+            "note": "Primeira cobranca recorrente local criada a partir do billing ativo."
+          }
+        ]
+      }
+    },
+    "targetedSettlement": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "lead": {
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "fullName": "T3.5 Cycle 3 Verify",
+          "email": "t35-cycle3-1776134236676@example.com",
+          "phone": "11988991172",
+          "city": "Brasilia",
+          "state": "DF",
+          "investableAssetsBand": "3m_a_10m",
+          "primaryChallenge": "Remover settlement implicito por lead.",
+          "sourceChannel": "site_home",
+          "sourceLabel": "verify_t35_cycle_3",
+          "intakeFormVersion": "t2-cycle-1",
+          "privacyConsentAccepted": true,
+          "termsConsentAccepted": true,
+          "status": "new",
+          "commercialStage": "cliente_convertido",
+          "statusReason": null,
+          "fitSummary": null,
+          "internalOwner": null,
+          "submittedAt": "2026-04-14T02:37:16.706Z",
+          "createdAt": "2026-04-14T02:37:16.706Z",
+          "updatedAt": "2026-04-14T02:37:16.730Z",
+          "firstCapturedAt": "2026-04-14T02:37:16.706Z",
+          "lastStatusChangedAt": "2026-04-14T02:37:16.730Z"
+        },
+        "billingRecord": {
+          "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "status": "active_local",
+          "currency": "BRL",
+          "entryFeeCents": 950000,
+          "monthlyFeeCents": 350000,
+          "minimumCommitmentMonths": 6,
+          "activatedAt": "2026-04-14T02:37:16.742Z",
+          "createdAt": "2026-04-14T02:37:16.742Z"
+        },
+        "charge": {
+          "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+          "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "chargeSequence": 1,
+          "chargeKind": "monthly_recurring",
+          "status": "settled_local",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "dueDate": "2026-05-14",
+          "postedAt": "2026-04-14T02:37:16.753Z",
+          "createdAt": "2026-04-14T02:37:16.753Z"
+        },
+        "settlement": {
+          "settlementId": "4932c041-c77b-4e35-adab-b39435d27c67",
+          "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+          "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+          "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+          "status": "settled_local",
+          "settlementKind": "manual_local_settlement",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "settledAt": "2026-04-14T02:37:16.765Z",
+          "createdAt": "2026-04-14T02:37:16.765Z"
+        },
+        "settlementEvents": [
+          {
+            "settlementEventId": "7b0de28f-add9-49f8-9bd4-2872c744841b",
+            "settlementId": "4932c041-c77b-4e35-adab-b39435d27c67",
+            "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+            "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+            "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+            "eventType": "charge_settled",
+            "occurredAt": "2026-04-14T02:37:16.765Z",
+            "actor": "verify_t35_cycle_3",
+            "note": "Cobranca 7c92f394-d8fe-4a55-bde6-6386169cd742 movida de pending_local para settled_local."
+          },
+          {
+            "settlementEventId": "72262868-9bdf-4d81-98b6-d0c1491b5325",
+            "settlementId": "4932c041-c77b-4e35-adab-b39435d27c67",
+            "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+            "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+            "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+            "eventType": "settlement_recorded",
+            "occurredAt": "2026-04-14T02:37:16.765Z",
+            "actor": "verify_t35_cycle_3",
+            "note": "targeted settlement still works"
+          }
+        ],
+        "chargeEvents": [
+          {
+            "chargeEventId": "9c796e23-4466-44d0-a824-3e4a96696903",
+            "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+            "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+            "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+            "eventType": "charge_settled",
+            "occurredAt": "2026-04-14T02:37:16.765Z",
+            "actor": "verify_t35_cycle_3",
+            "note": "targeted settlement still works"
+          },
+          {
+            "chargeEventId": "ad65a6b4-77a7-4aaf-b8d0-3e9f7f3b8a3d",
+            "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+            "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+            "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+            "eventType": "charge_posted",
+            "occurredAt": "2026-04-14T02:37:16.753Z",
+            "actor": "verify_t35_cycle_3",
+            "note": "Primeira cobranca local recorrente entrou em estado de cobranca."
+          },
+          {
+            "chargeEventId": "08a51543-fd8d-47b4-a11d-7fed6340cb25",
+            "chargeId": "7c92f394-d8fe-4a55-bde6-6386169cd742",
+            "billingRecordId": "bf8895df-303f-41a1-8e0f-2b92927eeda5",
+            "leadId": "8b9252f8-0890-42a0-97a3-10cae2578782",
+            "eventType": "charge_created",
+            "occurredAt": "2026-04-14T02:37:16.753Z",
+            "actor": "verify_t35_cycle_3",
+            "note": "Primeira cobranca recorrente local criada a partir do billing ativo."
+          }
+        ]
+      }
+    }
+  }
+}

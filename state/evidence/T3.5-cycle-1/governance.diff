@@ -1,0 +1,120 @@
+diff --git a/ROADMAP.md b/ROADMAP.md
+index cf8a175..b383916 100644
+--- a/ROADMAP.md
++++ b/ROADMAP.md
+@@ -75,6 +75,21 @@ Construir o projeto em tranches pequenas, fechadas por evidência e não por ent
+ 
+ ---
+ 
++## T3.5 — Hardening entre CRM/Billing e Portal
++**Objetivo:** endurecer a base operacional de T3 antes de abrir T4, sem adicionar features novas.
++
++**Inclui:**
++- refactor estrutural de storage sem mudança funcional
++- auth básica nas superfícies de cockpit
++- remoção de rotas legadas ambíguas
++- testes centrais de billing local
++- expansão de campos de CRM já definidos em T1
++- fechamento por evidência local auditável
++
++**Gate de saída:** dívida estrutural imediata de T3 reduzida, verificadores locais presentes e nenhuma abertura implícita de T4.
++
++---
++
+ ## T4 — Portal do Cliente e Ledger
+ **Objetivo:** dar ao cliente um espaço privado simples, funcional e auditável.
+ 
+diff --git a/project.yaml b/project.yaml
+index 9551018..1b58818 100644
+--- a/project.yaml
++++ b/project.yaml
+@@ -11,9 +11,9 @@ agents:
+   additional_openclaws_allowed_before_t3: false
+ 
+ state:
+-  active_tranche: T3
+-  tranche_status: done
+-  stage_gate: operations
++  active_tranche: T3.5
++  tranche_status: open
++  stage_gate: hardening
+   release_mode: shadow
+   prod_ready: false
+ 
+diff --git a/state/decision-log.md b/state/decision-log.md
+index c721d95..75bda64 100644
+--- a/state/decision-log.md
++++ b/state/decision-log.md
+@@ -61,3 +61,4 @@
+ - 2026-04-14 — T3 ciclo 10 cria uma visão operacional mínima de billing no cockpit — introduz regra canônica de overview, read path DB-backed por lead com status de billing/cobrança/liquidação e surface dedicada em `/cockpit/billing` com links para detalhe do lead — impacto: Bruno passa a acompanhar billing entre leads sem depender de abrir cada registro individualmente — dono: Vulcanus
+ - 2026-04-14 — Zeus aceitou o T3 ciclo 10 como progresso real — a observabilidade global de billing agora existe no cockpit com prova de casos pendente e liquidado, fechando o gap de acompanhamento do T3 — impacto: a tranche T3 cumpre o gate funcional e passa a poder ser fechada sem widen para collections, provider externo ou T4 — dono: Zeus
+ - 2026-04-14 — Zeus fechou a T3 por evidência — um lead pode virar cliente, um cliente pode ter cobrança recorrente e liquidação local registradas, os eventos principais ficam persistidos e Bruno consegue acompanhar o estado no cockpit/Control Room local — impacto: `project.yaml` passa para `tranche_status: done` em T3; T4 não abre automaticamente e depende de autorização explícita de Bruno — dono: Zeus
++- 2026-04-14 — T3.5 foi aberta como tranche intermediária de hardening, sem abrir T4 — há evidência local explícita em `state/t35-opening.md` (autorização + escopo) e `state/zeus-mandate.md` (ciclos + alvo atual), ambas datadas de 2026-04-14, reconciliando a passagem de T3 fechada para T3.5 aberta — impacto: `ROADMAP.md` passa a incluir T3.5 como tranche formal entre T3 e T4; `project.yaml` permanece em `active_tranche: T3.5`, `tranche_status: open`, `stage_gate: hardening` até fechamento por evidência — dono: Zeus
+diff --git a/state/zeus-mandate.md b/state/zeus-mandate.md
+index a7e4015..ef46922 100644
+--- a/state/zeus-mandate.md
++++ b/state/zeus-mandate.md
+@@ -1,32 +1,38 @@
+-# Zeus Mandate — T3 closed
++# Zeus Mandate — T3.5 Hardening
+ 
+-## Data
+-2026-04-14 02:26 Europe/Berlin
++## Date
++2026-04-14 00:00 GMT-3
+ 
+-## Result
+-T3 is now closed by evidence.
+-No new tranche is open.
+-Do not open T4 automatically.
++## Status
++T3.5 is OPEN. Current cycle: 1.
+ 
+-## Current project state
+-- `project.yaml` records `active_tranche: T3`, `tranche_status: done`, `stage_gate: operations`
+-- T3 closure is recorded in `state/t3-closure.md`
+-- the local canon now proves:
+-  - lead-to-client operational conversion
+-  - local recurring billing activation
+-  - local charge creation and progression
+-  - local settlement, including charge-targeted settlement
+-  - cross-lead billing observability in the cockpit
+-- the project remains in `release_mode: shadow`
+-- the project remains `prod_ready: false`
++## What this tranche is
++Hardening. No new features. Fix the structural debt before T4.
+ 
+-## Operational rule
+-Until Bruno gives explicit authorization, do not open T4 and do not start a new tranche.
+-If asked for status, report T3 as closed locally by evidence and say T4 is waiting for Bruno's authorization.
+-If a real regression appears in the just-closed T3 surface, fix or document that regression truthfully.
++## Cycles
++1. Split intake-storage.ts (2305 lines) into domain modules
++2. Basic auth on cockpit routes
++3. Remove legacy settlement route
++4. Core billing tests (node:test)
++5. CRM field expansion (T1-defined fields)
++6. Push + close
++
++## Current cycle target
++**Cycle 1: Split intake-storage.ts**
++- Extract into `apps/web/lib/storage/{db,leads,notes,tasks,billing,intake}.ts`
++- Re-export barrel or delete the original
++- All existing routes must still work
++- Create `infra/scripts/verify-t35-cycle-1-local.sh`
++- Create `state/t35-cycle-1-storage-split.md`
++- Create `state/evidence/T3.5-cycle-1/summary-local.json`
++
++## Rules
++- Follow the 5-part output contract (what, where, verify, risk, next)
++- No third-party deps without Bruno's approval
++- No new features
++- Each cycle gets a local verifier before acceptance
+ 
+ ## Canonical references
++- `state/t35-opening.md`
++- `project.yaml`
+ - `ROADMAP.md`
+-- `T3_crm_billing_prompt.md`
+-- `state/t3-closure.md`
+-- `state/decision-log.md`

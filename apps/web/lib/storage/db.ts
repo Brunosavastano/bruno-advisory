@@ -1,0 +1,648 @@
+import { createHash } from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { DatabaseSync } from 'node:sqlite';
+import {
+  commercialStageModel,
+  isOperatorCommercialStage,
+  type OperatorCommercialStage
+} from '@bruno-advisory/core';
+import {
+  type IntakeAnalyticsEvent,
+  type LeadStatus,
+  type PublicIntakePayload,
+  type SourceChannel
+} from '@bruno-advisory/core/intake-contract';
+import type {
+  IntakeEventRecord,
+  LeadBillingCharge,
+  LeadBillingReadiness,
+  LeadBillingRecord,
+  LeadBillingSettlement,
+  LeadCommercialStageAuditRecord,
+  LeadFitLevel,
+  LeadInternalNote,
+  LeadInternalTask,
+  LeadInternalTaskAuditRecord,
+  LeadTaskStatus,
+  StoredLead
+} from './types';
+
+function findRepoRoot(startDir: string) {
+  let currentDir = path.resolve(startDir);
+
+  while (true) {
+    const projectMarker = path.join(currentDir, 'project.yaml');
+    const webAppMarker = path.join(currentDir, 'apps', 'web');
+    const coreMarker = path.join(currentDir, 'packages', 'core');
+
+    if (fs.existsSync(projectMarker) && fs.existsSync(webAppMarker) && fs.existsSync(coreMarker)) {
+      return currentDir;
+    }
+
+    const parentDir = path.dirname(currentDir);
+    if (parentDir === currentDir) {
+      throw new Error(`Could not locate Bruno Advisory repo root from ${startDir}`);
+    }
+
+    currentDir = parentDir;
+  }
+}
+
+const repoRoot = findRepoRoot(process.cwd());
+const dataDir = path.join(repoRoot, 'data', 'dev');
+export const databasePath = path.join(dataDir, 'bruno-advisory-dev.sqlite3');
+const legacyLeadsJsonlPath = path.join(dataDir, 'intake-leads.jsonl');
+const legacyEventsJsonlPath = path.join(dataDir, 'intake-events.jsonl');
+export const leadsTable = 'intake_leads';
+export const eventsTable = 'intake_events';
+export const stageAuditTable = 'lead_stage_audit';
+export const notesTable = 'lead_internal_notes';
+export const tasksTable = 'lead_internal_tasks';
+export const taskAuditTable = 'lead_internal_task_audit';
+export const billingRecordsTable = 'lead_billing_records';
+export const billingEventsTable = 'lead_billing_events';
+export const billingChargesTable = 'lead_billing_charges';
+export const billingChargeEventsTable = 'lead_billing_charge_events';
+export const billingSettlementsTable = 'lead_billing_settlements';
+export const billingSettlementEventsTable = 'lead_billing_settlement_events';
+
+let database: DatabaseSync | undefined;
+
+function ensureDataDir() {
+  fs.mkdirSync(dataDir, { recursive: true });
+}
+
+function readJsonLines<T>(filePath: string): T[] {
+  if (!fs.existsSync(filePath)) {
+    return [];
+  }
+
+  const raw = fs.readFileSync(filePath, 'utf8').trim();
+  if (!raw) {
+    return [];
+  }
+
+  return raw
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => JSON.parse(line) as T);
+}
+
+export function serializeMetadata(metadata?: Record<string, string | number | boolean | null>) {
+  if (!metadata || Object.keys(metadata).length === 0) {
+    return null;
+  }
+
+  return JSON.stringify(metadata);
+}
+
+export function parseMetadata(raw: unknown) {
+  if (typeof raw !== 'string' || raw.length === 0) {
+    return undefined;
+  }
+
+  try {
+    return JSON.parse(raw) as Record<string, string | number | boolean | null>;
+  } catch {
+    return undefined;
+  }
+}
+
+export function toOptionalString(value: unknown) {
+  return typeof value === 'string' && value.length > 0 ? value : undefined;
+}
+
+export function toOptionalDateString(value: string | undefined) {
+  if (!value) {
+    return null;
+  }
+
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  return /^\d{4}-\d{2}-\d{2}$/.test(trimmed) ? trimmed : null;
+}
+
+function toOptionalNullableString(value: unknown) {
+  return value === null ? null : toOptionalString(value) ?? null;
+}
+
+function toOptionalFitLevel(value: unknown): LeadFitLevel | null {
+  return value === 'alto' || value === 'medio' || value === 'baixo' ? value : null;
+}
+
+export function normalizeLeadRow(row: Record<string, unknown>): StoredLead {
+  const commercialStage = row.commercialStage;
+  const normalizedCommercialStage = isOperatorCommercialStage(commercialStage)
+    ? commercialStage
+    : commercialStageModel.defaultStage;
+
+  return {
+    leadId: String(row.leadId),
+    fullName: String(row.fullName),
+    email: String(row.email),
+    phone: String(row.phone),
+    city: toOptionalString(row.city),
+    state: toOptionalString(row.state),
+    investableAssetsBand: row.investableAssetsBand as PublicIntakePayload['investableAssetsBand'],
+    primaryChallenge: String(row.primaryChallenge),
+    sourceChannel: row.sourceChannel as SourceChannel,
+    sourceLabel: String(row.sourceLabel),
+    sourceCampaign: toOptionalString(row.sourceCampaign),
+    sourceMedium: toOptionalString(row.sourceMedium),
+    sourceContent: toOptionalString(row.sourceContent),
+    intakeFormVersion: String(row.intakeFormVersion),
+    privacyConsentAccepted: Number(row.privacyConsentAccepted) === 1,
+    termsConsentAccepted: Number(row.termsConsentAccepted) === 1,
+    status: row.status as LeadStatus,
+    commercialStage: normalizedCommercialStage,
+    statusReason: row.statusReason === null ? null : String(row.statusReason),
+    fitSummary: row.fitSummary === null ? null : String(row.fitSummary),
+    internalOwner: row.internalOwner === null ? null : String(row.internalOwner),
+    cidadeEstado: toOptionalNullableString(row.cidadeEstado),
+    ocupacaoPerfil: toOptionalNullableString(row.ocupacaoPerfil),
+    nivelDeFit: toOptionalFitLevel(row.nivelDeFit),
+    motivoSemFit: toOptionalNullableString(row.motivoSemFit),
+    owner: toOptionalNullableString(row.owner),
+    dataCallQualificacao: toOptionalNullableString(row.dataCallQualificacao),
+    resumoCall: toOptionalNullableString(row.resumoCall),
+    interesseNaOferta: toOptionalFitLevel(row.interesseNaOferta),
+    checklistOnboarding: toOptionalNullableString(row.checklistOnboarding),
+    cadenciaAcordada: toOptionalNullableString(row.cadenciaAcordada),
+    proximoPasso: toOptionalNullableString(row.proximoPasso),
+    riscoDeChurn: toOptionalFitLevel(row.riscoDeChurn),
+    submittedAt: String(row.submittedAt),
+    createdAt: String(row.createdAt),
+    updatedAt: String(row.updatedAt),
+    firstCapturedAt: String(row.firstCapturedAt),
+    lastStatusChangedAt: String(row.lastStatusChangedAt)
+  };
+}
+
+function makeLegacyEventId(record: IntakeEventRecord) {
+  return createHash('sha256')
+    .update(
+      JSON.stringify({
+        eventName: record.eventName,
+        occurredAt: record.occurredAt,
+        metadata: record.metadata ?? null,
+        relatedLeadId: record.relatedLeadId ?? null
+      })
+    )
+    .digest('hex');
+}
+
+function migrateLegacyJsonlData(db: DatabaseSync) {
+  const legacyLeads = readJsonLines<StoredLead>(legacyLeadsJsonlPath);
+  const legacyEvents = readJsonLines<IntakeEventRecord>(legacyEventsJsonlPath);
+
+  if (legacyLeads.length === 0 && legacyEvents.length === 0) {
+    return;
+  }
+
+  const insertLead = db.prepare(`
+    INSERT OR IGNORE INTO ${leadsTable} (
+      lead_id,
+      full_name,
+      email,
+      phone,
+      city,
+      state,
+      investable_assets_band,
+      primary_challenge,
+      source_channel,
+      source_label,
+      source_campaign,
+      source_medium,
+      source_content,
+      intake_form_version,
+      privacy_consent_accepted,
+      terms_consent_accepted,
+      status,
+      commercial_stage,
+      status_reason,
+      fit_summary,
+      internal_owner,
+      submitted_at,
+      created_at,
+      updated_at,
+      first_captured_at,
+      last_status_changed_at
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `);
+
+  const insertEvent = db.prepare(`
+    INSERT OR IGNORE INTO ${eventsTable} (
+      event_id,
+      event_name,
+      occurred_at,
+      metadata_json,
+      related_lead_id
+    ) VALUES (?, ?, ?, ?, ?)
+  `);
+
+  db.exec('BEGIN');
+
+  try {
+    for (const lead of legacyLeads) {
+      insertLead.run(
+        lead.leadId,
+        lead.fullName,
+        lead.email,
+        lead.phone,
+        lead.city ?? null,
+        lead.state ?? null,
+        lead.investableAssetsBand,
+        lead.primaryChallenge,
+        lead.sourceChannel,
+        lead.sourceLabel,
+        lead.sourceCampaign ?? null,
+        lead.sourceMedium ?? null,
+        lead.sourceContent ?? null,
+        lead.intakeFormVersion,
+        lead.privacyConsentAccepted ? 1 : 0,
+        lead.termsConsentAccepted ? 1 : 0,
+        lead.status,
+        lead.commercialStage ?? commercialStageModel.defaultStage,
+        lead.statusReason,
+        lead.fitSummary,
+        lead.internalOwner,
+        lead.submittedAt,
+        lead.createdAt,
+        lead.updatedAt,
+        lead.firstCapturedAt,
+        lead.lastStatusChangedAt
+      );
+    }
+
+    for (const event of legacyEvents) {
+      const relatedLeadId =
+        event.relatedLeadId ??
+        (typeof event.metadata?.leadId === 'string' ? event.metadata.leadId : null);
+
+      insertEvent.run(
+        event.eventId ?? makeLegacyEventId(event),
+        event.eventName,
+        event.occurredAt,
+        serializeMetadata(event.metadata),
+        relatedLeadId
+      );
+    }
+
+    db.exec('COMMIT');
+  } catch (error) {
+    db.exec('ROLLBACK');
+    throw error;
+  }
+}
+
+function getLeadColumnNames(db: DatabaseSync) {
+  const columns = db.prepare(`PRAGMA table_info(${leadsTable})`).all() as Array<{ name: string }>;
+  return new Set(columns.map((column) => column.name));
+}
+
+function addNullableLeadColumnIfMissing(db: DatabaseSync, columnName: string, sqlType = 'TEXT') {
+  const columns = getLeadColumnNames(db);
+  if (!columns.has(columnName)) {
+    db.exec(`ALTER TABLE ${leadsTable} ADD COLUMN ${columnName} ${sqlType}`);
+  }
+}
+
+function ensureCommercialStageColumn(db: DatabaseSync) {
+  const columns = getLeadColumnNames(db);
+  const hasCommercialStage = columns.has('commercial_stage');
+
+  if (!hasCommercialStage) {
+    db.exec(
+      `ALTER TABLE ${leadsTable} ADD COLUMN commercial_stage TEXT NOT NULL DEFAULT '${commercialStageModel.defaultStage}'`
+    );
+  }
+}
+
+function ensureLeadCrmColumns(db: DatabaseSync) {
+  addNullableLeadColumnIfMissing(db, 'cidade_estado');
+  addNullableLeadColumnIfMissing(db, 'ocupacao_perfil');
+  addNullableLeadColumnIfMissing(db, 'nivel_de_fit');
+  addNullableLeadColumnIfMissing(db, 'motivo_sem_fit');
+  addNullableLeadColumnIfMissing(db, 'owner');
+  addNullableLeadColumnIfMissing(db, 'data_call_qualificacao');
+  addNullableLeadColumnIfMissing(db, 'resumo_call');
+  addNullableLeadColumnIfMissing(db, 'interesse_na_oferta');
+  addNullableLeadColumnIfMissing(db, 'checklist_onboarding');
+  addNullableLeadColumnIfMissing(db, 'cadencia_acordada');
+  addNullableLeadColumnIfMissing(db, 'proximo_passo');
+  addNullableLeadColumnIfMissing(db, 'risco_de_churn');
+}
+
+export function getDatabase() {
+  if (database) {
+    return database;
+  }
+
+  ensureDataDir();
+
+  const db = new DatabaseSync(databasePath);
+  db.exec('PRAGMA foreign_keys = ON');
+  db.exec('PRAGMA journal_mode = WAL');
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS ${leadsTable} (
+      lead_id TEXT PRIMARY KEY,
+      full_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT NOT NULL,
+      city TEXT,
+      state TEXT,
+      investable_assets_band TEXT NOT NULL,
+      primary_challenge TEXT NOT NULL,
+      source_channel TEXT NOT NULL,
+      source_label TEXT NOT NULL,
+      source_campaign TEXT,
+      source_medium TEXT,
+      source_content TEXT,
+      intake_form_version TEXT NOT NULL,
+      privacy_consent_accepted INTEGER NOT NULL CHECK (privacy_consent_accepted IN (0, 1)),
+      terms_consent_accepted INTEGER NOT NULL CHECK (terms_consent_accepted IN (0, 1)),
+      status TEXT NOT NULL,
+      commercial_stage TEXT NOT NULL DEFAULT 'intake_novo',
+      status_reason TEXT,
+      fit_summary TEXT,
+      internal_owner TEXT,
+      cidade_estado TEXT,
+      ocupacao_perfil TEXT,
+      nivel_de_fit TEXT,
+      motivo_sem_fit TEXT,
+      owner TEXT,
+      data_call_qualificacao TEXT,
+      resumo_call TEXT,
+      interesse_na_oferta TEXT,
+      checklist_onboarding TEXT,
+      cadencia_acordada TEXT,
+      proximo_passo TEXT,
+      risco_de_churn TEXT,
+      submitted_at TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      first_captured_at TEXT NOT NULL,
+      last_status_changed_at TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_intake_leads_created_at ON ${leadsTable}(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_intake_leads_status ON ${leadsTable}(status);
+
+    CREATE TABLE IF NOT EXISTS ${eventsTable} (
+      event_id TEXT PRIMARY KEY,
+      event_name TEXT NOT NULL,
+      occurred_at TEXT NOT NULL,
+      metadata_json TEXT,
+      related_lead_id TEXT,
+      FOREIGN KEY (related_lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_intake_events_occurred_at ON ${eventsTable}(occurred_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_intake_events_name ON ${eventsTable}(event_name);
+
+    CREATE TABLE IF NOT EXISTS ${stageAuditTable} (
+      audit_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      from_stage TEXT,
+      to_stage TEXT NOT NULL,
+      changed_at TEXT NOT NULL,
+      changed_by TEXT NOT NULL,
+      note TEXT,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_stage_audit_lead ON ${stageAuditTable}(lead_id, changed_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${notesTable} (
+      note_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      content TEXT NOT NULL,
+      author_marker TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_internal_notes_lead ON ${notesTable}(lead_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${tasksTable} (
+      task_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      status TEXT NOT NULL,
+      due_date TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_internal_tasks_lead ON ${tasksTable}(lead_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_lead_internal_tasks_status ON ${tasksTable}(lead_id, status);
+
+    CREATE TABLE IF NOT EXISTS ${taskAuditTable} (
+      audit_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      task_id TEXT NOT NULL,
+      from_status TEXT,
+      to_status TEXT NOT NULL,
+      changed_at TEXT NOT NULL,
+      changed_by TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id),
+      FOREIGN KEY (task_id) REFERENCES ${tasksTable}(task_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_internal_task_audit_task ON ${taskAuditTable}(task_id, changed_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_lead_internal_task_audit_lead ON ${taskAuditTable}(lead_id, changed_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${billingRecordsTable} (
+      billing_record_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL UNIQUE,
+      status TEXT NOT NULL,
+      currency TEXT NOT NULL,
+      entry_fee_cents INTEGER NOT NULL,
+      monthly_fee_cents INTEGER NOT NULL,
+      minimum_commitment_months INTEGER NOT NULL,
+      activated_at TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_records_lead ON ${billingRecordsTable}(lead_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${billingEventsTable} (
+      billing_event_id TEXT PRIMARY KEY,
+      billing_record_id TEXT NOT NULL,
+      lead_id TEXT NOT NULL,
+      event_type TEXT NOT NULL,
+      occurred_at TEXT NOT NULL,
+      actor TEXT NOT NULL,
+      note TEXT,
+      FOREIGN KEY (billing_record_id) REFERENCES ${billingRecordsTable}(billing_record_id),
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_events_record ON ${billingEventsTable}(billing_record_id, occurred_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_events_lead ON ${billingEventsTable}(lead_id, occurred_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${billingChargesTable} (
+      charge_id TEXT PRIMARY KEY,
+      billing_record_id TEXT NOT NULL,
+      lead_id TEXT NOT NULL,
+      charge_sequence INTEGER NOT NULL,
+      charge_kind TEXT NOT NULL,
+      status TEXT NOT NULL,
+      currency TEXT NOT NULL,
+      amount_cents INTEGER NOT NULL,
+      due_date TEXT NOT NULL,
+      posted_at TEXT,
+      created_at TEXT NOT NULL,
+      UNIQUE (billing_record_id, charge_sequence),
+      FOREIGN KEY (billing_record_id) REFERENCES ${billingRecordsTable}(billing_record_id),
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_charges_record ON ${billingChargesTable}(billing_record_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_charges_lead ON ${billingChargesTable}(lead_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${billingChargeEventsTable} (
+      charge_event_id TEXT PRIMARY KEY,
+      charge_id TEXT NOT NULL,
+      billing_record_id TEXT NOT NULL,
+      lead_id TEXT NOT NULL,
+      event_type TEXT NOT NULL,
+      occurred_at TEXT NOT NULL,
+      actor TEXT NOT NULL,
+      note TEXT,
+      FOREIGN KEY (charge_id) REFERENCES ${billingChargesTable}(charge_id),
+      FOREIGN KEY (billing_record_id) REFERENCES ${billingRecordsTable}(billing_record_id),
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_charge_events_charge ON ${billingChargeEventsTable}(charge_id, occurred_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_charge_events_lead ON ${billingChargeEventsTable}(lead_id, occurred_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${billingSettlementsTable} (
+      settlement_id TEXT PRIMARY KEY,
+      charge_id TEXT NOT NULL UNIQUE,
+      billing_record_id TEXT NOT NULL,
+      lead_id TEXT NOT NULL,
+      status TEXT NOT NULL,
+      settlement_kind TEXT NOT NULL,
+      currency TEXT NOT NULL,
+      amount_cents INTEGER NOT NULL,
+      settled_at TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (charge_id) REFERENCES ${billingChargesTable}(charge_id),
+      FOREIGN KEY (billing_record_id) REFERENCES ${billingRecordsTable}(billing_record_id),
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_settlements_charge ON ${billingSettlementsTable}(charge_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_settlements_lead ON ${billingSettlementsTable}(lead_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${billingSettlementEventsTable} (
+      settlement_event_id TEXT PRIMARY KEY,
+      settlement_id TEXT NOT NULL,
+      charge_id TEXT NOT NULL,
+      billing_record_id TEXT NOT NULL,
+      lead_id TEXT NOT NULL,
+      event_type TEXT NOT NULL,
+      occurred_at TEXT NOT NULL,
+      actor TEXT NOT NULL,
+      note TEXT,
+      FOREIGN KEY (settlement_id) REFERENCES ${billingSettlementsTable}(settlement_id),
+      FOREIGN KEY (charge_id) REFERENCES ${billingChargesTable}(charge_id),
+      FOREIGN KEY (billing_record_id) REFERENCES ${billingRecordsTable}(billing_record_id),
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_settlement_events_settlement ON ${billingSettlementEventsTable}(settlement_id, occurred_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_lead_billing_settlement_events_lead ON ${billingSettlementEventsTable}(lead_id, occurred_at DESC);
+  `);
+
+  ensureCommercialStageColumn(db);
+  ensureLeadCrmColumns(db);
+  db.exec(`CREATE INDEX IF NOT EXISTS idx_intake_leads_commercial_stage ON ${leadsTable}(commercial_stage);`);
+  migrateLegacyJsonlData(db);
+
+  database = db;
+  return db;
+}
+
+export function normalizeLeadBillingRecord(row: Record<string, unknown>): LeadBillingRecord | null {
+  if (!row.status || typeof row.status !== 'string') {
+    return null;
+  }
+
+  return {
+    billingRecordId: String(row.billingRecordId),
+    leadId: String(row.leadId),
+    status: row.status as LeadBillingRecord['status'],
+    currency: String(row.currency),
+    entryFeeCents: Number(row.entryFeeCents),
+    monthlyFeeCents: Number(row.monthlyFeeCents),
+    minimumCommitmentMonths: Number(row.minimumCommitmentMonths),
+    activatedAt: row.activatedAt === null ? null : String(row.activatedAt),
+    createdAt: String(row.createdAt)
+  };
+}
+
+export function normalizeLeadBillingCharge(row: Record<string, unknown>): LeadBillingCharge | null {
+  if (!row.status || typeof row.status !== 'string') {
+    return null;
+  }
+
+  return {
+    chargeId: String(row.chargeId),
+    billingRecordId: String(row.billingRecordId),
+    leadId: String(row.leadId),
+    chargeSequence: Number(row.chargeSequence),
+    chargeKind: String(row.chargeKind),
+    status: row.status as LeadBillingCharge['status'],
+    currency: String(row.currency),
+    amountCents: Number(row.amountCents),
+    dueDate: String(row.dueDate),
+    postedAt: row.postedAt === null ? null : String(row.postedAt),
+    createdAt: String(row.createdAt)
+  };
+}
+
+export function normalizeLeadBillingSettlement(row: Record<string, unknown>): LeadBillingSettlement | null {
+  if (!row.status || typeof row.status !== 'string') {
+    return null;
+  }
+
+  return {
+    settlementId: String(row.settlementId),
+    chargeId: String(row.chargeId),
+    billingRecordId: String(row.billingRecordId),
+    leadId: String(row.leadId),
+    status: row.status as LeadBillingSettlement['status'],
+    settlementKind: String(row.settlementKind),
+    currency: String(row.currency),
+    amountCents: Number(row.amountCents),
+    settledAt: String(row.settledAt),
+    createdAt: String(row.createdAt)
+  };
+}
+
+export function getIntakeStoragePaths() {
+  return {
+    database: databasePath,
+    leadsTable,
+    eventsTable,
+    stageAuditTable,
+    notesTable,
+    tasksTable,
+    taskAuditTable,
+    billingRecordsTable,
+    billingEventsTable,
+    billingChargesTable,
+    billingChargeEventsTable,
+    billingSettlementsTable,
+    billingSettlementEventsTable
+  };
+}

@@ -61,3 +61,61 @@
 - 2026-04-14 — T3 ciclo 10 cria uma visão operacional mínima de billing no cockpit — introduz regra canônica de overview, read path DB-backed por lead com status de billing/cobrança/liquidação e surface dedicada em `/cockpit/billing` com links para detalhe do lead — impacto: Bruno passa a acompanhar billing entre leads sem depender de abrir cada registro individualmente — dono: Vulcanus
 - 2026-04-14 — Zeus aceitou o T3 ciclo 10 como progresso real — a observabilidade global de billing agora existe no cockpit com prova de casos pendente e liquidado, fechando o gap de acompanhamento do T3 — impacto: a tranche T3 cumpre o gate funcional e passa a poder ser fechada sem widen para collections, provider externo ou T4 — dono: Zeus
 - 2026-04-14 — Zeus fechou a T3 por evidência — um lead pode virar cliente, um cliente pode ter cobrança recorrente e liquidação local registradas, os eventos principais ficam persistidos e Bruno consegue acompanhar o estado no cockpit/Control Room local — impacto: `project.yaml` passa para `tranche_status: done` em T3; T4 não abre automaticamente e depende de autorização explícita de Bruno — dono: Zeus
+- 2026-04-14 — T3.5 foi aberta como tranche intermediária de hardening, sem abrir T4 — há evidência local explícita em `state/t35-opening.md` (autorização + escopo) e `state/zeus-mandate.md` (ciclos + alvo atual), ambas datadas de 2026-04-14, reconciliando a passagem de T3 fechada para T3.5 aberta — impacto: `ROADMAP.md` passa a incluir T3.5 como tranche formal entre T3 e T4; `project.yaml` permanece em `active_tranche: T3.5`, `tranche_status: open`, `stage_gate: hardening` até fechamento por evidência — dono: Zeus
+
+## 2026-04-14 00:17 GMT-3 — T3.5 cycle 1 accepted (storage split)
+
+- Monolith `intake-storage.ts` (2305 lines) split into 7 domain modules under `apps/web/lib/storage/`.
+- Original file converted to 7-line re-export barrel.
+- Vulcanus delivered the split; Zeus corrected 2 verifier bugs (wrong event name, wrong status codes) and ran verification.
+- Typecheck clean, build clean, full verifier pass exercising all 14 routes.
+- Evidence: `state/evidence/T3.5-cycle-1/summary-local.json`
+- Decision: accepted.
+
+## 2026-04-14 02:28 UTC — T3.5 cycle 2 accepted (cockpit auth)
+
+- Cockpit hardening now gates `/cockpit/*` and `/api/cockpit/*` via `COCKPIT_SECRET` in `apps/web/proxy.ts`, without opening T4 or adding product scope.
+- Unauthenticated cockpit API requests return `401`; cockpit pages redirect to login prompt and can establish a protected cookie session with the shared secret.
+- Public routes remained open in the verifier path, including `/`, `/intake`, `/api/intake`, `/api/intake-events`, `/api/health`, `/como-funciona`, `/para-quem-e`, `/privacidade`, `/termos` and `/go/intake`.
+- Zeus audited and corrected the state note path to match the shipped artifact (`proxy.ts`, not `middleware.ts`).
+- Evidence: `state/t35-cycle-2-cockpit-auth.md`, `infra/scripts/verify-t35-cycle-2-local.sh`, `state/evidence/T3.5-cycle-2/summary-local.json`.
+- Decision: accepted.
+
+## 2026-04-14 00:42 GMT-3 — T3.5 cycle 2 accepted (cockpit auth)
+
+- `apps/web/proxy.ts` added (renamed from `middleware.ts` per Next.js 16 proxy convention)
+- Auth gate: `COCKPIT_SECRET` env var required for all `/cockpit/*` and `/api/cockpit/*` routes
+- Supports Bearer, Basic, cookie, and token-query auth channels
+- Public routes remain open
+- Zeus corrected 3 verifier bugs: wrong event name (reused from cycle 1), wrong edge chunk path (Next.js 16 uses server chunks), wrong manifest matcher check (Next.js 16 format changed)
+- Zeus restored `billing-settlements/route.ts` deleted prematurely by Vulcanus (cycle 3 work)
+- Full verifier pass with all 8 bundle checks passing
+- Evidence: `state/evidence/T3.5-cycle-2/summary-local.json`
+- Decision: accepted.
+
+## 2026-04-14 00:38 GMT-3 — T3.5 cycle 3 accepted (legacy settlement route removed)
+
+- `apps/web/app/api/cockpit/leads/[leadId]/billing-settlements/route.ts` deleted (implicit lead-level settlement)
+- `billing-settlements/[chargeId]/route.ts` preserved (targeted, canonical)
+- Lead detail surface (`page.tsx`) updated to only use targeted settlement
+- Full verifier pass: legacy route absent from build, targeted route returns 201
+- Evidence: `state/evidence/T3.5-cycle-3/summary-local.json`
+- Decision: accepted.
+
+## 2026-04-14 00:53 GMT-3 — T3.5 cycle 4 accepted (billing tests)
+
+- 13 billing tests added in `apps/web/lib/storage/__tests__/billing.test.ts`
+- Runner: `node --experimental-strip-types --test`
+- All 13 tests pass: readiness gate, activation, charge creation, targeted settlement, charge progression
+- Zeus fixed 5 issues in Vulcanus delivery: @core namespace import, createRequire ESM compat, duplicate declarations, concurrency locking, wrong status code
+- Evidence: `state/evidence/T3.5-cycle-4/summary-local.json`
+- Decision: accepted.
+
+## 2026-04-14 01:00 GMT-3 — T3.5 cycle 5 accepted (CRM field expansion)
+
+- 12 missing T1-defined CRM fields added to schema, types, storage, PATCH route, and lead detail surface
+- New route: `apps/web/app/api/cockpit/leads/[leadId]/crm-fields/route.ts`
+- All 12 fields confirmed persisted in fresh temp DB by verifier
+- Build clean, all surface checks passed
+- Evidence: `state/evidence/T3.5-cycle-5/summary-local.json`
+- Decision: accepted.

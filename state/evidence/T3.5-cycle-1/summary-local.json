@@ -1,0 +1,581 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-14T02:17:34.789Z",
+  "note": "HTTP bind is blocked in this sandbox (listen EPERM); verification executed by invoking compiled Next app route handlers directly after next build.",
+  "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+  "taskId": "06418f4a-4530-4733-ab88-7f0547ff817b",
+  "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+  "nextChargeId": "e64abc65-3341-41ca-906c-af516b0aa040",
+  "responses": {
+    "intakeCreate": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8"
+      }
+    },
+    "intakeEventCreate": {
+      "status": 200,
+      "body": {
+        "ok": true
+      }
+    },
+    "noteCreate": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "note": {
+          "noteId": "595c935a-3124-4273-818b-c4b5ed60aaf5",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "content": "nota estrutural",
+          "authorMarker": "verify_t35_cycle_1",
+          "createdAt": "2026-04-14T02:17:34.550Z"
+        }
+      }
+    },
+    "taskCreate": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "task": {
+          "taskId": "06418f4a-4530-4733-ab88-7f0547ff817b",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "title": "Checklist T3.5",
+          "status": "todo",
+          "dueDate": "2026-05-01",
+          "createdAt": "2026-04-14T02:17:34.561Z"
+        }
+      }
+    },
+    "billingReadinessBefore": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "readiness": {
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "isBillingReady": false,
+          "requiredCommercialStage": "cliente_convertido",
+          "currentCommercialStage": "intake_novo",
+          "totalTasks": 1,
+          "doneTasks": 0,
+          "pendingTasks": 1,
+          "unmetConditions": [
+            "commercial_stage_cliente_convertido",
+            "all_internal_tasks_done"
+          ],
+          "unmetConditionLabels": [
+            "Estagio comercial deve estar em Cliente convertido.",
+            "Todas as tarefas internas devem estar com status done."
+          ]
+        }
+      }
+    },
+    "taskDone": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "taskId": "06418f4a-4530-4733-ab88-7f0547ff817b",
+        "status": "done",
+        "changedFrom": "todo",
+        "changedTo": "done",
+        "changedAt": "2026-04-14T02:17:34.570Z",
+        "changedBy": "verify_t35_cycle_1"
+      }
+    },
+    "stageChange": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+        "commercialStage": "cliente_convertido",
+        "changedFrom": "intake_novo",
+        "changedTo": "cliente_convertido",
+        "changedAt": "2026-04-14T02:17:34.575Z",
+        "note": "advance for verifier"
+      }
+    },
+    "billingReadinessAfter": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "readiness": {
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "isBillingReady": true,
+          "requiredCommercialStage": "cliente_convertido",
+          "currentCommercialStage": "cliente_convertido",
+          "totalTasks": 1,
+          "doneTasks": 1,
+          "pendingTasks": 0,
+          "unmetConditions": [],
+          "unmetConditionLabels": []
+        }
+      }
+    },
+    "billingRecord": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "lead": {
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "fullName": "T3.5 Cycle 1 Verify",
+          "email": "t35-cycle1-1776133054472@example.com",
+          "phone": "11988991170",
+          "city": "Brasilia",
+          "state": "DF",
+          "investableAssetsBand": "3m_a_10m",
+          "primaryChallenge": "Preservar rotas intactas apos split estrutural de storage.",
+          "sourceChannel": "site_home",
+          "sourceLabel": "verify_t35_cycle_1",
+          "intakeFormVersion": "t2-cycle-1",
+          "privacyConsentAccepted": true,
+          "termsConsentAccepted": true,
+          "status": "new",
+          "commercialStage": "cliente_convertido",
+          "statusReason": null,
+          "fitSummary": null,
+          "internalOwner": null,
+          "submittedAt": "2026-04-14T02:17:34.506Z",
+          "createdAt": "2026-04-14T02:17:34.506Z",
+          "updatedAt": "2026-04-14T02:17:34.575Z",
+          "firstCapturedAt": "2026-04-14T02:17:34.506Z",
+          "lastStatusChangedAt": "2026-04-14T02:17:34.575Z"
+        },
+        "readiness": {
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "isBillingReady": true,
+          "requiredCommercialStage": "cliente_convertido",
+          "currentCommercialStage": "cliente_convertido",
+          "totalTasks": 1,
+          "doneTasks": 1,
+          "pendingTasks": 0,
+          "unmetConditions": [],
+          "unmetConditionLabels": []
+        },
+        "billingRecord": {
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "status": "active_local",
+          "currency": "BRL",
+          "entryFeeCents": 950000,
+          "monthlyFeeCents": 350000,
+          "minimumCommitmentMonths": 6,
+          "activatedAt": "2026-04-14T02:17:34.583Z",
+          "createdAt": "2026-04-14T02:17:34.583Z"
+        },
+        "billingEvents": [
+          {
+            "billingEventId": "4f0d2700-8801-421f-a91e-eb0de23ef3f8",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "billing_record_created",
+            "occurredAt": "2026-04-14T02:17:34.583Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "activate billing"
+          },
+          {
+            "billingEventId": "3d1478d1-2dc2-40f6-a6ef-7d91df192508",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "billing_record_activated",
+            "occurredAt": "2026-04-14T02:17:34.583Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "Lead entrou em operacao billable local."
+          }
+        ]
+      }
+    },
+    "billingCharge": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "lead": {
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "fullName": "T3.5 Cycle 1 Verify",
+          "email": "t35-cycle1-1776133054472@example.com",
+          "phone": "11988991170",
+          "city": "Brasilia",
+          "state": "DF",
+          "investableAssetsBand": "3m_a_10m",
+          "primaryChallenge": "Preservar rotas intactas apos split estrutural de storage.",
+          "sourceChannel": "site_home",
+          "sourceLabel": "verify_t35_cycle_1",
+          "intakeFormVersion": "t2-cycle-1",
+          "privacyConsentAccepted": true,
+          "termsConsentAccepted": true,
+          "status": "new",
+          "commercialStage": "cliente_convertido",
+          "statusReason": null,
+          "fitSummary": null,
+          "internalOwner": null,
+          "submittedAt": "2026-04-14T02:17:34.506Z",
+          "createdAt": "2026-04-14T02:17:34.506Z",
+          "updatedAt": "2026-04-14T02:17:34.575Z",
+          "firstCapturedAt": "2026-04-14T02:17:34.506Z",
+          "lastStatusChangedAt": "2026-04-14T02:17:34.575Z"
+        },
+        "billingRecord": {
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "status": "active_local",
+          "currency": "BRL",
+          "entryFeeCents": 950000,
+          "monthlyFeeCents": 350000,
+          "minimumCommitmentMonths": 6,
+          "activatedAt": "2026-04-14T02:17:34.583Z",
+          "createdAt": "2026-04-14T02:17:34.583Z"
+        },
+        "charge": {
+          "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "chargeSequence": 1,
+          "chargeKind": "monthly_recurring",
+          "status": "pending_local",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "dueDate": "2026-05-14",
+          "postedAt": "2026-04-14T02:17:34.605Z",
+          "createdAt": "2026-04-14T02:17:34.605Z"
+        },
+        "chargeEvents": [
+          {
+            "chargeEventId": "ffaab641-c1d2-4d1f-ba5e-6bbbbabb0667",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_posted",
+            "occurredAt": "2026-04-14T02:17:34.605Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "Primeira cobranca local recorrente entrou em estado de cobranca."
+          },
+          {
+            "chargeEventId": "7afda709-4f2e-4f27-803b-8d45f2d2b53c",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_created",
+            "occurredAt": "2026-04-14T02:17:34.605Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "create first charge"
+          }
+        ]
+      }
+    },
+    "nextBillingChargeBlocked": {
+      "status": 422,
+      "body": {
+        "ok": false,
+        "code": "PENDING_RECURRING_CHARGE_EXISTS",
+        "error": "Ja existe uma cobranca recorrente pendente e a progressao nao pode duplicar a proxima sequencia.",
+        "billingRecord": {
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "status": "active_local",
+          "currency": "BRL",
+          "entryFeeCents": 950000,
+          "monthlyFeeCents": 350000,
+          "minimumCommitmentMonths": 6,
+          "activatedAt": "2026-04-14T02:17:34.583Z",
+          "createdAt": "2026-04-14T02:17:34.583Z"
+        },
+        "latestCharge": {
+          "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "chargeSequence": 1,
+          "chargeKind": "monthly_recurring",
+          "status": "pending_local",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "dueDate": "2026-05-14",
+          "postedAt": "2026-04-14T02:17:34.605Z",
+          "createdAt": "2026-04-14T02:17:34.605Z"
+        }
+      }
+    },
+    "targetedSettlement": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "lead": {
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "fullName": "T3.5 Cycle 1 Verify",
+          "email": "t35-cycle1-1776133054472@example.com",
+          "phone": "11988991170",
+          "city": "Brasilia",
+          "state": "DF",
+          "investableAssetsBand": "3m_a_10m",
+          "primaryChallenge": "Preservar rotas intactas apos split estrutural de storage.",
+          "sourceChannel": "site_home",
+          "sourceLabel": "verify_t35_cycle_1",
+          "intakeFormVersion": "t2-cycle-1",
+          "privacyConsentAccepted": true,
+          "termsConsentAccepted": true,
+          "status": "new",
+          "commercialStage": "cliente_convertido",
+          "statusReason": null,
+          "fitSummary": null,
+          "internalOwner": null,
+          "submittedAt": "2026-04-14T02:17:34.506Z",
+          "createdAt": "2026-04-14T02:17:34.506Z",
+          "updatedAt": "2026-04-14T02:17:34.575Z",
+          "firstCapturedAt": "2026-04-14T02:17:34.506Z",
+          "lastStatusChangedAt": "2026-04-14T02:17:34.575Z"
+        },
+        "billingRecord": {
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "status": "active_local",
+          "currency": "BRL",
+          "entryFeeCents": 950000,
+          "monthlyFeeCents": 350000,
+          "minimumCommitmentMonths": 6,
+          "activatedAt": "2026-04-14T02:17:34.583Z",
+          "createdAt": "2026-04-14T02:17:34.583Z"
+        },
+        "charge": {
+          "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "chargeSequence": 1,
+          "chargeKind": "monthly_recurring",
+          "status": "settled_local",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "dueDate": "2026-05-14",
+          "postedAt": "2026-04-14T02:17:34.605Z",
+          "createdAt": "2026-04-14T02:17:34.605Z"
+        },
+        "settlement": {
+          "settlementId": "7ad1b019-e1d3-4bc1-816d-919d428d6ec1",
+          "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "status": "settled_local",
+          "settlementKind": "manual_local_settlement",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "settledAt": "2026-04-14T02:17:34.733Z",
+          "createdAt": "2026-04-14T02:17:34.733Z"
+        },
+        "settlementEvents": [
+          {
+            "settlementEventId": "a13ce433-c4d2-4a3b-8430-419461da941e",
+            "settlementId": "7ad1b019-e1d3-4bc1-816d-919d428d6ec1",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_settled",
+            "occurredAt": "2026-04-14T02:17:34.733Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "Cobranca f79d2772-b18a-4be9-bb95-6d2a5b005c01 movida de pending_local para settled_local."
+          },
+          {
+            "settlementEventId": "80ca66f3-12ca-4941-9e31-397e797767cf",
+            "settlementId": "7ad1b019-e1d3-4bc1-816d-919d428d6ec1",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "settlement_recorded",
+            "occurredAt": "2026-04-14T02:17:34.733Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "settle first charge"
+          }
+        ],
+        "chargeEvents": [
+          {
+            "chargeEventId": "89106235-fbd0-4bc5-bf24-348f53c9698f",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_settled",
+            "occurredAt": "2026-04-14T02:17:34.733Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "settle first charge"
+          },
+          {
+            "chargeEventId": "ffaab641-c1d2-4d1f-ba5e-6bbbbabb0667",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_posted",
+            "occurredAt": "2026-04-14T02:17:34.605Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "Primeira cobranca local recorrente entrou em estado de cobranca."
+          },
+          {
+            "chargeEventId": "7afda709-4f2e-4f27-803b-8d45f2d2b53c",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_created",
+            "occurredAt": "2026-04-14T02:17:34.605Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "create first charge"
+          }
+        ]
+      }
+    },
+    "legacySettlementBlocked": {
+      "status": 422,
+      "body": {
+        "ok": false,
+        "code": "ELIGIBLE_CHARGE_REQUIRED",
+        "error": "Lead precisa ter uma cobranca local elegivel em estado pending_local antes da liquidacao.",
+        "billingRecord": {
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "status": "active_local",
+          "currency": "BRL",
+          "entryFeeCents": 950000,
+          "monthlyFeeCents": 350000,
+          "minimumCommitmentMonths": 6,
+          "activatedAt": "2026-04-14T02:17:34.583Z",
+          "createdAt": "2026-04-14T02:17:34.583Z"
+        },
+        "charge": {
+          "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "chargeSequence": 1,
+          "chargeKind": "monthly_recurring",
+          "status": "settled_local",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "dueDate": "2026-05-14",
+          "postedAt": "2026-04-14T02:17:34.605Z",
+          "createdAt": "2026-04-14T02:17:34.605Z"
+        }
+      }
+    },
+    "nextBillingCharge": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "lead": {
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "fullName": "T3.5 Cycle 1 Verify",
+          "email": "t35-cycle1-1776133054472@example.com",
+          "phone": "11988991170",
+          "city": "Brasilia",
+          "state": "DF",
+          "investableAssetsBand": "3m_a_10m",
+          "primaryChallenge": "Preservar rotas intactas apos split estrutural de storage.",
+          "sourceChannel": "site_home",
+          "sourceLabel": "verify_t35_cycle_1",
+          "intakeFormVersion": "t2-cycle-1",
+          "privacyConsentAccepted": true,
+          "termsConsentAccepted": true,
+          "status": "new",
+          "commercialStage": "cliente_convertido",
+          "statusReason": null,
+          "fitSummary": null,
+          "internalOwner": null,
+          "submittedAt": "2026-04-14T02:17:34.506Z",
+          "createdAt": "2026-04-14T02:17:34.506Z",
+          "updatedAt": "2026-04-14T02:17:34.575Z",
+          "firstCapturedAt": "2026-04-14T02:17:34.506Z",
+          "lastStatusChangedAt": "2026-04-14T02:17:34.575Z"
+        },
+        "billingRecord": {
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "status": "active_local",
+          "currency": "BRL",
+          "entryFeeCents": 950000,
+          "monthlyFeeCents": 350000,
+          "minimumCommitmentMonths": 6,
+          "activatedAt": "2026-04-14T02:17:34.583Z",
+          "createdAt": "2026-04-14T02:17:34.583Z"
+        },
+        "previousCharge": {
+          "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "chargeSequence": 1,
+          "chargeKind": "monthly_recurring",
+          "status": "settled_local",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "dueDate": "2026-05-14",
+          "postedAt": "2026-04-14T02:17:34.605Z",
+          "createdAt": "2026-04-14T02:17:34.605Z"
+        },
+        "charge": {
+          "chargeId": "e64abc65-3341-41ca-906c-af516b0aa040",
+          "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+          "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+          "chargeSequence": 2,
+          "chargeKind": "monthly_recurring",
+          "status": "pending_local",
+          "currency": "BRL",
+          "amountCents": 350000,
+          "dueDate": "2026-06-14",
+          "postedAt": "2026-04-14T02:17:34.767Z",
+          "createdAt": "2026-04-14T02:17:34.767Z"
+        },
+        "chargeEvents": [
+          {
+            "chargeEventId": "cc0383a2-2dbb-4dac-8250-6ce89616a694",
+            "chargeId": "e64abc65-3341-41ca-906c-af516b0aa040",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_posted",
+            "occurredAt": "2026-04-14T02:17:34.767Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "Cobranca recorrente local sequencia 2 entrou em estado de cobranca apos a sequencia 1."
+          },
+          {
+            "chargeEventId": "b6f5cb90-d50c-4aaf-8fc5-4f503ae28ac5",
+            "chargeId": "e64abc65-3341-41ca-906c-af516b0aa040",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_created",
+            "occurredAt": "2026-04-14T02:17:34.767Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "create second charge after settlement"
+          },
+          {
+            "chargeEventId": "89106235-fbd0-4bc5-bf24-348f53c9698f",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_settled",
+            "occurredAt": "2026-04-14T02:17:34.733Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "settle first charge"
+          },
+          {
+            "chargeEventId": "ffaab641-c1d2-4d1f-ba5e-6bbbbabb0667",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_posted",
+            "occurredAt": "2026-04-14T02:17:34.605Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "Primeira cobranca local recorrente entrou em estado de cobranca."
+          },
+          {
+            "chargeEventId": "7afda709-4f2e-4f27-803b-8d45f2d2b53c",
+            "chargeId": "f79d2772-b18a-4be9-bb95-6d2a5b005c01",
+            "billingRecordId": "0afec066-f2c0-410f-935a-bacfa61b3bee",
+            "leadId": "3520eb2a-fd3e-4860-9e35-569d99ac65b8",
+            "eventType": "charge_created",
+            "occurredAt": "2026-04-14T02:17:34.605Z",
+            "actor": "verify_t35_cycle_1",
+            "note": "create first charge"
+          }
+        ]
+      }
+    }
+  },
+  "surfaceCheck": {
+    "routeManifestHasIntake": true,
+    "routeManifestHasIntakeEvents": true,
+    "routeManifestHasLeadsPage": true,
+    "routeManifestHasLeadDetailPage": true,
+    "routeManifestHasBillingPage": true,
+    "routeManifestHasAllStorageRoutes": true,
+    "barrelExportsStorageModules": true
+  }
+}

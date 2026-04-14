@@ -1,0 +1,86 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-14T02:33:36.215Z",
+  "note": "HTTP bind is blocked in this sandbox (listen EPERM); verification executed by invoking compiled Next app route handlers directly and simulating middleware decisions with NextRequest/NextResponse against the built middleware surface.",
+  "leadId": "1ed4db1f-9a89-4f51-8849-77fbfd33351f",
+  "responses": {
+    "intakeCreate": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "leadId": "1ed4db1f-9a89-4f51-8849-77fbfd33351f"
+      }
+    },
+    "publicHealth": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "app": "web",
+        "project": "Bruno Advisory",
+        "tranche": "T3.5",
+        "status": "open",
+        "checkedAt": "2026-04-14T02:33:36.200Z"
+      }
+    },
+    "unauthorizedApi": {
+      "status": 401,
+      "body": {
+        "ok": false,
+        "error": "unauthorized"
+      }
+    },
+    "authorizedApiRoute": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "readiness": {
+          "leadId": "1ed4db1f-9a89-4f51-8849-77fbfd33351f",
+          "isBillingReady": false,
+          "requiredCommercialStage": "cliente_convertido",
+          "currentCommercialStage": "intake_novo",
+          "totalTasks": 0,
+          "doneTasks": 0,
+          "pendingTasks": 0,
+          "unmetConditions": [
+            "commercial_stage_cliente_convertido",
+            "at_least_one_internal_task"
+          ],
+          "unmetConditionLabels": [
+            "Estagio comercial deve estar em Cliente convertido.",
+            "Deve existir ao menos 1 tarefa interna."
+          ]
+        }
+      }
+    },
+    "loginFlow": {
+      "status": 307,
+      "location": "http://localhost/cockpit/leads",
+      "setCookie": "cockpit_token=test-secret-t35; Path=/; HttpOnly; SameSite=lax"
+    },
+    "cookieFlow": {
+      "status": 200,
+      "next": "1"
+    },
+    "promptRedirect": {
+      "status": 307,
+      "location": "http://localhost/cockpit/leads?login=1"
+    },
+    "promptResponse": {
+      "status": 401,
+      "containsPrompt": true
+    }
+  },
+  "surfaceCheck": {
+    "publicRoutesStayOpen": true,
+    "middlewareBundleCheck": {
+      "sourceUsesBearer": true,
+      "sourceUsesCookie": true,
+      "sourceUsesTokenQuery": true,
+      "sourceAllowsDevMode": true,
+      "buildIncludesCookie": true,
+      "buildIncludesUnauthorized": true,
+      "matcherProtectsCockpit": true,
+      "matcherProtectsCockpitApi": true
+    }
+  }
+}

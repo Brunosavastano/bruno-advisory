@@ -31,6 +31,19 @@ function renderTaskStatusLabel(status: string) {
   return status.replaceAll('_', ' ');
 }
 
+function renderCrmJsonArray(value: string | null | undefined) {
+  if (!value) {
+    return '-';
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed.join(', ') || '-' : value;
+  } catch {
+    return value;
+  }
+}
+
 export default async function LeadDetailPage({
   params,
   searchParams
@@ -397,26 +410,26 @@ export default async function LeadDetailPage({
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>
-        <div className="kicker">Billing settlement T3 cycle 7</div>
-        {typeof resolvedSearchParams?.settlementError === 'string' ? (
-          <p style={{ color: '#b42318' }}>{resolvedSearchParams.settlementError}</p>
+        <div className="kicker">Billing settlement direcionado por chargeId</div>
+        {typeof resolvedSearchParams?.targetedSettlementError === 'string' ? (
+          <p style={{ color: '#b42318' }}>{resolvedSearchParams.targetedSettlementError}</p>
         ) : null}
-        {typeof resolvedSearchParams?.settlementSuccess === 'string' ? (
-          <p style={{ color: '#027a48' }}>Liquidacao local registrada com sucesso.</p>
+        {typeof resolvedSearchParams?.targetedSettlementSuccess === 'string' ? (
+          <p style={{ color: '#027a48' }}>Liquidacao local direcionada registrada com sucesso.</p>
         ) : null}
         {eligibleChargeForSettlement ? (
           <>
             <p>
               Cobranca elegivel: <strong>{eligibleChargeForSettlement.chargeId}</strong> em <strong>{eligibleChargeForSettlement.status}</strong>
             </p>
-            <form className="form" method="post" action={`/api/cockpit/leads/${lead.leadId}/billing-settlements`}>
+            <form className="form" method="post" action={`/api/cockpit/leads/${lead.leadId}/billing-settlements/${eligibleChargeForSettlement.chargeId}`}>
               <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
               <input type="hidden" name="actor" value="operator_local" />
               <label>
                 Nota curta (opcional)
-                <textarea name="note" rows={3} placeholder="Motivo da liquidacao local" defaultValue="" />
+                <textarea name="note" rows={3} placeholder={`Motivo da liquidacao da charge ${eligibleChargeForSettlement.chargeId}`} defaultValue="" />
               </label>
-              <button className="btn" type="submit">Registrar liquidacao local</button>
+              <button className="btn" type="submit">Registrar liquidacao da charge {eligibleChargeForSettlement.chargeId}</button>
             </form>
           </>
         ) : (
@@ -493,6 +506,98 @@ export default async function LeadDetailPage({
             Modelo canônico: <code>{localBillingSettlementModel.canonicalArtifact}</code>
           </p>
         </div>
+      </section>
+
+      <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">CRM T3.5 cycle 5</div>
+        <p>Cidade/estado: {renderValue(lead.cidadeEstado)}</p>
+        <p>Ocupação/perfil: {renderValue(lead.ocupacaoPerfil)}</p>
+        <p>Nível de fit: {renderValue(lead.nivelDeFit)}</p>
+        <p>Motivo sem fit: {renderValue(lead.motivoSemFit)}</p>
+        <p>Owner: {renderValue(lead.owner)}</p>
+        <p>Data call qualificação: {renderValue(lead.dataCallQualificacao)}</p>
+        <p>Resumo call: {renderValue(lead.resumoCall)}</p>
+        <p>Interesse na oferta: {renderValue(lead.interesseNaOferta)}</p>
+        <p>Checklist onboarding: {renderCrmJsonArray(lead.checklistOnboarding)}</p>
+        <p>Cadência acordada: {renderValue(lead.cadenciaAcordada)}</p>
+        <p>Próximo passo: {renderValue(lead.proximoPasso)}</p>
+        <p>Risco de churn: {renderValue(lead.riscoDeChurn)}</p>
+      </section>
+
+      <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">CRM fields T3.5 cycle 5</div>
+        {typeof resolvedSearchParams?.crmFieldsSuccess === 'string' ? (
+          <p style={{ color: '#027a48' }}>Campos de CRM atualizados com sucesso.</p>
+        ) : null}
+        <form className="form" method="post" action={`/api/cockpit/leads/${lead.leadId}/crm-fields`}>
+          <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+
+          <label>
+            cidade_estado
+            <input name="cidade_estado" type="text" defaultValue={lead.cidadeEstado ?? ''} />
+          </label>
+          <label>
+            ocupacao_perfil
+            <input name="ocupacao_perfil" type="text" defaultValue={lead.ocupacaoPerfil ?? ''} />
+          </label>
+          <label>
+            nivel_de_fit
+            <select name="nivel_de_fit" defaultValue={lead.nivelDeFit ?? ''}>
+              <option value="">-</option>
+              <option value="alto">alto</option>
+              <option value="medio">medio</option>
+              <option value="baixo">baixo</option>
+            </select>
+          </label>
+          <label>
+            motivo_sem_fit
+            <textarea name="motivo_sem_fit" rows={2} defaultValue={lead.motivoSemFit ?? ''} />
+          </label>
+          <label>
+            owner
+            <input name="owner" type="text" defaultValue={lead.owner ?? ''} />
+          </label>
+          <label>
+            data_call_qualificacao
+            <input name="data_call_qualificacao" type="date" defaultValue={lead.dataCallQualificacao ?? ''} />
+          </label>
+          <label>
+            resumo_call
+            <textarea name="resumo_call" rows={3} defaultValue={lead.resumoCall ?? ''} />
+          </label>
+          <label>
+            interesse_na_oferta
+            <select name="interesse_na_oferta" defaultValue={lead.interesseNaOferta ?? ''}>
+              <option value="">-</option>
+              <option value="alto">alto</option>
+              <option value="medio">medio</option>
+              <option value="baixo">baixo</option>
+            </select>
+          </label>
+          <label>
+            checklist_onboarding
+            <textarea name="checklist_onboarding" rows={2} defaultValue={lead.checklistOnboarding ?? ''} />
+          </label>
+          <label>
+            cadencia_acordada
+            <input name="cadencia_acordada" type="text" defaultValue={lead.cadenciaAcordada ?? ''} />
+          </label>
+          <label>
+            proximo_passo
+            <textarea name="proximo_passo" rows={2} defaultValue={lead.proximoPasso ?? ''} />
+          </label>
+          <label>
+            risco_de_churn
+            <select name="risco_de_churn" defaultValue={lead.riscoDeChurn ?? ''}>
+              <option value="">-</option>
+              <option value="alto">alto</option>
+              <option value="medio">medio</option>
+              <option value="baixo">baixo</option>
+            </select>
+          </label>
+
+          <button className="btn" type="submit">Atualizar CRM</button>
+        </form>
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>
