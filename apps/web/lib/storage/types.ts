@@ -1,13 +1,16 @@
 import {
   billingEntryTaskStates,
   type BillingEntryEvaluation,
+  type DocumentUploadRecord,
+  type DocumentUploadStatus,
   type LocalBillingChargeEventType,
   type LocalBillingChargeStatus,
   type LocalBillingEventType,
   type LocalBillingRecordStatus,
   type LocalBillingSettlementEventType,
   type LocalBillingSettlementStatus,
-  type OperatorCommercialStage
+  type OperatorCommercialStage,
+  type RecommendationRecord
 } from '@bruno-advisory/core';
 import {
   type IntakeAnalyticsEvent,
@@ -213,4 +216,69 @@ export type IntakeEventRecord = {
   occurredAt: string;
   metadata?: Record<string, string | number | boolean | null>;
   relatedLeadId?: string | null;
+};
+
+export type PortalInviteCode = {
+  inviteId: string;
+  codePreview: string;
+  codeHash: string;
+  createdAt: string;
+  createdBy: string;
+  revokedAt: string | null;
+  revokedBy: string | null;
+};
+
+export type PortalSession = {
+  sessionId: string;
+  inviteId: string;
+  sessionTokenHash: string;
+  createdAt: string;
+  revokedAt: string | null;
+  lastSeenAt: string;
+};
+
+export type LeadOnboardingChecklistItem = {
+  itemId: string;
+  leadId: string;
+  title: string;
+  createdAt: string;
+  completedAt: string | null;
+  completedBy: string | null;
+};
+
+export type LeadDocumentRecord = DocumentUploadRecord;
+export type LeadDocumentStatus = DocumentUploadStatus;
+
+export type LeadPortalUpload = {
+  uploadId: string;
+  leadId: string;
+  filename: string;
+  storedPath: string;
+  size: number;
+  mimeType: string;
+  uploadedAt: string;
+  status: string;
+};
+
+export type LeadRecommendationRecord = RecommendationRecord;
+
+export type LeadPendingFlagCode = 'pending_document' | 'pending_call' | 'pending_payment';
+
+export type LeadPendingFlagRecord = {
+  flagId: string;
+  leadId: string;
+  flagCode: LeadPendingFlagCode;
+  status: 'active' | 'removed';
+  createdAt: string;
+  createdBy: string;
+  removedAt: string | null;
+  removedBy: string | null;
+};
+
+export type LeadPendingFlagOverviewRow = {
+  leadId: string;
+  fullName: string;
+  commercialStage: StoredLead['commercialStage'];
+  activeFlags: LeadPendingFlagCode[];
+  activeFlagCount: number;
 };

@@ -127,3 +127,71 @@
 - Closure note recorded in `state/t35-closure.md`.
 - Impact: `project.yaml` remains truthfully in `active_tranche: T3.5`, `tranche_status: done`, `stage_gate: hardening`; no next tranche opens automatically and T4 still depends on explicit authorization from Bruno.
 - Owner: Zeus
+
+## 2026-04-14 05:20 GMT-3 — Bruno autorizou a abertura da T4
+
+- T3.5 confirmada fechada por evidência (ciclos 1–5 aceitos, commits `4472228` e `d3f5e42` no GitHub).
+- Bruno autorizou explicitamente a abertura da T4 em 2026-04-14 05:10 GMT-3.
+- `project.yaml` atualizado para `active_tranche: T4`, `tranche_status: open`, `stage_gate: portal`.
+- `state/t4-opening.md` criado com 6 ciclos definidos.
+- `state/zeus-mandate.md` atualizado para T4.
+- Primeiro ciclo: client auth skeleton com invite-code, sem provider externo.
+- Dono: Bruno
+
+## 2026-04-14 05:36 GMT-3 — T4 ciclo 1 aceito (client auth skeleton)
+
+- Invite-code auth para `/portal/*` implementado sem provider externo.
+- `packages/core/src/portal-invite-model.ts`: modelo canônico de invite/session.
+- `apps/web/lib/storage/portal.ts`: createInvite, revokeInvite, redeemInvite, getSession, deleteSession.
+- `apps/web/proxy.ts`: estendido para proteger `/portal/*` (exceto `/portal/login`), sem quebrar cockpit auth.
+- `apps/web/app/portal/login`, `dashboard`, `logout`: páginas do portal cliente.
+- `apps/web/app/api/portal/session/route.ts`: redemption do invite + cookie httpOnly.
+- `apps/web/app/api/cockpit/leads/[leadId]/portal-invite-codes/`: criação e revogação via cockpit.
+- Login retorna 302 + cookie válido; revoke invalida código; login pós-revoke retorna 303 com erro.
+- Evidência: `state/evidence/T4-cycle-1/summary-local.json` (ok: true).
+- Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-14 05:46 GMT-3 — T4 ciclo 2 aceito (dashboard + checklist)
+
+- Dashboard real do portal entregue: mostra nome do cliente, estágio comercial e checklist de onboarding.
+- `packages/core/src/onboarding-checklist-model.ts`: modelo canônico com campos e status values.
+- `apps/web/lib/storage/checklist.ts`: list, create, complete, uncomplete, delete items.
+- Cockpit: GET/POST `/api/cockpit/leads/[leadId]/checklist` e DELETE/PATCH por item.
+- Portal: POST `/api/portal/checklist/[itemId]` — completa item com isolamento por sessão; 403 para itens de outro lead.
+- Cookie `portal_session` path alargado de `/portal` para `/` para que rotas `/api/portal/*` recebam o cookie (funcional, seguro pois é httpOnly+SameSite=lax).
+- Isolamento comprovado: conclusão de item alheio retorna 403.
+- Evidência: `state/evidence/T4-cycle-2/summary-local.json` (ok: true).
+- Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-14 05:58 GMT-3 — T4 ciclo 3 aceito (document upload)
+
+- `packages/core/src/document-upload-model.ts`: modelo canônico com status, campos, path convention, MIME types, limite de 10MB.
+- `apps/web/lib/storage/documents.ts`: saveDocument, listDocuments, getDocument, reviewDocument.
+- `apps/web/app/api/portal/documents/route.ts` (ou uploads): POST upload + GET lista.
+- `apps/web/app/api/cockpit/leads/[leadId]/documents/route.ts`: GET + PATCH review.
+- `apps/web/app/portal/documents/page.tsx`: página de upload do cliente.
+- Evidência: upload 201, listagem 200, review persistido (accepted), unauthorizedUpload 401.
+- `state/evidence/T4-cycle-3/summary-local.json` (ok: true).
+- Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-14 06:12 GMT-3 — T4 ciclo 4 aceito (recommendation ledger)
+
+- `packages/core/src/recommendation-model.ts`: modelo canônico com draft/published, categorias, campos.
+- `apps/web/lib/storage/recommendations.ts`: create, list, publish, delete.
+- Cockpit: GET/POST `/api/cockpit/leads/[leadId]/recommendations`, PATCH/DELETE por item.
+- Portal: GET `/api/portal/recommendations` — retorna apenas published, isolado por sessão.
+- `apps/web/app/portal/ledger/page.tsx`: página read-only do cliente.
+- Isolamento comprovado: lead B não vê recomendações do lead A; portal não expõe drafts.
+- Evidência: `state/evidence/T4-cycle-4/summary-local.json` (ok: true).
+- Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-14 06:34 GMT-3 — T4 ciclo 5 aceito (pending flags + overview)
+
+- `packages/core/src/pending-flag-model.ts`: modelo canônico com 5 flag types, campos e semântica de active/cleared.
+- `apps/web/lib/storage/flags.ts`: setFlag, clearFlag, listActiveFlags, listAllLeadsWithActiveFlags.
+- Cockpit: GET/POST `/api/cockpit/leads/[leadId]/flags`, DELETE por flagType.
+- Cockpit overview: GET `/api/cockpit/flags` — lista todos os leads com flags ativas.
+- `apps/web/app/cockpit/pending-flags/page.tsx`: visão global de pendências.
+- Portal invisibility comprovado: flags não aparecem em dashboard, ledger nem documents.
+- Evidência: `state/evidence/T4-cycle-5/summary-local.json` (ok: true).
+- Dono: Vulcanus. Aceito por Zeus.

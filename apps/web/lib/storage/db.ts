@@ -66,6 +66,12 @@ export const billingChargesTable = 'lead_billing_charges';
 export const billingChargeEventsTable = 'lead_billing_charge_events';
 export const billingSettlementsTable = 'lead_billing_settlements';
 export const billingSettlementEventsTable = 'lead_billing_settlement_events';
+export const portalInvitesTable = 'portal_invites';
+export const portalSessionsTable = 'portal_sessions';
+export const onboardingChecklistItemsTable = 'onboarding_checklist_items';
+export const leadDocumentsTable = 'lead_documents';
+export const leadRecommendationsTable = 'lead_recommendations';
+export const leadPendingFlagsTable = 'lead_pending_flags';
 
 let database: DatabaseSync | undefined;
 
@@ -561,6 +567,100 @@ export function getDatabase() {
 
     CREATE INDEX IF NOT EXISTS idx_lead_billing_settlement_events_settlement ON ${billingSettlementEventsTable}(settlement_id, occurred_at DESC);
     CREATE INDEX IF NOT EXISTS idx_lead_billing_settlement_events_lead ON ${billingSettlementEventsTable}(lead_id, occurred_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${portalInvitesTable} (
+      invite_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      code TEXT NOT NULL UNIQUE,
+      status TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      used_at TEXT,
+      revoked_at TEXT,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_portal_invites_lead ON ${portalInvitesTable}(lead_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_portal_invites_status ON ${portalInvitesTable}(status, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${portalSessionsTable} (
+      session_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      invite_id TEXT NOT NULL,
+      session_token TEXT NOT NULL UNIQUE,
+      created_at TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id),
+      FOREIGN KEY (invite_id) REFERENCES ${portalInvitesTable}(invite_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_portal_sessions_lead ON ${portalSessionsTable}(lead_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_portal_sessions_expires ON ${portalSessionsTable}(expires_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${onboardingChecklistItemsTable} (
+      item_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      description TEXT,
+      status TEXT NOT NULL CHECK (status IN ('pending', 'completed')),
+      created_at TEXT NOT NULL,
+      completed_at TEXT,
+      created_by TEXT NOT NULL,
+      completed_by TEXT CHECK (completed_by IN ('client', 'operator') OR completed_by IS NULL),
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_onboarding_checklist_items_lead ON ${onboardingChecklistItemsTable}(lead_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_onboarding_checklist_items_status ON ${onboardingChecklistItemsTable}(lead_id, status, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${leadDocumentsTable} (
+      document_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      original_filename TEXT NOT NULL,
+      stored_filename TEXT NOT NULL,
+      mime_type TEXT NOT NULL,
+      size_bytes INTEGER NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('received', 'processing', 'accepted', 'rejected')),
+      uploaded_at TEXT NOT NULL,
+      reviewed_at TEXT,
+      reviewed_by TEXT,
+      review_note TEXT,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_documents_lead ON ${leadDocumentsTable}(lead_id, uploaded_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_lead_documents_status ON ${leadDocumentsTable}(lead_id, status, uploaded_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${leadRecommendationsTable} (
+      recommendation_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      recommendation_date TEXT NOT NULL,
+      category TEXT CHECK (category IN ('asset_allocation', 'risk_management', 'tax_planning', 'general') OR category IS NULL),
+      visibility TEXT NOT NULL CHECK (visibility IN ('draft', 'published')),
+      created_at TEXT NOT NULL,
+      published_at TEXT,
+      created_by TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_recommendations_lead ON ${leadRecommendationsTable}(lead_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_lead_recommendations_visibility ON ${leadRecommendationsTable}(lead_id, visibility, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${leadPendingFlagsTable} (
+      flag_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      flag_type TEXT NOT NULL CHECK (flag_type IN ('pending_document', 'pending_call', 'pending_payment', 'pending_contract', 'pending_other')),
+      note TEXT,
+      set_at TEXT NOT NULL,
+      set_by TEXT NOT NULL,
+      cleared_at TEXT,
+      cleared_by TEXT,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_lead_pending_flags_lead_active ON ${leadPendingFlagsTable}(lead_id, cleared_at, set_at DESC);
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_lead_pending_flags_active_unique ON ${leadPendingFlagsTable}(lead_id, flag_type) WHERE cleared_at IS NULL;
   `);
 
   ensureCommercialStageColumn(db);
@@ -643,6 +743,12 @@ export function getIntakeStoragePaths() {
     billingChargesTable,
     billingChargeEventsTable,
     billingSettlementsTable,
-    billingSettlementEventsTable
+    billingSettlementEventsTable,
+    portalInvitesTable,
+    portalSessionsTable,
+    onboardingChecklistItemsTable,
+    leadDocumentsTable,
+    leadRecommendationsTable,
+    leadPendingFlagsTable
   };
 }

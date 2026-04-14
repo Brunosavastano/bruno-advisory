@@ -11,9 +11,9 @@ agents:
   additional_openclaws_allowed_before_t3: false
 
 state:
-  active_tranche: T3.5
+  active_tranche: T4
   tranche_status: done
-  stage_gate: hardening
+  stage_gate: portal
   release_mode: shadow
   prod_ready: false
 

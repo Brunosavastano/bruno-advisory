@@ -1,6 +1,7 @@
-import { billingEntryModel, commercialStageModel, localBillingChargeModel, localBillingChargeProgressionModel, localBillingModel, localBillingSettlementModel, localBillingSettlementTargetingModel } from '@bruno-advisory/core';
+import { billingEntryModel, commercialStageModel, documentUploadModel, localBillingChargeModel, localBillingChargeProgressionModel, localBillingModel, localBillingSettlementModel, localBillingSettlementTargetingModel, recommendationCategories, recommendationModel } from '@bruno-advisory/core';
 import { notFound } from 'next/navigation';
 import { Fragment } from 'react';
+import { LeadFlagsPanel } from './lead-flags-panel';
 import {
   leadTaskStatuses,
   getIntakeStoragePaths,
@@ -11,9 +12,14 @@ import {
   listLeadBillingEvents,
   listLeadBillingSettlementEvents,
   listLeadBillingSettlements,
+  listInvitesByLeadId,
+  listChecklistItems,
+  listDocuments,
   listLeadInternalNotes,
   listLeadInternalTaskAudit,
   listLeadInternalTasks,
+  listRecommendations,
+  listLeadPendingFlags,
   getStoredLeadById,
   listLeadCommercialStageAudit
 } from '../../../../lib/intake-storage';
@@ -59,6 +65,11 @@ export default async function LeadDetailPage({
   }
 
   const auditRows = listLeadCommercialStageAudit(lead.leadId);
+  const portalInvites = listInvitesByLeadId(lead.leadId);
+  const checklistItems = listChecklistItems(lead.leadId);
+  const documents = listDocuments(lead.leadId);
+  const recommendations = listRecommendations(lead.leadId);
+  const pendingFlags = listLeadPendingFlags(lead.leadId, 'active');
   const notes = listLeadInternalNotes(lead.leadId);
   const tasks = listLeadInternalTasks(lead.leadId);
   const taskAuditByTaskId = new Map(tasks.map((task) => [task.taskId, listLeadInternalTaskAudit(lead.leadId, task.taskId)]));
@@ -87,6 +98,9 @@ export default async function LeadDetailPage({
           <p>{lead.email}</p>
         </div>
         <div className="actions">
+          <a className="btn btn-secondary" href="/cockpit/flags">
+            Flags overview
+          </a>
           <a className="btn btn-secondary" href="/cockpit/billing">
             Billing overview
           </a>
@@ -509,6 +523,287 @@ export default async function LeadDetailPage({
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">Portal invite codes T4 cycle 1</div>
+        {typeof resolvedSearchParams?.portalInviteCreated === 'string' ? (
+          <p style={{ color: '#027a48' }}>Invite code criado: <code>{resolvedSearchParams.portalInviteCreated}</code></p>
+        ) : null}
+        {typeof resolvedSearchParams?.portalInviteRevoked === 'string' ? (
+          <p style={{ color: '#027a48' }}>Invite code revogado: <code>{resolvedSearchParams.portalInviteRevoked}</code></p>
+        ) : null}
+
+        <form className="form" method="post" action={`/api/cockpit/leads/${lead.leadId}/portal-invite-codes`}>
+          <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+          <button className="btn" type="submit">Criar invite code do portal</button>
+        </form>
+
+        {portalInvites.length === 0 ? (
+          <p style={{ marginTop: 12 }}>Nenhum invite code criado ainda.</p>
+        ) : (
+          <div className="table-wrap" style={{ marginTop: 12 }}>
+            <table>
+              <thead>
+                <tr>
+                  <th>createdAt</th>
+                  <th>inviteId</th>
+                  <th>code</th>
+                  <th>status</th>
+                  <th>usedAt</th>
+                  <th>revokedAt</th>
+                  <th>action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {portalInvites.map((invite) => (
+                  <tr key={invite.inviteId}>
+                    <td>{invite.createdAt}</td>
+                    <td>{invite.inviteId}</td>
+                    <td><code>{invite.code}</code></td>
+                    <td>{invite.status}</td>
+                    <td>{renderValue(invite.usedAt)}</td>
+                    <td>{renderValue(invite.revokedAt)}</td>
+                    <td>
+                      {invite.status !== 'revoked' ? (
+                        <form method="post" action={`/api/cockpit/leads/${lead.leadId}/portal-invite-codes/${invite.inviteId}/revoke`}>
+                          <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+                          <button className="btn btn-secondary" type="submit">Revogar</button>
+                        </form>
+                      ) : (
+                        <span>Revogado</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">Checklist de onboarding T4 cycle 2</div>
+        {typeof resolvedSearchParams?.checklistCreated === 'string' ? (
+          <p style={{ color: '#027a48' }}>Checklist item criado com sucesso.</p>
+        ) : null}
+        {typeof resolvedSearchParams?.checklistDeleted === 'string' ? (
+          <p style={{ color: '#027a48' }}>Checklist item removido com sucesso.</p>
+        ) : null}
+        {typeof resolvedSearchParams?.checklistUncompleted === 'string' ? (
+          <p style={{ color: '#027a48' }}>Checklist item reaberto com sucesso.</p>
+        ) : null}
+
+        <form className="form" method="post" action={`/api/cockpit/leads/${lead.leadId}/checklist`}>
+          <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+          <label>
+            Título
+            <input name="title" type="text" placeholder="Ex.: Enviar documento de identidade" required />
+          </label>
+          <label>
+            Descrição (opcional)
+            <textarea name="description" rows={2} placeholder="Detalhes curtos para orientar o cliente." />
+          </label>
+          <button className="btn" type="submit">Criar item</button>
+        </form>
+
+        {checklistItems.length === 0 ? (
+          <p style={{ marginTop: 12 }}>Nenhum item criado ainda.</p>
+        ) : (
+          <div className="table-wrap" style={{ marginTop: 12 }}>
+            <table>
+              <thead>
+                <tr>
+                  <th>createdAt</th>
+                  <th>title</th>
+                  <th>description</th>
+                  <th>status</th>
+                  <th>completedAt</th>
+                  <th>completedBy</th>
+                  <th>actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {checklistItems.map((item) => (
+                  <tr key={item.itemId}>
+                    <td>{item.createdAt}</td>
+                    <td>{item.title}</td>
+                    <td>{renderValue(item.description)}</td>
+                    <td>{item.status}</td>
+                    <td>{renderValue(item.completedAt)}</td>
+                    <td>{renderValue(item.completedBy)}</td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        {item.status === 'completed' ? (
+                          <form method="post" action={`/api/cockpit/leads/${lead.leadId}/checklist/${item.itemId}`}>
+                            <input type="hidden" name="intent" value="uncomplete" />
+                            <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+                            <button className="btn btn-secondary" type="submit">Desmarcar</button>
+                          </form>
+                        ) : null}
+                        <form method="post" action={`/api/cockpit/leads/${lead.leadId}/checklist/${item.itemId}`}>
+                          <input type="hidden" name="intent" value="delete" />
+                          <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+                          <button className="btn btn-secondary" type="submit">Excluir</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">Recommendation ledger T4 cycle 4</div>
+        {typeof resolvedSearchParams?.recommendationCreated === 'string' ? (
+          <p style={{ color: '#027a48' }}>Recomendacao criada com sucesso.</p>
+        ) : null}
+        {typeof resolvedSearchParams?.recommendationPublished === 'string' ? (
+          <p style={{ color: '#027a48' }}>Recomendacao publicada com sucesso.</p>
+        ) : null}
+        {typeof resolvedSearchParams?.recommendationDeleted === 'string' ? (
+          <p style={{ color: '#027a48' }}>Recomendacao removida com sucesso.</p>
+        ) : null}
+        <p className="hint">
+          Modelo canônico: <code>{recommendationModel.canonicalArtifact}</code>
+        </p>
+        <form className="form" method="post" action={`/api/cockpit/leads/${lead.leadId}/recommendations`}>
+          <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+          <input type="hidden" name="createdBy" value="operator_local" />
+          <label>
+            Título
+            <input name="title" type="text" placeholder="Ex.: Rebalanceamento tático da carteira" required />
+          </label>
+          <label>
+            Data da recomendação
+            <input name="recommendationDate" type="date" required />
+          </label>
+          <label>
+            Categoria (opcional)
+            <select name="category" defaultValue="">
+              <option value="">Sem categoria</option>
+              {recommendationCategories.map((category) => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Corpo
+            <textarea name="body" rows={5} placeholder="Escreva a recomendação para o cliente." required />
+          </label>
+          <button className="btn" type="submit">Criar recomendação</button>
+        </form>
+
+        {recommendations.length === 0 ? (
+          <p style={{ marginTop: 12 }}>Nenhuma recomendação registrada ainda.</p>
+        ) : (
+          <div className="table-wrap" style={{ marginTop: 12 }}>
+            <table>
+              <thead>
+                <tr>
+                  <th>createdAt</th>
+                  <th>date</th>
+                  <th>title</th>
+                  <th>category</th>
+                  <th>visibility</th>
+                  <th>publishedAt</th>
+                  <th>createdBy</th>
+                  <th>body</th>
+                  <th>actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {recommendations.map((recommendation) => (
+                  <tr key={recommendation.recommendationId}>
+                    <td>{recommendation.createdAt}</td>
+                    <td>{recommendation.recommendationDate}</td>
+                    <td>{recommendation.title}</td>
+                    <td>{renderValue(recommendation.category)}</td>
+                    <td>{recommendation.visibility}</td>
+                    <td>{renderValue(recommendation.publishedAt)}</td>
+                    <td>{recommendation.createdBy}</td>
+                    <td style={{ whiteSpace: 'pre-wrap' }}>{recommendation.body}</td>
+                    <td>
+                      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                        {recommendation.visibility === 'draft' ? (
+                          <form method="post" action={`/api/cockpit/leads/${lead.leadId}/recommendations/${recommendation.recommendationId}`}>
+                            <input type="hidden" name="intent" value="publish" />
+                            <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+                            <button className="btn btn-secondary" type="submit">Publicar</button>
+                          </form>
+                        ) : (
+                          <span>Publicado</span>
+                        )}
+                        <form method="post" action={`/api/cockpit/leads/${lead.leadId}/recommendations/${recommendation.recommendationId}`}>
+                          <input type="hidden" name="intent" value="delete" />
+                          <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+                          <button className="btn btn-secondary" type="submit">Excluir</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">Documentos T4 cycle 3</div>
+        {typeof resolvedSearchParams?.documentReviewSuccess === 'string' ? (
+          <p style={{ color: '#027a48' }}>Documento revisado com sucesso.</p>
+        ) : null}
+        <p className="hint">
+          Modelo canônico: <code>{documentUploadModel.canonicalArtifact}</code>
+        </p>
+        {documents.length === 0 ? (
+          <p>Nenhum documento enviado ainda.</p>
+        ) : (
+          <div className="table-wrap" style={{ marginTop: 12 }}>
+            <table>
+              <thead>
+                <tr>
+                  <th>uploadedAt</th>
+                  <th>originalFilename</th>
+                  <th>sizeBytes</th>
+                  <th>mimeType</th>
+                  <th>status</th>
+                  <th>storedFilename</th>
+                  <th>review</th>
+                </tr>
+              </thead>
+              <tbody>
+                {documents.map((document) => (
+                  <tr key={document.documentId}>
+                    <td>{document.uploadedAt}</td>
+                    <td>{document.originalFilename}</td>
+                    <td>{document.sizeBytes}</td>
+                    <td>{document.mimeType}</td>
+                    <td>{document.status}</td>
+                    <td><code>{`data/dev/uploads/${document.leadId}/${document.storedFilename}`}</code></td>
+                    <td>
+                      <form method="post" action={`/api/cockpit/leads/${lead.leadId}/documents/${document.documentId}`}>
+                        <input type="hidden" name="returnTo" value={`/cockpit/leads/${lead.leadId}`} />
+                        <input type="hidden" name="reviewedBy" value="operator_local" />
+                        <select name="status" defaultValue={document.status}>
+                          {documentUploadModel.statuses.map((status) => (
+                            <option key={status} value={status}>{status}</option>
+                          ))}
+                        </select>
+                        <input name="reviewNote" type="text" defaultValue={document.reviewNote ?? ''} placeholder="Nota curta" />
+                        <button className="btn btn-secondary" type="submit">Salvar</button>
+                      </form>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="card" style={{ marginTop: 16 }}>
         <div className="kicker">CRM T3.5 cycle 5</div>
         <p>Cidade/estado: {renderValue(lead.cidadeEstado)}</p>
         <p>Ocupação/perfil: {renderValue(lead.ocupacaoPerfil)}</p>
@@ -600,6 +895,7 @@ export default async function LeadDetailPage({
         </form>
       </section>
 
+
       <section className="card" style={{ marginTop: 16 }}>
         <div className="kicker">Resumo do lead</div>
         <p>Telefone: {lead.phone}</p>
@@ -618,6 +914,7 @@ export default async function LeadDetailPage({
         <p className="hint">Tabela de billing charge events: {storagePaths.billingChargeEventsTable}</p>
         <p className="hint">Tabela de billing settlements: {storagePaths.billingSettlementsTable}</p>
         <p className="hint">Tabela de billing settlement events: {storagePaths.billingSettlementEventsTable}</p>
+        <p className="hint">Tabela de recomendações: {storagePaths.leadRecommendationsTable}</p>
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>

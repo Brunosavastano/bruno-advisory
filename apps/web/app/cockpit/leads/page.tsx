@@ -26,6 +26,9 @@ export default function LeadsCockpitPage() {
           <p>Leitura direta do storage durável de intake.</p>
         </div>
         <div className="actions">
+          <a className="btn btn-secondary" href="/cockpit/flags">
+            Pending flags overview
+          </a>
           <a className="btn btn-secondary" href="/cockpit/billing">
             Billing overview
           </a>

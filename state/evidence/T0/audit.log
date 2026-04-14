@@ -1,10 +1,10 @@
-[2026-04-14T02:00:11Z] Recording dependency tree
+[2026-04-14T03:17:06Z] Recording dependency tree
 bruno-advisory@0.1.0 /root/Bruno-Advisory/bruno-advisory
 └─┬ @bruno-advisory/web@0.1.0 -> ./apps/web
   ├── next@16.2.3
   ├── react-dom@18.3.1
   └── react@18.3.1
 
-[2026-04-14T02:00:12Z] Running npm audit
+[2026-04-14T03:17:08Z] Running npm audit
 npm audit ok
-[2026-04-14T02:00:13Z] Running verification pass 1
+[2026-04-14T03:17:09Z] Running verification pass 1

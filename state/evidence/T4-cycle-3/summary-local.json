@@ -1,0 +1,119 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-14T03:58:47.638Z",
+  "leadA": "3e75a485-9b9e-4120-8096-aa1fddc54d00",
+  "leadB": "89edef3b-525c-4055-9912-e12687ee29ec",
+  "loginA": {
+    "status": 302,
+    "headers": {
+      "location": "http://localhost/portal/dashboard",
+      "set-cookie": "portal_session=c0b4d5e4-f6fa-4a54-b80c-8269aff06fe0; Path=/; HttpOnly; SameSite=lax; Max-Age=2592000"
+    },
+    "body": null
+  },
+  "loginB": {
+    "status": 302,
+    "headers": {
+      "location": "http://localhost/portal/dashboard",
+      "set-cookie": "portal_session=e170fc94-576c-4584-b058-ee600a9eb0b0; Path=/; HttpOnly; SameSite=lax; Max-Age=2592000"
+    },
+    "body": null
+  },
+  "upload": {
+    "status": 201,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": true,
+      "document": {
+        "documentId": "72ecb711-0cd0-477a-b178-2d3cc15850bd",
+        "leadId": "3e75a485-9b9e-4120-8096-aa1fddc54d00",
+        "originalFilename": "rg-frente.pdf",
+        "storedFilename": "72ecb711-0cd0-477a-b178-2d3cc15850bd-rg-frente.pdf",
+        "mimeType": "application/pdf",
+        "sizeBytes": 18,
+        "status": "received",
+        "uploadedAt": "2026-04-14T03:58:47.626Z",
+        "reviewedAt": null,
+        "reviewedBy": null,
+        "reviewNote": null
+      }
+    }
+  },
+  "ownList": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": true,
+      "documents": [
+        {
+          "documentId": "72ecb711-0cd0-477a-b178-2d3cc15850bd",
+          "leadId": "3e75a485-9b9e-4120-8096-aa1fddc54d00",
+          "originalFilename": "rg-frente.pdf",
+          "storedFilename": "72ecb711-0cd0-477a-b178-2d3cc15850bd-rg-frente.pdf",
+          "mimeType": "application/pdf",
+          "sizeBytes": 18,
+          "status": "received",
+          "uploadedAt": "2026-04-14T03:58:47.626Z",
+          "reviewedAt": null,
+          "reviewedBy": null,
+          "reviewNote": null
+        }
+      ]
+    }
+  },
+  "foreignList": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": true,
+      "documents": []
+    }
+  },
+  "cockpitList": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": true,
+      "documents": [
+        {
+          "documentId": "72ecb711-0cd0-477a-b178-2d3cc15850bd",
+          "leadId": "3e75a485-9b9e-4120-8096-aa1fddc54d00",
+          "originalFilename": "rg-frente.pdf",
+          "storedFilename": "72ecb711-0cd0-477a-b178-2d3cc15850bd-rg-frente.pdf",
+          "mimeType": "application/pdf",
+          "sizeBytes": 18,
+          "status": "received",
+          "uploadedAt": "2026-04-14T03:58:47.626Z",
+          "reviewedAt": null,
+          "reviewedBy": null,
+          "reviewNote": null
+        }
+      ]
+    }
+  },
+  "persisted": {
+    "leadId": "3e75a485-9b9e-4120-8096-aa1fddc54d00",
+    "filename": "rg-frente.pdf",
+    "size": 18,
+    "mimeType": "application/pdf",
+    "uploadedAt": "2026-04-14T03:58:47.626Z",
+    "status": "received",
+    "storedFilename": "72ecb711-0cd0-477a-b178-2d3cc15850bd-rg-frente.pdf"
+  },
+  "diskPath": "/tmp/ba-t4-cycle3-ki9WqQ/data/dev/uploads/3e75a485-9b9e-4120-8096-aa1fddc54d00/72ecb711-0cd0-477a-b178-2d3cc15850bd-rg-frente.pdf",
+  "surfaceChecks": {
+    "portalDocumentsPageExists": true,
+    "portalDocumentsPageUsesSessionLead": true,
+    "cockpitLeadShowsDocuments": true,
+    "storedUnderLeadDirectory": true
+  },
+  "note": "Verification executed against compiled route handlers, SQLite inspection and direct file checks under data/dev/uploads/<leadId>/."
+}

@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-14T03:46:04.240Z",
+  "leadA": "6d407b3f-78df-4305-b211-e24cc75cd0b1",
+  "leadB": "ebecd829-ba80-45eb-948b-2ea13cd45522",
+  "login": {
+    "status": 302,
+    "headers": {
+      "location": "http://localhost/portal/dashboard",
+      "set-cookie": "portal_session=349ce989-acc9-4e60-90f1-9088d64b5c33; Path=/; HttpOnly; SameSite=lax; Max-Age=2592000"
+    },
+    "body": null
+  },
+  "checklist": {
+    "ownCreated": [
+      "631ff66d-6954-4a97-8925-8f65f48697d4",
+      "03c456af-d492-45f6-b826-e559d6014776"
+    ],
+    "foreignCreated": "61ebdf47-85cc-490b-b575-63c38da57b48",
+    "ownCompletionRedirect": "http://localhost/portal/dashboard?checklistCompleted=631ff66d-6954-4a97-8925-8f65f48697d4",
+    "foreignAttemptStatus": 403
+  },
+  "persisted": {
+    "own": {
+      "leadId": "6d407b3f-78df-4305-b211-e24cc75cd0b1",
+      "status": "completed",
+      "completedBy": "client"
+    },
+    "foreign": {
+      "leadId": "ebecd829-ba80-45eb-948b-2ea13cd45522",
+      "status": "pending",
+      "completedBy": null
+    }
+  },
+  "surfaceChecks": {
+    "dashboardShowsSummaryContext": true,
+    "dashboardUsesSessionLead": true,
+    "cockpitChecklistSection": true,
+    "portalChecklistRouteExists": true
+  },
+  "note": "Verification executed against compiled route handlers and direct DB inspection. Isolation proof uses two leads and a blocked foreign completion attempt."
+}

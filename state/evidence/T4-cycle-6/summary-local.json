@@ -1,0 +1,268 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-14T04:41:08.706Z",
+  "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+  "steps": {
+    "intake": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61"
+      }
+    },
+    "inviteCreate": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "invite": {
+          "inviteId": "d1272bd1-1aa3-4bf5-b2aa-3b156cacaf66",
+          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+          "code": "a4be4334d9bccaea50e0ceba6f17ee0b",
+          "status": "active",
+          "createdAt": "2026-04-14T04:41:07.888Z",
+          "usedAt": null,
+          "revokedAt": null
+        }
+      }
+    },
+    "inviteRedeem": {
+      "status": 302,
+      "hasSessionCookie": false,
+      "sessionCookieCaptured": true
+    },
+    "checklistCreate": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "item": {
+          "itemId": "98f7249d-51d9-4a0f-86de-7a56c881f5e9",
+          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+          "title": "Enviar comprovante de residencia",
+          "description": "Subir comprovante atualizado no portal",
+          "status": "pending",
+          "createdAt": "2026-04-14T04:41:08.091Z",
+          "completedAt": null,
+          "completedBy": null
+        }
+      }
+    },
+    "checklistComplete": {
+      "status": 303,
+      "cockpitListStatus": 200,
+      "cockpitListBody": {
+        "ok": true,
+        "items": [
+          {
+            "itemId": "98f7249d-51d9-4a0f-86de-7a56c881f5e9",
+            "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+            "title": "Enviar comprovante de residencia",
+            "description": "Subir comprovante atualizado no portal",
+            "status": "completed",
+            "createdAt": "2026-04-14T04:41:08.091Z",
+            "completedAt": "2026-04-14T04:41:08.168Z",
+            "completedBy": "client"
+          }
+        ]
+      },
+      "dbRow": {
+        "itemId": "98f7249d-51d9-4a0f-86de-7a56c881f5e9",
+        "status": "completed",
+        "completedBy": "client",
+        "completedAt": "2026-04-14T04:41:08.168Z"
+      }
+    },
+    "recommendationDraft": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "recommendation": {
+          "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
+          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+          "title": "Rebalancear reserva tatica",
+          "body": "Publicar ajuste conservador com foco em liquidez.",
+          "recommendationDate": "2026-04-14",
+          "category": "asset_allocation",
+          "visibility": "draft",
+          "createdAt": "2026-04-14T04:41:08.236Z",
+          "publishedAt": null,
+          "createdBy": "operator_local"
+        }
+      },
+      "portalBeforeStatus": 200,
+      "portalBeforeBody": {
+        "ok": true,
+        "recommendations": []
+      }
+    },
+    "recommendationPublish": {
+      "status": 200,
+      "body": {
+        "ok": true,
+        "recommendation": {
+          "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
+          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+          "title": "Rebalancear reserva tatica",
+          "body": "Publicar ajuste conservador com foco em liquidez.",
+          "recommendationDate": "2026-04-14",
+          "category": "asset_allocation",
+          "visibility": "published",
+          "createdAt": "2026-04-14T04:41:08.236Z",
+          "publishedAt": "2026-04-14T04:41:08.327Z",
+          "createdBy": "operator_local"
+        }
+      },
+      "portalAfterStatus": 200,
+      "portalAfterBody": {
+        "ok": true,
+        "recommendations": [
+          {
+            "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
+            "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+            "title": "Rebalancear reserva tatica",
+            "body": "Publicar ajuste conservador com foco em liquidez.",
+            "recommendationDate": "2026-04-14",
+            "category": "asset_allocation",
+            "visibility": "published",
+            "createdAt": "2026-04-14T04:41:08.236Z",
+            "publishedAt": "2026-04-14T04:41:08.327Z",
+            "createdBy": "operator_local"
+          }
+        ]
+      },
+      "dbRow": {
+        "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
+        "visibility": "published",
+        "publishedAt": "2026-04-14T04:41:08.327Z"
+      }
+    },
+    "pendingFlagHiddenFromPortal": {
+      "status": 201,
+      "body": {
+        "ok": true,
+        "flag": {
+          "flagId": "f4744fa2-5ae4-4050-ad19-faa8f710824b",
+          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+          "flagCode": "pending_document",
+          "status": "active",
+          "createdAt": "2026-04-14T04:41:08.386Z",
+          "createdBy": "operator_local",
+          "removedAt": null,
+          "removedBy": null
+        }
+      },
+      "portalDashboardStatus": 200,
+      "dashboardLeaksPendingFlag": false,
+      "dbRow": {
+        "flagId": "f4744fa2-5ae4-4050-ad19-faa8f710824b",
+        "flagType": "pending_document",
+        "clearedAt": null
+      }
+    },
+    "documentUpload": {
+      "portalBeforeStatus": 200,
+      "portalBeforeBody": {
+        "ok": true,
+        "documents": []
+      },
+      "uploadStatus": 201,
+      "uploadBody": {
+        "ok": true,
+        "document": {
+          "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
+          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+          "originalFilename": "documento-cliente.txt",
+          "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
+          "mimeType": "text/plain",
+          "sizeBytes": 30,
+          "status": "received",
+          "uploadedAt": "2026-04-14T04:41:08.565Z",
+          "reviewedAt": null,
+          "reviewedBy": null,
+          "reviewNote": null
+        }
+      },
+      "portalAfterStatus": 200,
+      "portalAfterBody": {
+        "ok": true,
+        "documents": [
+          {
+            "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
+            "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+            "originalFilename": "documento-cliente.txt",
+            "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
+            "mimeType": "text/plain",
+            "sizeBytes": 30,
+            "status": "received",
+            "uploadedAt": "2026-04-14T04:41:08.565Z",
+            "reviewedAt": null,
+            "reviewedBy": null,
+            "reviewNote": null
+          }
+        ]
+      },
+      "cockpitStatus": 200,
+      "cockpitBody": {
+        "ok": true,
+        "documents": [
+          {
+            "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
+            "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+            "originalFilename": "documento-cliente.txt",
+            "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
+            "mimeType": "text/plain",
+            "sizeBytes": 30,
+            "status": "received",
+            "uploadedAt": "2026-04-14T04:41:08.565Z",
+            "reviewedAt": null,
+            "reviewedBy": null,
+            "reviewNote": null
+          }
+        ]
+      },
+      "dbRow": {
+        "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
+        "originalFilename": "documento-cliente.txt",
+        "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
+        "status": "received"
+      }
+    }
+  },
+  "sqliteProof": {
+    "inviteUsed": {
+      "inviteId": "d1272bd1-1aa3-4bf5-b2aa-3b156cacaf66",
+      "status": "used",
+      "usedAt": "2026-04-14T04:41:08.003Z"
+    },
+    "activeSession": {
+      "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
+      "inviteId": "d1272bd1-1aa3-4bf5-b2aa-3b156cacaf66",
+      "sessionToken": "5fa9020a-cb9f-4fda-9b17-0f52c397a15d"
+    },
+    "checklistItem": {
+      "itemId": "98f7249d-51d9-4a0f-86de-7a56c881f5e9",
+      "status": "completed",
+      "completedBy": "client",
+      "completedAt": "2026-04-14T04:41:08.168Z"
+    },
+    "recommendation": {
+      "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
+      "visibility": "published",
+      "publishedAt": "2026-04-14T04:41:08.327Z"
+    },
+    "pendingFlag": {
+      "flagId": "f4744fa2-5ae4-4050-ad19-faa8f710824b",
+      "flagType": "pending_document",
+      "clearedAt": null
+    },
+    "latestDocument": {
+      "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
+      "originalFilename": "documento-cliente.txt",
+      "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
+      "status": "received"
+    }
+  },
+  "artifacts": {
+    "summaryPath": "state/evidence/T4-cycle-6/summary-local.json",
+    "serverLog": "state/evidence/T4-cycle-6/server.log"
+  }
+}

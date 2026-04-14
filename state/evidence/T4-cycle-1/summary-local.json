@@ -1,0 +1,57 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-14T03:36:19.233Z",
+  "leadId": "4fe2e5c7-ca4c-4728-867f-ae923dda8f65",
+  "inviteId": "f635dbe1-18a7-4620-a694-e80ef86055b8",
+  "inviteCode": "6e45d8a795dce0762f795fc288ccff51",
+  "login": {
+    "status": 302,
+    "headers": {
+      "location": "http://localhost/portal/dashboard",
+      "set-cookie": "portal_session=9d7f7861-968c-42e7-a1ae-dfe8b44ff90f; Path=/portal; HttpOnly; SameSite=lax; Max-Age=2592000"
+    },
+    "body": null
+  },
+  "revoke": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": true,
+      "invite": {
+        "inviteId": "f635dbe1-18a7-4620-a694-e80ef86055b8",
+        "leadId": "4fe2e5c7-ca4c-4728-867f-ae923dda8f65",
+        "code": "6e45d8a795dce0762f795fc288ccff51",
+        "status": "revoked",
+        "createdAt": "2026-04-14T03:36:19.187Z",
+        "usedAt": "2026-04-14T03:36:19.193Z",
+        "revokedAt": "2026-04-14T03:36:19.200Z"
+      }
+    }
+  },
+  "failedLogin": {
+    "status": 303,
+    "headers": {
+      "location": "http://localhost/portal/login?error=C%C3%B3digo+inv%C3%A1lido%2C+expirado%2C+usado+ou+revogado."
+    },
+    "body": null
+  },
+  "proxyCheck": {
+    "checked": true,
+    "compiledFile": "middleware.js",
+    "exportName": "default",
+    "result": "compiled"
+  },
+  "surfaceChecks": {
+    "portalLoginPage": true,
+    "portalDashboardPage": true,
+    "portalSessionRoute": true,
+    "duplicatePortalInvitesRemoved": true,
+    "cockpitInviteSection": true,
+    "portalProxyIsolation": true,
+    "dashboardRedirectsWithoutSession": true
+  },
+  "dbPath": "/tmp/ba-t4-cycle1-GG6V1W/data/dev/bruno-advisory-dev.sqlite3",
+  "note": "HTTP bind is blocked in this sandbox (listen EPERM); verification executed by invoking compiled route handlers directly and only using proxy compilation opportunistically."
+}

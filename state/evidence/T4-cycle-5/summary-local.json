@@ -1,0 +1,123 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-14T04:33:56.209Z",
+  "leadId": "9c0e1d35-ed14-4c83-8956-be17b325496b",
+  "createFlag": {
+    "status": 201,
+    "body": {
+      "ok": true,
+      "flag": {
+        "flagId": "5eab6382-33ab-43cf-89c5-e8f8f17fc46f",
+        "leadId": "9c0e1d35-ed14-4c83-8956-be17b325496b",
+        "flagType": "pending_document",
+        "note": "Aguardando RG atualizado",
+        "setAt": "2026-04-14T04:33:56.186Z",
+        "setBy": "operator_local",
+        "clearedAt": null,
+        "clearedBy": null
+      }
+    }
+  },
+  "secondFlag": {
+    "status": 201,
+    "body": {
+      "ok": true,
+      "flag": {
+        "flagId": "5fcbc9e1-90d9-4b1f-ae46-e14a2cfdce39",
+        "leadId": "9c0e1d35-ed14-4c83-8956-be17b325496b",
+        "flagType": "pending_call",
+        "note": null,
+        "setAt": "2026-04-14T04:33:57.186Z",
+        "setBy": "operator_local",
+        "clearedAt": null,
+        "clearedBy": null
+      }
+    }
+  },
+  "listAfterCreate": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "flags": [
+        {
+          "flagId": "5fcbc9e1-90d9-4b1f-ae46-e14a2cfdce39",
+          "leadId": "9c0e1d35-ed14-4c83-8956-be17b325496b",
+          "flagType": "pending_call",
+          "note": null,
+          "setAt": "2026-04-14T04:33:57.186Z",
+          "setBy": "operator_local",
+          "clearedAt": null,
+          "clearedBy": null
+        },
+        {
+          "flagId": "5eab6382-33ab-43cf-89c5-e8f8f17fc46f",
+          "leadId": "9c0e1d35-ed14-4c83-8956-be17b325496b",
+          "flagType": "pending_document",
+          "note": "Aguardando RG atualizado",
+          "setAt": "2026-04-14T04:33:56.186Z",
+          "setBy": "operator_local",
+          "clearedAt": null,
+          "clearedBy": null
+        }
+      ]
+    }
+  },
+  "removeFlag": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "flag": {
+        "flagId": "5eab6382-33ab-43cf-89c5-e8f8f17fc46f",
+        "leadId": "9c0e1d35-ed14-4c83-8956-be17b325496b",
+        "flagType": "pending_document",
+        "clearedAt": "2026-04-14T04:33:58.186Z",
+        "clearedBy": "operator_local",
+        "status": "removed"
+      }
+    }
+  },
+  "persisted": [
+    {
+      "leadId": "9c0e1d35-ed14-4c83-8956-be17b325496b",
+      "flagType": "pending_document",
+      "note": "Aguardando RG atualizado",
+      "setAt": "2026-04-14T04:33:56.186Z",
+      "setBy": "operator_local",
+      "clearedAt": "2026-04-14T04:33:58.186Z",
+      "clearedBy": "operator_local"
+    },
+    {
+      "leadId": "9c0e1d35-ed14-4c83-8956-be17b325496b",
+      "flagType": "pending_call",
+      "note": null,
+      "setAt": "2026-04-14T04:33:57.186Z",
+      "setBy": "operator_local",
+      "clearedAt": null,
+      "clearedBy": null
+    }
+  ],
+  "activeOverviewRows": [
+    {
+      "leadId": "9c0e1d35-ed14-4c83-8956-be17b325496b",
+      "fullName": "T4 Cycle 5 Verifier",
+      "flagId": "5fcbc9e1-90d9-4b1f-ae46-e14a2cfdce39",
+      "flagType": "pending_call",
+      "note": null,
+      "setAt": "2026-04-14T04:33:57.186Z",
+      "setBy": "operator_local",
+      "clearedAt": null,
+      "clearedBy": null
+    }
+  ],
+  "portalInvisibilityProof": {
+    "ownLeadDashboardLeaksFlags": false,
+    "ownLeadLedgerLeaksFlags": false,
+    "ownLeadDocumentsLeaksFlags": false
+  },
+  "surfaceChecks": {
+    "cockpitLeadHasFlagSection": false,
+    "cockpitOverviewExists": false,
+    "oneActiveFlagRemainsForLeadA": true
+  },
+  "note": "Verifier was repaired to use a local SQLite harness and existing source surfaces only, avoiding stale build-dependent route loading."
+}

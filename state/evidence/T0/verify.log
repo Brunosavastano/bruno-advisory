@@ -1,6 +1,6 @@
-[2026-04-14T02:00:13Z] BEGIN run-1
-[2026-04-14T02:00:13Z] Using ephemeral port 41753
-[2026-04-14T02:00:13Z] Running typecheck
+[2026-04-14T03:17:09Z] BEGIN run-1
+[2026-04-14T03:17:09Z] Using ephemeral port 33595
+[2026-04-14T03:17:09Z] Running typecheck
 
 > bruno-advisory@0.1.0 typecheck
 > npm run typecheck -w @bruno-advisory/web
@@ -9,7 +9,7 @@
 > @bruno-advisory/web@0.1.0 typecheck
 > tsc --project tsconfig.json --noEmit
 
-[2026-04-14T02:00:16Z] Running build
+[2026-04-14T03:17:12Z] Running build
 
 > bruno-advisory@0.1.0 build
 > npm run build -w @bruno-advisory/web
@@ -21,15 +21,15 @@
 ▲ Next.js 16.2.3 (Turbopack)
 
   Creating an optimized production build ...
-✓ Compiled successfully in 5.1s
+✓ Compiled successfully in 6.0s
   Running TypeScript ...
-  Finished TypeScript in 5.6s ...
+  Finished TypeScript in 6.0s ...
   Collecting page data using 7 workers ...
   Generating static pages using 7 workers (0/12) ...
   Generating static pages using 7 workers (3/12) 
   Generating static pages using 7 workers (6/12) 
   Generating static pages using 7 workers (9/12) 
-✓ Generating static pages using 7 workers (12/12) in 306ms
+✓ Generating static pages using 7 workers (12/12) in 415ms
   Finalizing page optimization ...
 
 Route (app)
@@ -39,9 +39,9 @@ Route (app)
 ├ ƒ /api/cockpit/leads/[leadId]/billing-charges/next
 ├ ƒ /api/cockpit/leads/[leadId]/billing-readiness
 ├ ƒ /api/cockpit/leads/[leadId]/billing-record
-├ ƒ /api/cockpit/leads/[leadId]/billing-settlements
 ├ ƒ /api/cockpit/leads/[leadId]/billing-settlements/[chargeId]
 ├ ƒ /api/cockpit/leads/[leadId]/commercial-stage
+├ ƒ /api/cockpit/leads/[leadId]/crm-fields
 ├ ƒ /api/cockpit/leads/[leadId]/notes
 ├ ƒ /api/cockpit/leads/[leadId]/tasks
 ├ ƒ /api/cockpit/leads/[leadId]/tasks/[taskId]/status
@@ -60,9 +60,11 @@ Route (app)
 └ ○ /termos
 
 
+ƒ Proxy (Middleware)
+
 ○  (Static)   prerendered as static content
 ƒ  (Dynamic)  server-rendered on demand
 
-[2026-04-14T02:00:30Z] Starting built app server
-[2026-04-14T02:00:31Z] Capturing health endpoint
-[2026-04-14T02:00:31Z] Capturing Control Room HTML
+[2026-04-14T03:17:29Z] Starting built app server
+[2026-04-14T03:17:30Z] Capturing health endpoint
+[2026-04-14T03:17:30Z] Capturing Control Room HTML

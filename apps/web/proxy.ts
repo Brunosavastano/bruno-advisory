@@ -1,19 +1,29 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+import { portalInviteModel } from '@bruno-advisory/core';
 
 const COCKPIT_TOKEN_COOKIE = 'cockpit_token';
 const LOGIN_QUERY_PARAM = 'login';
 const TOKEN_QUERY_PARAM = 'token';
+const PORTAL_SESSION_COOKIE = portalInviteModel.cookie.name;
 
-function isApiRoute(pathname: string) {
+function isCockpitApiRoute(pathname: string) {
   return pathname === '/api/cockpit' || pathname.startsWith('/api/cockpit/');
 }
 
-function isPageRoute(pathname: string) {
+function isCockpitPageRoute(pathname: string) {
   return pathname === '/cockpit' || pathname.startsWith('/cockpit/');
 }
 
-function isAuthorized(request: NextRequest, secret: string) {
+function isPortalPageRoute(pathname: string) {
+  return pathname === '/portal' || pathname.startsWith('/portal/');
+}
+
+function isPortalPublicRoute(pathname: string) {
+  return pathname === '/portal/login';
+}
+
+function isAuthorizedCockpit(request: NextRequest, secret: string) {
   const authorization = request.headers.get('authorization');
   const bearerToken = authorization?.startsWith('Bearer ')
     ? authorization.slice('Bearer '.length)
@@ -21,6 +31,10 @@ function isAuthorized(request: NextRequest, secret: string) {
   const cookieToken = request.cookies.get(COCKPIT_TOKEN_COOKIE)?.value ?? null;
 
   return bearerToken === secret || cookieToken === secret;
+}
+
+function hasPortalSession(request: NextRequest) {
+  return Boolean(request.cookies.get(PORTAL_SESSION_COOKIE)?.value);
 }
 
 function buildLoginPromptResponse(request: NextRequest) {
@@ -56,22 +70,27 @@ function buildLoginPromptResponse(request: NextRequest) {
 }
 
 export function proxy(request: NextRequest) {
+  const { nextUrl } = request;
+  const { pathname } = nextUrl;
+  const cockpitApiRoute = isCockpitApiRoute(pathname);
+  const cockpitPageRoute = isCockpitPageRoute(pathname);
+  const portalPageRoute = isPortalPageRoute(pathname);
+
+  if (portalPageRoute && !isPortalPublicRoute(pathname) && !hasPortalSession(request)) {
+    return NextResponse.redirect(new URL('/portal/login', request.url));
+  }
+
+  if (!cockpitApiRoute && !cockpitPageRoute) {
+    return NextResponse.next();
+  }
+
   const secret = process.env.COCKPIT_SECRET;
   if (!secret) {
     return NextResponse.next();
   }
 
-  const { nextUrl } = request;
-  const { pathname } = nextUrl;
-  const apiRoute = isApiRoute(pathname);
-  const pageRoute = isPageRoute(pathname);
-
-  if (!apiRoute && !pageRoute) {
-    return NextResponse.next();
-  }
-
   const tokenParam = nextUrl.searchParams.get(TOKEN_QUERY_PARAM);
-  if (pageRoute && tokenParam === secret) {
+  if (cockpitPageRoute && tokenParam === secret) {
     const redirectUrl = nextUrl.clone();
     redirectUrl.searchParams.delete(TOKEN_QUERY_PARAM);
     redirectUrl.searchParams.delete(LOGIN_QUERY_PARAM);
@@ -88,11 +107,11 @@ export function proxy(request: NextRequest) {
     return response;
   }
 
-  if (isAuthorized(request, secret)) {
+  if (isAuthorizedCockpit(request, secret)) {
     return NextResponse.next();
   }
 
-  if (apiRoute) {
+  if (cockpitApiRoute) {
     return NextResponse.json({ ok: false, error: 'unauthorized' }, { status: 401 });
   }
 
@@ -106,5 +125,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/cockpit/:path*', '/api/cockpit/:path*']
+  matcher: ['/cockpit/:path*', '/api/cockpit/:path*', '/portal/:path*']
 };

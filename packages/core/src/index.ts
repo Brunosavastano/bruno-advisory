@@ -9,3 +9,8 @@ export * from './local-billing-charge-progression-model';
 export * from './local-billing-overview-model';
 export * from './local-billing-settlement-model';
 export * from './local-billing-settlement-targeting-model';
+export * from './portal-invite-model';
+export * from './onboarding-checklist-model';
+export * from './document-upload-model';
+export * from './recommendation-model';
+export * from './pending-flag-model';

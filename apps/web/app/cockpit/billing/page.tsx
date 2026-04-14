@@ -27,6 +27,9 @@ export default function BillingCockpitPage() {
           <p>Visão cruzada e fiel do billing local persistido por lead.</p>
         </div>
         <div className="actions">
+          <a className="btn btn-secondary" href="/cockpit/flags">
+            Flags overview
+          </a>
           <a className="btn btn-secondary" href="/cockpit/leads">
             Leads
           </a>
