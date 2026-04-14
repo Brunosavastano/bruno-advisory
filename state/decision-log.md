@@ -119,3 +119,11 @@
 - Build clean, all surface checks passed
 - Evidence: `state/evidence/T3.5-cycle-5/summary-local.json`
 - Decision: accepted.
+
+## 2026-04-14 03:00 UTC — Zeus closed T3.5 by evidence
+
+- The five planned hardening cycles now have accepted local evidence: storage split, cockpit auth, legacy settlement route removal, core billing tests, and CRM field expansion.
+- The tranche gate is satisfied: immediate T3 structural debt was reduced with verifiers present, without opening T4 and without introducing VLH dependency.
+- Closure note recorded in `state/t35-closure.md`.
+- Impact: `project.yaml` remains truthfully in `active_tranche: T3.5`, `tranche_status: done`, `stage_gate: hardening`; no next tranche opens automatically and T4 still depends on explicit authorization from Bruno.
+- Owner: Zeus

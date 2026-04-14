@@ -1,31 +1,27 @@
-# Zeus Mandate — T3.5 closed
+# Zeus Mandate — T3.5 Hardening
 
 ## Date
-2026-04-14 01:05 GMT-3
+2026-04-14 03:00 UTC
 
-## Result
-T3.5 is now closed by evidence.
-No new tranche is open.
-Do not open T4 automatically.
+## Status
+T3.5 is CLOSED.
 
-## What was delivered
-- Storage monolith split into 7 domain modules
-- Cockpit access protected by COCKPIT_SECRET
-- Legacy ambiguous settlement route removed
-- 13 billing tests, all passing
-- 12 T1-defined CRM fields added to schema and API
-- All code pushed to GitHub
+## Completed
+- Cycle 1: Storage split ✅
+- Cycle 2: Cockpit auth ✅
+- Cycle 3: Legacy settlement route removed ✅
+- Cycle 4: Core billing tests ✅
+- Cycle 5: CRM field expansion ✅
 
-## Current project state
-- `project.yaml`: `active_tranche: T3.5`, `tranche_status: done`, `stage_gate: hardening`
-- `release_mode: shadow`, `prod_ready: false`
-- GitHub HEAD: `4472228`
-
-## Operational rule
-Until Bruno gives explicit authorization, do not open T4.
-Report T3.5 as closed by evidence and say T4 is waiting for Bruno's authorization.
+## Closure
+- Closure note: `state/t35-closure.md`
+- Project state: `project.yaml` already marks `tranche_status: done`
+- No next tranche opens automatically
+- T4 still requires explicit authorization from Bruno
 
 ## Canonical references
+- `state/t35-opening.md`
 - `state/t35-closure.md`
-- `state/decision-log.md`
 - `project.yaml`
+- `ROADMAP.md`
+- `state/decision-log.md`
