@@ -1,0 +1,18 @@
+{
+  "ok": true,
+  "readiness": {
+    "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+    "isBillingReady": false,
+    "requiredCommercialStage": "cliente_convertido",
+    "currentCommercialStage": "cliente_convertido",
+    "totalTasks": 1,
+    "doneTasks": 0,
+    "pendingTasks": 1,
+    "unmetConditions": [
+      "all_internal_tasks_done"
+    ],
+    "unmetConditionLabels": [
+      "Todas as tarefas internas devem estar com status done."
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-14T00:23:03.405Z",
+  "settledLeadId": "510eb7da-8c6c-4de2-bceb-8fe6f3d8fb5f",
+  "pendingLeadId": "90f5f571-98e8-4bd2-a61c-919fbe389ee8",
+  "settledTaskId": "4af9235b-b8b1-4242-9c92-eff7621089cc",
+  "pendingTaskId": "0fda980c-5ebd-4c8c-a06a-b7ef63a9e80b",
+  "settledBillingRecordId": "ac59954d-8c2e-40e5-998f-48ef9bf4574a",
+  "pendingBillingRecordId": "e1675d85-8f10-4b71-83c7-54571aab5f9f",
+  "settledChargeId": "095992b7-d6da-4048-880f-79ae432011ef",
+  "pendingChargeId": "9972e13c-833c-4789-a841-81e127d3c7cc",
+  "settledSettlementId": "81f4ac54-add9-4940-a0aa-09e8bfe62876",
+  "overviewRows": [
+    {
+      "leadId": "510eb7da-8c6c-4de2-bceb-8fe6f3d8fb5f",
+      "fullName": "T3 Cycle Ten Settled",
+      "commercialStage": "cliente_convertido",
+      "billingRecordStatus": "active_local",
+      "latestChargeSequence": 1,
+      "latestChargeStatus": "settled_local",
+      "latestChargeDueDate": "2026-05-14",
+      "latestSettlementStatus": "settled_local",
+      "latestSettlementAt": "2026-04-14T00:23:03.395Z",
+      "pendingChargeCount": 0
+    },
+    {
+      "leadId": "90f5f571-98e8-4bd2-a61c-919fbe389ee8",
+      "fullName": "T3 Cycle Ten Pending",
+      "commercialStage": "cliente_convertido",
+      "billingRecordStatus": "active_local",
+      "latestChargeSequence": 1,
+      "latestChargeStatus": "pending_local",
+      "latestChargeDueDate": "2026-05-14",
+      "latestSettlementStatus": null,
+      "latestSettlementAt": null,
+      "pendingChargeCount": 1
+    }
+  ],
+  "surfaceCheck": {
+    "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+    "billingRoutePresent": true,
+    "leadDetailRoutePresent": true,
+    "billingPageReadsOverviewRows": true,
+    "billingPageShowsNoBillingYetMessage": true,
+    "billingPageLinksToLeadDetail": true,
+    "leadsPageLinksToBillingOverview": true,
+    "leadDetailLinksToBillingOverview": true
+  },
+  "note": "HTTP bind is blocked in this sandbox (listen EPERM); verification executed by invoking compiled app route handlers directly and inspecting persisted SQLite state."
+}

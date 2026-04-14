@@ -1,0 +1,45 @@
+{
+  "dbPath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+  "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+  "taskId": "48459cc0-a756-4b16-bcb4-a14e4a629315",
+  "leadRow": {
+    "lead_id": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+    "full_name": "T3 Cycle Four Local",
+    "email": "t3-cycle-4-local-1776119992353@example.com",
+    "status": "new",
+    "commercial_stage": "cliente_convertido",
+    "created_at": "2026-04-13T22:39:52.365Z"
+  },
+  "taskRows": [
+    {
+      "task_id": "48459cc0-a756-4b16-bcb4-a14e4a629315",
+      "lead_id": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+      "title": "Fechar checklist de prontidao de billing",
+      "status": "done",
+      "due_date": "2026-04-25",
+      "created_at": "2026-04-13T22:39:52.380Z"
+    }
+  ],
+  "stageAuditRows": [
+    {
+      "audit_id": "bd557b98-74d1-42c5-96f0-d627160578ca",
+      "lead_id": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+      "from_stage": "intake_novo",
+      "to_stage": "cliente_convertido",
+      "changed_at": "2026-04-13T22:39:52.384Z",
+      "changed_by": "verify_t3_cycle_4_local",
+      "note": "advance to billing readiness check"
+    }
+  ],
+  "taskAuditRows": [
+    {
+      "audit_id": "39022082-3e38-4569-a561-c4e14a29cc86",
+      "lead_id": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+      "task_id": "48459cc0-a756-4b16-bcb4-a14e4a629315",
+      "from_status": "todo",
+      "to_status": "done",
+      "changed_at": "2026-04-13T22:39:52.389Z",
+      "changed_by": "verify_t3_cycle_4_local"
+    }
+  ]
+}

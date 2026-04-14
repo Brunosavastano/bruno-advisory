@@ -1,0 +1,16 @@
+{
+  "ok": false,
+  "code": "CHARGE_NOT_FOUND",
+  "error": "A cobranca selecionada nao existe.",
+  "billingRecord": {
+    "billingRecordId": "15dab342-f723-4812-86a7-5fab68c9158f",
+    "leadId": "1923ff99-2092-470c-a58d-07a6a88da615",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-14T00:10:26.214Z",
+    "createdAt": "2026-04-14T00:10:26.214Z"
+  }
+}

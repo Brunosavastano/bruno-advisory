@@ -1,0 +1,70 @@
+{
+  "ok": true,
+  "lead": {
+    "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+    "fullName": "T3 Cycle Six Local",
+    "email": "t3-cycle-6-local-1776122183419@example.com",
+    "phone": "11988991156",
+    "city": "Sao Paulo",
+    "state": "SP",
+    "investableAssetsBand": "3m_a_10m",
+    "primaryChallenge": "Quero representar a cobranca local so depois do billing ativo.",
+    "sourceChannel": "site_home",
+    "sourceLabel": "verify_t3_cycle_6_local",
+    "intakeFormVersion": "t2-cycle-1",
+    "privacyConsentAccepted": true,
+    "termsConsentAccepted": true,
+    "status": "new",
+    "commercialStage": "cliente_convertido",
+    "statusReason": null,
+    "fitSummary": null,
+    "internalOwner": null,
+    "submittedAt": "2026-04-13T23:16:23.429Z",
+    "createdAt": "2026-04-13T23:16:23.429Z",
+    "updatedAt": "2026-04-13T23:16:23.437Z",
+    "firstCapturedAt": "2026-04-13T23:16:23.429Z",
+    "lastStatusChangedAt": "2026-04-13T23:16:23.437Z"
+  },
+  "readiness": {
+    "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+    "isBillingReady": true,
+    "requiredCommercialStage": "cliente_convertido",
+    "currentCommercialStage": "cliente_convertido",
+    "totalTasks": 1,
+    "doneTasks": 1,
+    "pendingTasks": 0,
+    "unmetConditions": [],
+    "unmetConditionLabels": []
+  },
+  "billingRecord": {
+    "billingRecordId": "8c99f83d-f62e-4a6b-b0fa-2faa1f174299",
+    "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-13T23:16:23.444Z",
+    "createdAt": "2026-04-13T23:16:23.444Z"
+  },
+  "billingEvents": [
+    {
+      "billingEventId": "719b5152-d77a-4414-9d28-4373e32a0022",
+      "billingRecordId": "8c99f83d-f62e-4a6b-b0fa-2faa1f174299",
+      "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+      "eventType": "billing_record_activated",
+      "occurredAt": "2026-04-13T23:16:23.444Z",
+      "actor": "verify_t3_cycle_6_local",
+      "note": "Lead entrou em operacao billable local."
+    },
+    {
+      "billingEventId": "3227c82a-8e2d-4c25-b12d-b9b122444d01",
+      "billingRecordId": "8c99f83d-f62e-4a6b-b0fa-2faa1f174299",
+      "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+      "eventType": "billing_record_created",
+      "occurredAt": "2026-04-13T23:16:23.444Z",
+      "actor": "verify_t3_cycle_6_local",
+      "note": "activate billing before first charge"
+    }
+  ]
+}

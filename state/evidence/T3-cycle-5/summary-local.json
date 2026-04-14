@@ -1,0 +1,242 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-13T22:57:16.604Z",
+  "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+  "taskId": "8783cfbf-56ef-4f08-abfc-9670cffd5138",
+  "billingRecordId": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+  "intakeRouteStatus": 201,
+  "initialBillingReadinessRouteStatus": 200,
+  "blockedBillingRecordRouteStatus": 422,
+  "taskCreateRouteStatus": 201,
+  "stageRouteStatus": 200,
+  "midBillingReadinessRouteStatus": 200,
+  "taskStatusRouteStatus": 200,
+  "finalBillingReadinessRouteStatus": 200,
+  "billingCreateRouteStatus": 201,
+  "intakeResponse": {
+    "ok": true,
+    "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3"
+  },
+  "initialReadinessResponse": {
+    "ok": true,
+    "readiness": {
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "isBillingReady": false,
+      "requiredCommercialStage": "cliente_convertido",
+      "currentCommercialStage": "intake_novo",
+      "totalTasks": 0,
+      "doneTasks": 0,
+      "pendingTasks": 0,
+      "unmetConditions": [
+        "commercial_stage_cliente_convertido",
+        "at_least_one_internal_task"
+      ],
+      "unmetConditionLabels": [
+        "Estagio comercial deve estar em Cliente convertido.",
+        "Deve existir ao menos 1 tarefa interna."
+      ]
+    }
+  },
+  "blockedBillingCreateResponse": {
+    "ok": false,
+    "code": "BILLING_NOT_READY",
+    "error": "Lead ainda nao atende as condicoes minimas para entrar em billing local.",
+    "readiness": {
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "isBillingReady": false,
+      "requiredCommercialStage": "cliente_convertido",
+      "currentCommercialStage": "intake_novo",
+      "totalTasks": 0,
+      "doneTasks": 0,
+      "pendingTasks": 0,
+      "unmetConditions": [
+        "commercial_stage_cliente_convertido",
+        "at_least_one_internal_task"
+      ],
+      "unmetConditionLabels": [
+        "Estagio comercial deve estar em Cliente convertido.",
+        "Deve existir ao menos 1 tarefa interna."
+      ]
+    }
+  },
+  "taskCreateResponse": {
+    "ok": true,
+    "task": {
+      "taskId": "8783cfbf-56ef-4f08-abfc-9670cffd5138",
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "title": "Checklist final para ativar billing local",
+      "status": "todo",
+      "dueDate": "2026-04-25",
+      "createdAt": "2026-04-13T22:57:16.586Z"
+    }
+  },
+  "stageResponse": {
+    "ok": true,
+    "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+    "commercialStage": "cliente_convertido",
+    "changedFrom": "intake_novo",
+    "changedTo": "cliente_convertido",
+    "changedAt": "2026-04-13T22:57:16.590Z",
+    "note": "advance to local billing activation"
+  },
+  "midReadinessResponse": {
+    "ok": true,
+    "readiness": {
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "isBillingReady": false,
+      "requiredCommercialStage": "cliente_convertido",
+      "currentCommercialStage": "cliente_convertido",
+      "totalTasks": 1,
+      "doneTasks": 0,
+      "pendingTasks": 1,
+      "unmetConditions": [
+        "all_internal_tasks_done"
+      ],
+      "unmetConditionLabels": [
+        "Todas as tarefas internas devem estar com status done."
+      ]
+    }
+  },
+  "taskStatusResponse": {
+    "ok": true,
+    "taskId": "8783cfbf-56ef-4f08-abfc-9670cffd5138",
+    "status": "done",
+    "changedFrom": "todo",
+    "changedTo": "done",
+    "changedAt": "2026-04-13T22:57:16.595Z",
+    "changedBy": "verify_t3_cycle_5_local"
+  },
+  "finalReadinessResponse": {
+    "ok": true,
+    "readiness": {
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "isBillingReady": true,
+      "requiredCommercialStage": "cliente_convertido",
+      "currentCommercialStage": "cliente_convertido",
+      "totalTasks": 1,
+      "doneTasks": 1,
+      "pendingTasks": 0,
+      "unmetConditions": [],
+      "unmetConditionLabels": []
+    }
+  },
+  "billingCreateResponse": {
+    "ok": true,
+    "lead": {
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "fullName": "T3 Cycle Five Local",
+      "email": "t3-cycle-5-local-1776121036562@example.com",
+      "phone": "11988991155",
+      "city": "Sao Paulo",
+      "state": "SP",
+      "investableAssetsBand": "3m_a_10m",
+      "primaryChallenge": "Quero ativar billing local so quando estiver pronto.",
+      "sourceChannel": "site_home",
+      "sourceLabel": "verify_t3_cycle_5_local",
+      "intakeFormVersion": "t2-cycle-1",
+      "privacyConsentAccepted": true,
+      "termsConsentAccepted": true,
+      "status": "new",
+      "commercialStage": "cliente_convertido",
+      "statusReason": null,
+      "fitSummary": null,
+      "internalOwner": null,
+      "submittedAt": "2026-04-13T22:57:16.573Z",
+      "createdAt": "2026-04-13T22:57:16.573Z",
+      "updatedAt": "2026-04-13T22:57:16.590Z",
+      "firstCapturedAt": "2026-04-13T22:57:16.573Z",
+      "lastStatusChangedAt": "2026-04-13T22:57:16.590Z"
+    },
+    "readiness": {
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "isBillingReady": true,
+      "requiredCommercialStage": "cliente_convertido",
+      "currentCommercialStage": "cliente_convertido",
+      "totalTasks": 1,
+      "doneTasks": 1,
+      "pendingTasks": 0,
+      "unmetConditions": [],
+      "unmetConditionLabels": []
+    },
+    "billingRecord": {
+      "billingRecordId": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "status": "active_local",
+      "currency": "BRL",
+      "entryFeeCents": 950000,
+      "monthlyFeeCents": 350000,
+      "minimumCommitmentMonths": 6,
+      "activatedAt": "2026-04-13T22:57:16.600Z",
+      "createdAt": "2026-04-13T22:57:16.600Z"
+    },
+    "billingEvents": [
+      {
+        "billingEventId": "bc425d60-2bcd-41d7-a1be-8f673c28f548",
+        "billingRecordId": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+        "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+        "eventType": "billing_record_created",
+        "occurredAt": "2026-04-13T22:57:16.600Z",
+        "actor": "verify_t3_cycle_5_local",
+        "note": "activate first local billing record"
+      },
+      {
+        "billingEventId": "685de4cc-8380-4bfc-be6d-cbd0b3067e7e",
+        "billingRecordId": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+        "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+        "eventType": "billing_record_activated",
+        "occurredAt": "2026-04-13T22:57:16.600Z",
+        "actor": "verify_t3_cycle_5_local",
+        "note": "Lead entrou em operacao billable local."
+      }
+    ]
+  },
+  "surfaceCheck": {
+    "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+    "cockpitRoutePresent": true,
+    "leadDetailRoutePresent": true,
+    "billingReadinessRoutePresent": true,
+    "billingRecordRoutePresent": true,
+    "cockpitLinksToDetail": true,
+    "leadDetailUsesBillingReadinessReadPath": true,
+    "leadDetailUsesBillingRecordReadPath": true,
+    "leadDetailUsesBillingEventsReadPath": true,
+    "leadDetailRendersBillingActivationSection": true,
+    "leadDetailRendersBillingCreateForm": true,
+    "leadDetailRendersLocalBillingArtifact": true
+  },
+  "dbInspection": {
+    "dbPath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+    "billingRecordRow": {
+      "billing_record_id": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+      "lead_id": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "status": "active_local",
+      "currency": "BRL",
+      "entry_fee_cents": 950000,
+      "monthly_fee_cents": 350000,
+      "minimum_commitment_months": 6,
+      "activated_at": "2026-04-13T22:57:16.600Z",
+      "created_at": "2026-04-13T22:57:16.600Z"
+    },
+    "billingEventRows": [
+      {
+        "billing_event_id": "bc425d60-2bcd-41d7-a1be-8f673c28f548",
+        "billing_record_id": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+        "lead_id": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+        "event_type": "billing_record_created",
+        "occurred_at": "2026-04-13T22:57:16.600Z",
+        "actor": "verify_t3_cycle_5_local",
+        "note": "activate first local billing record"
+      },
+      {
+        "billing_event_id": "685de4cc-8380-4bfc-be6d-cbd0b3067e7e",
+        "billing_record_id": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+        "lead_id": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+        "event_type": "billing_record_activated",
+        "occurred_at": "2026-04-13T22:57:16.600Z",
+        "actor": "verify_t3_cycle_5_local",
+        "note": "Lead entrou em operacao billable local."
+      }
+    ]
+  },
+  "note": "HTTP bind is blocked in this sandbox (listen EPERM); verification executed by invoking compiled app route handlers directly."
+}

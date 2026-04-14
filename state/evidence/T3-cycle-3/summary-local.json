@@ -1,0 +1,48 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-13T22:27:35.418Z",
+  "leadId": "6ab143bd-d864-41d6-a1b8-cd55be0c8b06",
+  "taskId": "f7bd46cb-91ea-4c81-b89e-ad5648a473f4",
+  "intakeRouteStatus": 201,
+  "taskCreateRouteStatus": 201,
+  "taskStatusRouteStatus": 200,
+  "taskCreateResponse": {
+    "ok": true,
+    "task": {
+      "taskId": "f7bd46cb-91ea-4c81-b89e-ad5648a473f4",
+      "leadId": "6ab143bd-d864-41d6-a1b8-cd55be0c8b06",
+      "title": "Validar checklist de onboarding financeiro",
+      "status": "todo",
+      "dueDate": "2026-04-22",
+      "createdAt": "2026-04-13T22:27:35.402Z"
+    }
+  },
+  "taskStatusResponse": {
+    "ok": true,
+    "taskId": "f7bd46cb-91ea-4c81-b89e-ad5648a473f4",
+    "status": "in_progress",
+    "changedFrom": "todo",
+    "changedTo": "in_progress",
+    "changedAt": "2026-04-13T22:27:35.411Z",
+    "changedBy": "verify_t3_cycle_3_local"
+  },
+  "surfaceCheck": {
+    "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+    "cockpitRoutePresent": true,
+    "leadDetailRoutePresent": true,
+    "tasksMutationRoutePresent": true,
+    "taskStatusMutationRoutePresent": true,
+    "cockpitLinksToDetail": true,
+    "leadDetailRendersTasks": true,
+    "leadDetailHasTasksFormAction": true,
+    "leadDetailHasTaskStatusFormAction": true,
+    "leadDetailRendersTaskAudit": true
+  },
+  "dbInspection": {
+    "taskCount": 1,
+    "taskAuditCount": 1,
+    "matchingTaskId": "f7bd46cb-91ea-4c81-b89e-ad5648a473f4",
+    "matchingTaskAuditId": "519d0ace-f747-4342-b3c7-8dbf35d1773e"
+  },
+  "note": "HTTP bind is blocked in this sandbox (listen EPERM); verification executed by invoking compiled app route handlers directly."
+}

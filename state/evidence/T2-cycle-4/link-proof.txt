@@ -1,0 +1,8 @@
+{
+  "home_para_quem_e": true,
+  "home_como_funciona": true,
+  "home_privacidade": true,
+  "home_termos": true,
+  "intake_privacidade": true,
+  "intake_termos": true
+}

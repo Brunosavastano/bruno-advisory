@@ -1,0 +1,10 @@
+{
+  "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+  "billingRoutePresent": true,
+  "leadDetailRoutePresent": true,
+  "billingPageReadsOverviewRows": true,
+  "billingPageShowsNoBillingYetMessage": true,
+  "billingPageLinksToLeadDetail": true,
+  "leadsPageLinksToBillingOverview": true,
+  "leadDetailLinksToBillingOverview": true
+}

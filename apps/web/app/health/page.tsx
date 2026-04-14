@@ -10,7 +10,7 @@ export default function HealthPage() {
           <div className="badge">Health</div>
           <h1 className="status-ok">healthy</h1>
         </div>
-        <div><a href="/">Back to Control Room</a></div>
+        <div><a href="/">Back to landing</a></div>
       </div>
       <div className="card">
         <pre>{JSON.stringify(health, null, 2)}</pre>

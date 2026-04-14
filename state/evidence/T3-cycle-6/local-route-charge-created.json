@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "lead": {
+    "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+    "fullName": "T3 Cycle Six Local",
+    "email": "t3-cycle-6-local-1776122183419@example.com",
+    "phone": "11988991156",
+    "city": "Sao Paulo",
+    "state": "SP",
+    "investableAssetsBand": "3m_a_10m",
+    "primaryChallenge": "Quero representar a cobranca local so depois do billing ativo.",
+    "sourceChannel": "site_home",
+    "sourceLabel": "verify_t3_cycle_6_local",
+    "intakeFormVersion": "t2-cycle-1",
+    "privacyConsentAccepted": true,
+    "termsConsentAccepted": true,
+    "status": "new",
+    "commercialStage": "cliente_convertido",
+    "statusReason": null,
+    "fitSummary": null,
+    "internalOwner": null,
+    "submittedAt": "2026-04-13T23:16:23.429Z",
+    "createdAt": "2026-04-13T23:16:23.429Z",
+    "updatedAt": "2026-04-13T23:16:23.437Z",
+    "firstCapturedAt": "2026-04-13T23:16:23.429Z",
+    "lastStatusChangedAt": "2026-04-13T23:16:23.437Z"
+  },
+  "billingRecord": {
+    "billingRecordId": "8c99f83d-f62e-4a6b-b0fa-2faa1f174299",
+    "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-13T23:16:23.444Z",
+    "createdAt": "2026-04-13T23:16:23.444Z"
+  },
+  "charge": {
+    "chargeId": "fd00a03f-b764-455b-8fae-5a842e612d91",
+    "billingRecordId": "8c99f83d-f62e-4a6b-b0fa-2faa1f174299",
+    "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+    "chargeSequence": 1,
+    "chargeKind": "monthly_recurring",
+    "status": "pending_local",
+    "currency": "BRL",
+    "amountCents": 350000,
+    "dueDate": "2026-05-13",
+    "postedAt": "2026-04-13T23:16:23.448Z",
+    "createdAt": "2026-04-13T23:16:23.448Z"
+  },
+  "chargeEvents": [
+    {
+      "chargeEventId": "f0728c8a-71d3-419a-b273-6a308d57794a",
+      "chargeId": "fd00a03f-b764-455b-8fae-5a842e612d91",
+      "billingRecordId": "8c99f83d-f62e-4a6b-b0fa-2faa1f174299",
+      "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+      "eventType": "charge_posted",
+      "occurredAt": "2026-04-13T23:16:23.448Z",
+      "actor": "verify_t3_cycle_6_local",
+      "note": "Primeira cobranca local recorrente entrou em estado de cobranca."
+    },
+    {
+      "chargeEventId": "a74b148c-dc44-4aae-b0ed-8610e47ff91b",
+      "chargeId": "fd00a03f-b764-455b-8fae-5a842e612d91",
+      "billingRecordId": "8c99f83d-f62e-4a6b-b0fa-2faa1f174299",
+      "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+      "eventType": "charge_created",
+      "occurredAt": "2026-04-13T23:16:23.448Z",
+      "actor": "verify_t3_cycle_6_local",
+      "note": "create first local recurring charge"
+    }
+  ]
+}

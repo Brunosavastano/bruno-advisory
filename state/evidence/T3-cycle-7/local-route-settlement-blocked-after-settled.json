@@ -1,0 +1,29 @@
+{
+  "ok": false,
+  "code": "ELIGIBLE_CHARGE_REQUIRED",
+  "error": "Lead precisa ter uma cobranca local elegivel em estado pending_local antes da liquidacao.",
+  "billingRecord": {
+    "billingRecordId": "25b73e46-971c-4219-86ea-07a4a215adf2",
+    "leadId": "48a5c717-4b99-455f-804d-1c0ca92231d6",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-13T23:35:32.900Z",
+    "createdAt": "2026-04-13T23:35:32.900Z"
+  },
+  "charge": {
+    "chargeId": "d0c880f2-3fa4-4712-986f-5e8068fdf67e",
+    "billingRecordId": "25b73e46-971c-4219-86ea-07a4a215adf2",
+    "leadId": "48a5c717-4b99-455f-804d-1c0ca92231d6",
+    "chargeSequence": 1,
+    "chargeKind": "monthly_recurring",
+    "status": "settled_local",
+    "currency": "BRL",
+    "amountCents": 350000,
+    "dueDate": "2026-05-13",
+    "postedAt": "2026-04-13T23:35:32.906Z",
+    "createdAt": "2026-04-13T23:35:32.906Z"
+  }
+}

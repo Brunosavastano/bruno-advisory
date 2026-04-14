@@ -1,0 +1,20 @@
+{
+  "ok": true,
+  "readiness": {
+    "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+    "isBillingReady": false,
+    "requiredCommercialStage": "cliente_convertido",
+    "currentCommercialStage": "intake_novo",
+    "totalTasks": 0,
+    "doneTasks": 0,
+    "pendingTasks": 0,
+    "unmetConditions": [
+      "commercial_stage_cliente_convertido",
+      "at_least_one_internal_task"
+    ],
+    "unmetConditionLabels": [
+      "Estagio comercial deve estar em Cliente convertido.",
+      "Deve existir ao menos 1 tarefa interna."
+    ]
+  }
+}

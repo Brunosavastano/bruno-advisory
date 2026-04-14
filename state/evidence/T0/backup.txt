@@ -1,2 +1,2 @@
 backup=infra/backups/bruno-advisory-t0-local-latest.tar.gz
-sha256=d1ef0cc4c1010292491c1d4dd0639681e3b807c8ba377788c7c63618f569fa5d
+sha256=49bd9aaa8f07b12adc606037bb7b4bcf5a53eebe23534a794fbc0da41dfcf085

@@ -1,0 +1,70 @@
+{
+  "ok": true,
+  "lead": {
+    "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+    "fullName": "T3 Cycle Five Local",
+    "email": "t3-cycle-5-local-1776121036562@example.com",
+    "phone": "11988991155",
+    "city": "Sao Paulo",
+    "state": "SP",
+    "investableAssetsBand": "3m_a_10m",
+    "primaryChallenge": "Quero ativar billing local so quando estiver pronto.",
+    "sourceChannel": "site_home",
+    "sourceLabel": "verify_t3_cycle_5_local",
+    "intakeFormVersion": "t2-cycle-1",
+    "privacyConsentAccepted": true,
+    "termsConsentAccepted": true,
+    "status": "new",
+    "commercialStage": "cliente_convertido",
+    "statusReason": null,
+    "fitSummary": null,
+    "internalOwner": null,
+    "submittedAt": "2026-04-13T22:57:16.573Z",
+    "createdAt": "2026-04-13T22:57:16.573Z",
+    "updatedAt": "2026-04-13T22:57:16.590Z",
+    "firstCapturedAt": "2026-04-13T22:57:16.573Z",
+    "lastStatusChangedAt": "2026-04-13T22:57:16.590Z"
+  },
+  "readiness": {
+    "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+    "isBillingReady": true,
+    "requiredCommercialStage": "cliente_convertido",
+    "currentCommercialStage": "cliente_convertido",
+    "totalTasks": 1,
+    "doneTasks": 1,
+    "pendingTasks": 0,
+    "unmetConditions": [],
+    "unmetConditionLabels": []
+  },
+  "billingRecord": {
+    "billingRecordId": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+    "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-13T22:57:16.600Z",
+    "createdAt": "2026-04-13T22:57:16.600Z"
+  },
+  "billingEvents": [
+    {
+      "billingEventId": "bc425d60-2bcd-41d7-a1be-8f673c28f548",
+      "billingRecordId": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "eventType": "billing_record_created",
+      "occurredAt": "2026-04-13T22:57:16.600Z",
+      "actor": "verify_t3_cycle_5_local",
+      "note": "activate first local billing record"
+    },
+    {
+      "billingEventId": "685de4cc-8380-4bfc-be6d-cbd0b3067e7e",
+      "billingRecordId": "a211b606-f9bc-466a-8801-ef1cd5fb19f3",
+      "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+      "eventType": "billing_record_activated",
+      "occurredAt": "2026-04-13T22:57:16.600Z",
+      "actor": "verify_t3_cycle_5_local",
+      "note": "Lead entrou em operacao billable local."
+    }
+  ]
+}

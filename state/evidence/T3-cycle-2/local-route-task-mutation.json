@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "task": {
+    "taskId": "e0b46e99-03e5-42c4-bca8-8e311afa2086",
+    "leadId": "284887a3-a14a-40a2-ad5d-954fddbf9af0",
+    "title": "Ligar para lead para confirmar documentos",
+    "status": "todo",
+    "dueDate": "2026-04-20",
+    "createdAt": "2026-04-13T22:17:39.663Z"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-13T22:08:32.886Z",
+  "leadId": "a7c640b6-e9f3-434a-bfb6-683f9a69dd03",
+  "intakeRouteStatus": 201,
+  "stageRouteStatus": 200,
+  "stageResponse": {
+    "ok": true,
+    "leadId": "a7c640b6-e9f3-434a-bfb6-683f9a69dd03",
+    "commercialStage": "contato_inicial",
+    "changedFrom": "intake_novo",
+    "changedTo": "contato_inicial",
+    "changedAt": "2026-04-13T22:08:32.864Z",
+    "note": "Stage changed by local verifier (no-http)"
+  },
+  "surfaceCheck": {
+    "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+    "cockpitRoutePresent": true,
+    "leadDetailRoutePresent": true,
+    "cockpitLinksToDetail": true,
+    "leadDetailShowsAuditTrail": true
+  },
+  "dbInspection": {
+    "leadCommercialStage": "contato_inicial",
+    "auditCount": 1,
+    "matchingAuditId": "a6660a25-7ab0-4188-9053-14aa6743be9f"
+  },
+  "note": "HTTP bind is blocked in this sandbox (listen EPERM); verification executed by invoking compiled app route handlers directly."
+}

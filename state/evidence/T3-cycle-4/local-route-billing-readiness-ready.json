@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "readiness": {
+    "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+    "isBillingReady": true,
+    "requiredCommercialStage": "cliente_convertido",
+    "currentCommercialStage": "cliente_convertido",
+    "totalTasks": 1,
+    "doneTasks": 1,
+    "pendingTasks": 0,
+    "unmetConditions": [],
+    "unmetConditionLabels": []
+  }
+}

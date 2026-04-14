@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+  "commercialStage": "cliente_convertido",
+  "changedFrom": "intake_novo",
+  "changedTo": "cliente_convertido",
+  "changedAt": "2026-04-13T22:39:52.384Z",
+  "note": "advance to billing readiness check"
+}

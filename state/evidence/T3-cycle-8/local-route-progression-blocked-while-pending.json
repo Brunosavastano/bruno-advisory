@@ -1,0 +1,29 @@
+{
+  "ok": false,
+  "code": "PENDING_RECURRING_CHARGE_EXISTS",
+  "error": "Ja existe uma cobranca recorrente pendente e a progressao nao pode duplicar a proxima sequencia.",
+  "billingRecord": {
+    "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+    "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-13T23:52:27.862Z",
+    "createdAt": "2026-04-13T23:52:27.862Z"
+  },
+  "latestCharge": {
+    "chargeId": "5db7c681-10bd-4bd4-8a2f-e17d2b564f50",
+    "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+    "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+    "chargeSequence": 1,
+    "chargeKind": "monthly_recurring",
+    "status": "pending_local",
+    "currency": "BRL",
+    "amountCents": 350000,
+    "dueDate": "2026-05-13",
+    "postedAt": "2026-04-13T23:52:27.877Z",
+    "createdAt": "2026-04-13T23:52:27.877Z"
+  }
+}

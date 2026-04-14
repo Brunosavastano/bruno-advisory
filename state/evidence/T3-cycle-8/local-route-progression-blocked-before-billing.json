@@ -1,0 +1,6 @@
+{
+  "ok": false,
+  "code": "ACTIVE_BILLING_RECORD_REQUIRED",
+  "error": "Lead precisa ter billing local ativo antes da progressao para a proxima cobranca recorrente.",
+  "billingRecord": null
+}

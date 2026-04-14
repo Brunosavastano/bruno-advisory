@@ -1,0 +1,13 @@
+{
+  "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+  "cockpitRoutePresent": true,
+  "leadDetailRoutePresent": true,
+  "billingRecordRoutePresent": true,
+  "billingChargesRoutePresent": true,
+  "cockpitLinksToDetail": true,
+  "leadDetailUsesChargeReadPath": true,
+  "leadDetailUsesChargeEventReadPath": true,
+  "leadDetailRendersChargeSection": true,
+  "leadDetailHasChargeCreateForm": true,
+  "leadDetailRendersChargeCanonicalArtifact": true
+}

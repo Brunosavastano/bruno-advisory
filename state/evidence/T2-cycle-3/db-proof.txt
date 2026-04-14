@@ -1,0 +1,77 @@
+{
+  "counts": {
+    "leads": 2,
+    "events": 15
+  },
+  "lead": {
+    "lead_id": "eb196386-80b6-4577-a182-2b8f96d8eb2d",
+    "full_name": "Paula Monteiro",
+    "email": "paula.monteiro@example.com",
+    "source_channel": "site_home",
+    "source_label": "site_home_primary_cta",
+    "status": "new",
+    "created_at": "2026-04-13T21:24:55.105Z"
+  },
+  "events": [
+    {
+      "event_name": "t2_intake_submit_failed",
+      "occurred_at": "2026-04-13T21:24:55.135Z",
+      "related_lead_id": null
+    },
+    {
+      "event_name": "t2_intake_submitted",
+      "occurred_at": "2026-04-13T21:24:55.131Z",
+      "related_lead_id": null
+    },
+    {
+      "event_name": "t2_intake_submit_succeeded",
+      "occurred_at": "2026-04-13T21:24:55.108Z",
+      "related_lead_id": "eb196386-80b6-4577-a182-2b8f96d8eb2d"
+    },
+    {
+      "event_name": "t2_intake_submitted",
+      "occurred_at": "2026-04-13T21:24:55.102Z",
+      "related_lead_id": null
+    },
+    {
+      "event_name": "t2_intake_viewed",
+      "occurred_at": "2026-04-13T21:24:55.042Z",
+      "related_lead_id": null
+    },
+    {
+      "event_name": "t2_primary_cta_clicked",
+      "occurred_at": "2026-04-13T21:24:55.006Z",
+      "related_lead_id": null
+    },
+    {
+      "event_name": "t2_landing_viewed",
+      "occurred_at": "2026-04-13T21:24:54.867Z",
+      "related_lead_id": null
+    },
+    {
+      "event_name": "t2_intake_submitted",
+      "occurred_at": "2026-04-13T20:29:31.858Z",
+      "related_lead_id": null
+    },
+    {
+      "event_name": "t2_intake_submit_failed",
+      "occurred_at": "2026-04-13T20:29:31.858Z",
+      "related_lead_id": null
+    },
+    {
+      "event_name": "t2_intake_submit_succeeded",
+      "occurred_at": "2026-04-13T20:29:31.837Z",
+      "related_lead_id": "f55f6fbf-e1ad-4b2a-806f-fb37f3feb226"
+    },
+    {
+      "event_name": "t2_intake_submitted",
+      "occurred_at": "2026-04-13T20:29:31.836Z",
+      "related_lead_id": null
+    },
+    {
+      "event_name": "t2_intake_viewed",
+      "occurred_at": "2026-04-13T20:29:31.794Z",
+      "related_lead_id": null
+    }
+  ]
+}

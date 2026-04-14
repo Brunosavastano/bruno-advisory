@@ -1,0 +1,26 @@
+[
+  {
+    "leadId": "510eb7da-8c6c-4de2-bceb-8fe6f3d8fb5f",
+    "fullName": "T3 Cycle Ten Settled",
+    "commercialStage": "cliente_convertido",
+    "billingRecordStatus": "active_local",
+    "latestChargeSequence": 1,
+    "latestChargeStatus": "settled_local",
+    "latestChargeDueDate": "2026-05-14",
+    "latestSettlementStatus": "settled_local",
+    "latestSettlementAt": "2026-04-14T00:23:03.395Z",
+    "pendingChargeCount": 0
+  },
+  {
+    "leadId": "90f5f571-98e8-4bd2-a61c-919fbe389ee8",
+    "fullName": "T3 Cycle Ten Pending",
+    "commercialStage": "cliente_convertido",
+    "billingRecordStatus": "active_local",
+    "latestChargeSequence": 1,
+    "latestChargeStatus": "pending_local",
+    "latestChargeDueDate": "2026-05-14",
+    "latestSettlementStatus": null,
+    "latestSettlementAt": null,
+    "pendingChargeCount": 1
+  }
+]

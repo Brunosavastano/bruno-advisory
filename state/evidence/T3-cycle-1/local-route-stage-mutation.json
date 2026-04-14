@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "leadId": "a7c640b6-e9f3-434a-bfb6-683f9a69dd03",
+  "commercialStage": "contato_inicial",
+  "changedFrom": "intake_novo",
+  "changedTo": "contato_inicial",
+  "changedAt": "2026-04-13T22:08:32.864Z",
+  "note": "Stage changed by local verifier (no-http)"
+}

@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "lead": {
+    "leadId": "90f5f571-98e8-4bd2-a61c-919fbe389ee8",
+    "fullName": "T3 Cycle Ten Pending",
+    "email": "verify_t3_cycle_10_pending-1776126183321-aab7b69d77dc6@example.com",
+    "phone": "11988991162",
+    "city": "Sao Paulo",
+    "state": "SP",
+    "investableAssetsBand": "3m_a_10m",
+    "primaryChallenge": "Quero visibilidade cruzada de cobrancas pendentes no cockpit.",
+    "sourceChannel": "site_home",
+    "sourceLabel": "verify_t3_cycle_10_pending",
+    "intakeFormVersion": "t2-cycle-1",
+    "privacyConsentAccepted": true,
+    "termsConsentAccepted": true,
+    "status": "new",
+    "commercialStage": "cliente_convertido",
+    "statusReason": null,
+    "fitSummary": null,
+    "internalOwner": null,
+    "submittedAt": "2026-04-14T00:23:03.323Z",
+    "createdAt": "2026-04-14T00:23:03.323Z",
+    "updatedAt": "2026-04-14T00:23:03.362Z",
+    "firstCapturedAt": "2026-04-14T00:23:03.323Z",
+    "lastStatusChangedAt": "2026-04-14T00:23:03.362Z"
+  },
+  "billingRecord": {
+    "billingRecordId": "e1675d85-8f10-4b71-83c7-54571aab5f9f",
+    "leadId": "90f5f571-98e8-4bd2-a61c-919fbe389ee8",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-14T00:23:03.375Z",
+    "createdAt": "2026-04-14T00:23:03.375Z"
+  },
+  "charge": {
+    "chargeId": "9972e13c-833c-4789-a841-81e127d3c7cc",
+    "billingRecordId": "e1675d85-8f10-4b71-83c7-54571aab5f9f",
+    "leadId": "90f5f571-98e8-4bd2-a61c-919fbe389ee8",
+    "chargeSequence": 1,
+    "chargeKind": "monthly_recurring",
+    "status": "pending_local",
+    "currency": "BRL",
+    "amountCents": 350000,
+    "dueDate": "2026-05-14",
+    "postedAt": "2026-04-14T00:23:03.401Z",
+    "createdAt": "2026-04-14T00:23:03.401Z"
+  },
+  "chargeEvents": [
+    {
+      "chargeEventId": "e3389296-77b7-411a-a26f-984add4bf0e6",
+      "chargeId": "9972e13c-833c-4789-a841-81e127d3c7cc",
+      "billingRecordId": "e1675d85-8f10-4b71-83c7-54571aab5f9f",
+      "leadId": "90f5f571-98e8-4bd2-a61c-919fbe389ee8",
+      "eventType": "charge_created",
+      "occurredAt": "2026-04-14T00:23:03.401Z",
+      "actor": "verify_t3_cycle_10_pending",
+      "note": "create pending overview charge sequence 1"
+    },
+    {
+      "chargeEventId": "7d2c515e-7a10-4078-915b-9e544dfd8346",
+      "chargeId": "9972e13c-833c-4789-a841-81e127d3c7cc",
+      "billingRecordId": "e1675d85-8f10-4b71-83c7-54571aab5f9f",
+      "leadId": "90f5f571-98e8-4bd2-a61c-919fbe389ee8",
+      "eventType": "charge_posted",
+      "occurredAt": "2026-04-14T00:23:03.401Z",
+      "actor": "verify_t3_cycle_10_pending",
+      "note": "Primeira cobranca local recorrente entrou em estado de cobranca."
+    }
+  ]
+}

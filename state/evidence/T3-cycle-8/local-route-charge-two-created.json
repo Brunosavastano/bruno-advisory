@@ -1,0 +1,117 @@
+{
+  "ok": true,
+  "lead": {
+    "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+    "fullName": "T3 Cycle Eight Local",
+    "email": "t3-cycle-8-local-1776124347818@example.com",
+    "phone": "11988991158",
+    "city": "Sao Paulo",
+    "state": "SP",
+    "investableAssetsBand": "3m_a_10m",
+    "primaryChallenge": "Quero ver a progressao recorrente sair da sequencia 1 liquidada para a sequencia 2 pendente.",
+    "sourceChannel": "site_home",
+    "sourceLabel": "verify_t3_cycle_8_local",
+    "intakeFormVersion": "t2-cycle-1",
+    "privacyConsentAccepted": true,
+    "termsConsentAccepted": true,
+    "status": "new",
+    "commercialStage": "cliente_convertido",
+    "statusReason": null,
+    "fitSummary": null,
+    "internalOwner": null,
+    "submittedAt": "2026-04-13T23:52:27.832Z",
+    "createdAt": "2026-04-13T23:52:27.832Z",
+    "updatedAt": "2026-04-13T23:52:27.848Z",
+    "firstCapturedAt": "2026-04-13T23:52:27.832Z",
+    "lastStatusChangedAt": "2026-04-13T23:52:27.848Z"
+  },
+  "billingRecord": {
+    "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+    "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-13T23:52:27.862Z",
+    "createdAt": "2026-04-13T23:52:27.862Z"
+  },
+  "previousCharge": {
+    "chargeId": "5db7c681-10bd-4bd4-8a2f-e17d2b564f50",
+    "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+    "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+    "chargeSequence": 1,
+    "chargeKind": "monthly_recurring",
+    "status": "settled_local",
+    "currency": "BRL",
+    "amountCents": 350000,
+    "dueDate": "2026-05-13",
+    "postedAt": "2026-04-13T23:52:27.877Z",
+    "createdAt": "2026-04-13T23:52:27.877Z"
+  },
+  "charge": {
+    "chargeId": "67852fc1-26c7-4909-85c4-78b3b9655ec0",
+    "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+    "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+    "chargeSequence": 2,
+    "chargeKind": "monthly_recurring",
+    "status": "pending_local",
+    "currency": "BRL",
+    "amountCents": 350000,
+    "dueDate": "2026-06-13",
+    "postedAt": "2026-04-13T23:52:27.899Z",
+    "createdAt": "2026-04-13T23:52:27.899Z"
+  },
+  "chargeEvents": [
+    {
+      "chargeEventId": "504ae041-942c-4939-8c9a-a49827f02139",
+      "chargeId": "67852fc1-26c7-4909-85c4-78b3b9655ec0",
+      "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "eventType": "charge_created",
+      "occurredAt": "2026-04-13T23:52:27.899Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "progress to recurring charge sequence 2"
+    },
+    {
+      "chargeEventId": "1470b4ba-4e59-4af3-80fe-f583614c607e",
+      "chargeId": "67852fc1-26c7-4909-85c4-78b3b9655ec0",
+      "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "eventType": "charge_posted",
+      "occurredAt": "2026-04-13T23:52:27.899Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "Cobranca recorrente local sequencia 2 entrou em estado de cobranca apos a sequencia 1."
+    },
+    {
+      "chargeEventId": "3d6b5354-2651-4bab-9d34-64da064290be",
+      "chargeId": "5db7c681-10bd-4bd4-8a2f-e17d2b564f50",
+      "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "eventType": "charge_settled",
+      "occurredAt": "2026-04-13T23:52:27.887Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "settle first recurring charge before progression"
+    },
+    {
+      "chargeEventId": "a11d99da-385f-4eba-be33-da116bdd43b9",
+      "chargeId": "5db7c681-10bd-4bd4-8a2f-e17d2b564f50",
+      "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "eventType": "charge_created",
+      "occurredAt": "2026-04-13T23:52:27.877Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "create first local recurring charge"
+    },
+    {
+      "chargeEventId": "183bbddc-7dce-4c5d-a8ba-abe7de489172",
+      "chargeId": "5db7c681-10bd-4bd4-8a2f-e17d2b564f50",
+      "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "eventType": "charge_posted",
+      "occurredAt": "2026-04-13T23:52:27.877Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "Primeira cobranca local recorrente entrou em estado de cobranca."
+    }
+  ]
+}

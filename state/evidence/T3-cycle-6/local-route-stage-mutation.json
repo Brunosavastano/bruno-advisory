@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "leadId": "c00f851d-48ee-4724-9f13-b5c4ebcbdb9a",
+  "commercialStage": "cliente_convertido",
+  "changedFrom": "intake_novo",
+  "changedTo": "cliente_convertido",
+  "changedAt": "2026-04-13T23:16:23.437Z",
+  "note": "advance to chargeable local billing"
+}

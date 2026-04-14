@@ -1,0 +1,31 @@
+{
+  "dbPath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+  "leadId": "284887a3-a14a-40a2-ad5d-954fddbf9af0",
+  "leadRow": {
+    "lead_id": "284887a3-a14a-40a2-ad5d-954fddbf9af0",
+    "full_name": "T3 Cycle Two Local",
+    "email": "t3-cycle-2-local-1776118659630@example.com",
+    "status": "new",
+    "commercial_stage": "intake_novo",
+    "created_at": "2026-04-13T22:17:39.644Z"
+  },
+  "noteRows": [
+    {
+      "note_id": "d2aafc1b-a419-400a-8a74-8aeb58e871c1",
+      "lead_id": "284887a3-a14a-40a2-ad5d-954fddbf9af0",
+      "content": "Nota operacional criada pelo verificador local de ciclo 2.",
+      "author_marker": "verify_t3_cycle_2_local",
+      "created_at": "2026-04-13T22:17:39.659Z"
+    }
+  ],
+  "taskRows": [
+    {
+      "task_id": "e0b46e99-03e5-42c4-bca8-8e311afa2086",
+      "lead_id": "284887a3-a14a-40a2-ad5d-954fddbf9af0",
+      "title": "Ligar para lead para confirmar documentos",
+      "status": "todo",
+      "due_date": "2026-04-20",
+      "created_at": "2026-04-13T22:17:39.663Z"
+    }
+  ]
+}

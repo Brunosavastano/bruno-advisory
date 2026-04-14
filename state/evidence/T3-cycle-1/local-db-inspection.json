@@ -1,0 +1,24 @@
+{
+  "dbPath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+  "leadId": "a7c640b6-e9f3-434a-bfb6-683f9a69dd03",
+  "leadRow": {
+    "lead_id": "a7c640b6-e9f3-434a-bfb6-683f9a69dd03",
+    "full_name": "T3 Local Verifier",
+    "email": "t3-local-1776118112829@example.com",
+    "status": "new",
+    "commercial_stage": "contato_inicial",
+    "created_at": "2026-04-13T22:08:32.848Z",
+    "updated_at": "2026-04-13T22:08:32.864Z"
+  },
+  "auditRows": [
+    {
+      "audit_id": "a6660a25-7ab0-4188-9053-14aa6743be9f",
+      "lead_id": "a7c640b6-e9f3-434a-bfb6-683f9a69dd03",
+      "from_stage": "intake_novo",
+      "to_stage": "contato_inicial",
+      "changed_at": "2026-04-13T22:08:32.864Z",
+      "changed_by": "verify_t3_cycle_1_local",
+      "note": "Stage changed by local verifier (no-http)"
+    }
+  ]
+}

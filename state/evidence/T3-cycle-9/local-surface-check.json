@@ -1,0 +1,8 @@
+{
+  "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+  "leadDetailRoutePresent": true,
+  "targetedSettlementRoutePresent": true,
+  "leadDetailHasTargetedSettlementForm": true,
+  "leadDetailRendersTargetedSettlementCanon": true,
+  "leadDetailRendersChargeLevelAction": true
+}

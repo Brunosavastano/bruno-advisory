@@ -1,0 +1,121 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-13T22:39:52.393Z",
+  "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+  "taskId": "48459cc0-a756-4b16-bcb4-a14e4a629315",
+  "intakeRouteStatus": 201,
+  "initialBillingReadinessRouteStatus": 200,
+  "taskCreateRouteStatus": 201,
+  "stageRouteStatus": 200,
+  "midBillingReadinessRouteStatus": 200,
+  "taskStatusRouteStatus": 200,
+  "finalBillingReadinessRouteStatus": 200,
+  "intakeResponse": {
+    "ok": true,
+    "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf"
+  },
+  "initialReadinessResponse": {
+    "ok": true,
+    "readiness": {
+      "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+      "isBillingReady": false,
+      "requiredCommercialStage": "cliente_convertido",
+      "currentCommercialStage": "intake_novo",
+      "totalTasks": 0,
+      "doneTasks": 0,
+      "pendingTasks": 0,
+      "unmetConditions": [
+        "commercial_stage_cliente_convertido",
+        "at_least_one_internal_task"
+      ],
+      "unmetConditionLabels": [
+        "Estagio comercial deve estar em Cliente convertido.",
+        "Deve existir ao menos 1 tarefa interna."
+      ]
+    }
+  },
+  "taskCreateResponse": {
+    "ok": true,
+    "task": {
+      "taskId": "48459cc0-a756-4b16-bcb4-a14e4a629315",
+      "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+      "title": "Fechar checklist de prontidao de billing",
+      "status": "todo",
+      "dueDate": "2026-04-25",
+      "createdAt": "2026-04-13T22:39:52.380Z"
+    }
+  },
+  "stageResponse": {
+    "ok": true,
+    "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+    "commercialStage": "cliente_convertido",
+    "changedFrom": "intake_novo",
+    "changedTo": "cliente_convertido",
+    "changedAt": "2026-04-13T22:39:52.384Z",
+    "note": "advance to billing readiness check"
+  },
+  "midReadinessResponse": {
+    "ok": true,
+    "readiness": {
+      "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+      "isBillingReady": false,
+      "requiredCommercialStage": "cliente_convertido",
+      "currentCommercialStage": "cliente_convertido",
+      "totalTasks": 1,
+      "doneTasks": 0,
+      "pendingTasks": 1,
+      "unmetConditions": [
+        "all_internal_tasks_done"
+      ],
+      "unmetConditionLabels": [
+        "Todas as tarefas internas devem estar com status done."
+      ]
+    }
+  },
+  "taskStatusResponse": {
+    "ok": true,
+    "taskId": "48459cc0-a756-4b16-bcb4-a14e4a629315",
+    "status": "done",
+    "changedFrom": "todo",
+    "changedTo": "done",
+    "changedAt": "2026-04-13T22:39:52.389Z",
+    "changedBy": "verify_t3_cycle_4_local"
+  },
+  "finalReadinessResponse": {
+    "ok": true,
+    "readiness": {
+      "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+      "isBillingReady": true,
+      "requiredCommercialStage": "cliente_convertido",
+      "currentCommercialStage": "cliente_convertido",
+      "totalTasks": 1,
+      "doneTasks": 1,
+      "pendingTasks": 0,
+      "unmetConditions": [],
+      "unmetConditionLabels": []
+    }
+  },
+  "surfaceCheck": {
+    "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+    "cockpitRoutePresent": true,
+    "leadDetailRoutePresent": true,
+    "stageMutationRoutePresent": true,
+    "billingReadinessRoutePresent": true,
+    "tasksMutationRoutePresent": true,
+    "taskStatusMutationRoutePresent": true,
+    "cockpitLinksToDetail": true,
+    "leadDetailUsesBillingReadinessReadPath": true,
+    "leadDetailRendersBillingSection": true,
+    "leadDetailRendersUnmetConditions": true,
+    "leadDetailRendersCanonicalBillingArtifact": true
+  },
+  "dbInspection": {
+    "leadStage": "cliente_convertido",
+    "totalTasks": 1,
+    "doneTasks": 1,
+    "pendingTasks": 0,
+    "matchingStageAuditId": "bd557b98-74d1-42c5-96f0-d627160578ca",
+    "matchingTaskAuditId": "39022082-3e38-4569-a561-c4e14a29cc86"
+  },
+  "note": "HTTP bind is blocked in this sandbox (listen EPERM); verification executed by invoking compiled app route handlers directly."
+}

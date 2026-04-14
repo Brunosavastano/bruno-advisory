@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "task": {
+    "taskId": "48459cc0-a756-4b16-bcb4-a14e4a629315",
+    "leadId": "342289c8-bce3-4d15-adab-3fa5d2e376cf",
+    "title": "Fechar checklist de prontidao de billing",
+    "status": "todo",
+    "dueDate": "2026-04-25",
+    "createdAt": "2026-04-13T22:39:52.380Z"
+  }
+}

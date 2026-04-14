@@ -1,0 +1,22 @@
+{
+  "ok": false,
+  "code": "BILLING_NOT_READY",
+  "error": "Lead ainda nao atende as condicoes minimas para entrar em billing local.",
+  "readiness": {
+    "leadId": "33798df2-ca18-4dd1-9c01-b42082cc1ee3",
+    "isBillingReady": false,
+    "requiredCommercialStage": "cliente_convertido",
+    "currentCommercialStage": "intake_novo",
+    "totalTasks": 0,
+    "doneTasks": 0,
+    "pendingTasks": 0,
+    "unmetConditions": [
+      "commercial_stage_cliente_convertido",
+      "at_least_one_internal_task"
+    ],
+    "unmetConditionLabels": [
+      "Estagio comercial deve estar em Cliente convertido.",
+      "Deve existir ao menos 1 tarefa interna."
+    ]
+  }
+}

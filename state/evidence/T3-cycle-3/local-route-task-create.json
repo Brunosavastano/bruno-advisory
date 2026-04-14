@@ -1,0 +1,11 @@
+{
+  "ok": true,
+  "task": {
+    "taskId": "f7bd46cb-91ea-4c81-b89e-ad5648a473f4",
+    "leadId": "6ab143bd-d864-41d6-a1b8-cd55be0c8b06",
+    "title": "Validar checklist de onboarding financeiro",
+    "status": "todo",
+    "dueDate": "2026-04-22",
+    "createdAt": "2026-04-13T22:27:35.402Z"
+  }
+}

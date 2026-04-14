@@ -1,0 +1,41 @@
+{
+  "ok": false,
+  "code": "CHARGE_ALREADY_SETTLED",
+  "error": "A cobranca selecionada ja esta liquidada.",
+  "billingRecord": {
+    "billingRecordId": "15dab342-f723-4812-86a7-5fab68c9158f",
+    "leadId": "1923ff99-2092-470c-a58d-07a6a88da615",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-14T00:10:26.214Z",
+    "createdAt": "2026-04-14T00:10:26.214Z"
+  },
+  "charge": {
+    "chargeId": "7c845fb3-ea05-4a16-9898-a1a50a92c935",
+    "billingRecordId": "15dab342-f723-4812-86a7-5fab68c9158f",
+    "leadId": "1923ff99-2092-470c-a58d-07a6a88da615",
+    "chargeSequence": 1,
+    "chargeKind": "monthly_recurring",
+    "status": "settled_local",
+    "currency": "BRL",
+    "amountCents": 350000,
+    "dueDate": "2026-05-14",
+    "postedAt": "2026-04-14T00:10:26.255Z",
+    "createdAt": "2026-04-14T00:10:26.255Z"
+  },
+  "settlement": {
+    "settlementId": "18dea7ca-0484-4646-842e-2033a6710c91",
+    "chargeId": "7c845fb3-ea05-4a16-9898-a1a50a92c935",
+    "billingRecordId": "15dab342-f723-4812-86a7-5fab68c9158f",
+    "leadId": "1923ff99-2092-470c-a58d-07a6a88da615",
+    "status": "settled_local",
+    "settlementKind": "manual_local_settlement",
+    "currency": "BRL",
+    "amountCents": 350000,
+    "settledAt": "2026-04-14T00:10:26.266Z",
+    "createdAt": "2026-04-14T00:10:26.266Z"
+  }
+}

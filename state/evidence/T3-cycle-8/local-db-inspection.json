@@ -1,0 +1,94 @@
+{
+  "dbPath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+  "billingRecordRow": {
+    "billing_record_id": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+    "lead_id": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+    "status": "active_local",
+    "currency": "BRL",
+    "entry_fee_cents": 950000,
+    "monthly_fee_cents": 350000,
+    "minimum_commitment_months": 6,
+    "activated_at": "2026-04-13T23:52:27.862Z",
+    "created_at": "2026-04-13T23:52:27.862Z"
+  },
+  "chargeRows": [
+    {
+      "charge_id": "5db7c681-10bd-4bd4-8a2f-e17d2b564f50",
+      "billing_record_id": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "lead_id": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "charge_sequence": 1,
+      "charge_kind": "monthly_recurring",
+      "status": "settled_local",
+      "currency": "BRL",
+      "amount_cents": 350000,
+      "due_date": "2026-05-13",
+      "posted_at": "2026-04-13T23:52:27.877Z",
+      "created_at": "2026-04-13T23:52:27.877Z"
+    },
+    {
+      "charge_id": "67852fc1-26c7-4909-85c4-78b3b9655ec0",
+      "billing_record_id": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "lead_id": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "charge_sequence": 2,
+      "charge_kind": "monthly_recurring",
+      "status": "pending_local",
+      "currency": "BRL",
+      "amount_cents": 350000,
+      "due_date": "2026-06-13",
+      "posted_at": "2026-04-13T23:52:27.899Z",
+      "created_at": "2026-04-13T23:52:27.899Z"
+    }
+  ],
+  "chargeEventRows": [
+    {
+      "charge_event_id": "504ae041-942c-4939-8c9a-a49827f02139",
+      "charge_id": "67852fc1-26c7-4909-85c4-78b3b9655ec0",
+      "billing_record_id": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "lead_id": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "event_type": "charge_created",
+      "occurred_at": "2026-04-13T23:52:27.899Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "progress to recurring charge sequence 2"
+    },
+    {
+      "charge_event_id": "1470b4ba-4e59-4af3-80fe-f583614c607e",
+      "charge_id": "67852fc1-26c7-4909-85c4-78b3b9655ec0",
+      "billing_record_id": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "lead_id": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "event_type": "charge_posted",
+      "occurred_at": "2026-04-13T23:52:27.899Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "Cobranca recorrente local sequencia 2 entrou em estado de cobranca apos a sequencia 1."
+    },
+    {
+      "charge_event_id": "3d6b5354-2651-4bab-9d34-64da064290be",
+      "charge_id": "5db7c681-10bd-4bd4-8a2f-e17d2b564f50",
+      "billing_record_id": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "lead_id": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "event_type": "charge_settled",
+      "occurred_at": "2026-04-13T23:52:27.887Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "settle first recurring charge before progression"
+    },
+    {
+      "charge_event_id": "a11d99da-385f-4eba-be33-da116bdd43b9",
+      "charge_id": "5db7c681-10bd-4bd4-8a2f-e17d2b564f50",
+      "billing_record_id": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "lead_id": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "event_type": "charge_created",
+      "occurred_at": "2026-04-13T23:52:27.877Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "create first local recurring charge"
+    },
+    {
+      "charge_event_id": "183bbddc-7dce-4c5d-a8ba-abe7de489172",
+      "charge_id": "5db7c681-10bd-4bd4-8a2f-e17d2b564f50",
+      "billing_record_id": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+      "lead_id": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+      "event_type": "charge_posted",
+      "occurred_at": "2026-04-13T23:52:27.877Z",
+      "actor": "verify_t3_cycle_8_local",
+      "note": "Primeira cobranca local recorrente entrou em estado de cobranca."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+  "leadDetailRoutePresent": true,
+  "billingChargeNextRoutePresent": true,
+  "leadDetailUsesChargeReadPath": true,
+  "leadDetailRendersMultipleCharges": true,
+  "leadDetailHasProgressionForm": true,
+  "leadDetailRendersProgressionCanon": true
+}

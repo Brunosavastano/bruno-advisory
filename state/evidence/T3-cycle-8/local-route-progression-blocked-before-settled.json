@@ -1,0 +1,17 @@
+{
+  "ok": false,
+  "code": "SETTLED_PRIOR_CHARGE_REQUIRED",
+  "error": "Lead precisa ter uma cobranca recorrente anterior liquidada antes da progressao.",
+  "billingRecord": {
+    "billingRecordId": "5d85c992-d58e-4eed-8d31-211dd7f33bde",
+    "leadId": "ff0e5fb9-f590-445b-ae28-eeda207622c5",
+    "status": "active_local",
+    "currency": "BRL",
+    "entryFeeCents": 950000,
+    "monthlyFeeCents": 350000,
+    "minimumCommitmentMonths": 6,
+    "activatedAt": "2026-04-13T23:52:27.862Z",
+    "createdAt": "2026-04-13T23:52:27.862Z"
+  },
+  "latestCharge": null
+}

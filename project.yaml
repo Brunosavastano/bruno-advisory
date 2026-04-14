@@ -11,9 +11,9 @@ agents:
   additional_openclaws_allowed_before_t3: false
 
 state:
-  active_tranche: T1
+  active_tranche: T3
   tranche_status: done
-  stage_gate: proposition
+  stage_gate: operations
   release_mode: shadow
   prod_ready: false
 

@@ -1,0 +1,8 @@
+{"eventName":"t2_landing_viewed","occurredAt":"2026-04-13T20:25:23.730Z","metadata":{"route":"/"}}
+{"eventName":"t2_landing_viewed","occurredAt":"2026-04-13T20:29:31.652Z","metadata":{"route":"/"}}
+{"eventName":"t2_primary_cta_clicked","occurredAt":"2026-04-13T20:29:31.763Z","metadata":{"sourceLabel":"site_home_primary_cta"}}
+{"eventName":"t2_intake_viewed","occurredAt":"2026-04-13T20:29:31.794Z","metadata":{"sourceLabel":"site_home_primary_cta"}}
+{"eventName":"t2_intake_submitted","occurredAt":"2026-04-13T20:29:31.836Z","metadata":{"sourceChannel":"site_home"}}
+{"eventName":"t2_intake_submit_succeeded","occurredAt":"2026-04-13T20:29:31.837Z","metadata":{"leadId":"f55f6fbf-e1ad-4b2a-806f-fb37f3feb226","sourceChannel":"site_home"}}
+{"eventName":"t2_intake_submitted","occurredAt":"2026-04-13T20:29:31.858Z","metadata":{"sourceChannel":"site_home"}}
+{"eventName":"t2_intake_submit_failed","occurredAt":"2026-04-13T20:29:31.858Z","metadata":{"reason":"validation_error","errorCount":8}}

@@ -1,0 +1,142 @@
+{
+  "dbPath": "data/dev/bruno-advisory-dev.sqlite3",
+  "exists": true,
+  "sizeBytes": 12288,
+  "tables": [
+    "intake_events",
+    "intake_leads",
+    "system_metadata"
+  ],
+  "counts": {
+    "leads": 6,
+    "events": 40
+  },
+  "matchingLead": {
+    "lead_id": "a13c2c31-6ddd-4dd1-b553-6ff67aa088ba",
+    "full_name": "T2 Cycle 5 20260413T215319Z",
+    "email": "t2-cycle-5-20260413t215319z@example.com",
+    "phone": "11970000000",
+    "investable_assets_band": "3m_a_10m",
+    "source_channel": "site_home",
+    "source_label": "site_home_primary_cta",
+    "status": "new",
+    "created_at": "2026-04-13T21:53:32.989Z"
+  },
+  "matchingLeadEvents": [
+    {
+      "event_id": "5c919d93-4c11-43b5-961e-6a88c1ed7568",
+      "event_name": "t2_intake_submit_succeeded",
+      "occurred_at": "2026-04-13T21:53:32.993Z",
+      "related_lead_id": "a13c2c31-6ddd-4dd1-b553-6ff67aa088ba"
+    }
+  ],
+  "recentLeads": [
+    {
+      "lead_id": "a13c2c31-6ddd-4dd1-b553-6ff67aa088ba",
+      "full_name": "T2 Cycle 5 20260413T215319Z",
+      "email": "t2-cycle-5-20260413t215319z@example.com",
+      "status": "new",
+      "source_channel": "site_home",
+      "source_label": "site_home_primary_cta",
+      "created_at": "2026-04-13T21:53:32.989Z"
+    },
+    {
+      "lead_id": "8198a46c-4292-459c-8f25-c24820765340",
+      "full_name": "T2 Cycle 5 20260413T215230Z",
+      "email": "t2-cycle-5-20260413t215230z@example.com",
+      "status": "new",
+      "source_channel": "site_home",
+      "source_label": "site_home_primary_cta",
+      "created_at": "2026-04-13T21:52:47.035Z"
+    },
+    {
+      "lead_id": "945794d8-8229-4c3c-b34f-7a282b022edb",
+      "full_name": "T2 Cycle 5 20260413T215049Z",
+      "email": "t2-cycle-5-20260413t215049z@example.com",
+      "status": "new",
+      "source_channel": "site_home",
+      "source_label": "site_home_primary_cta",
+      "created_at": "2026-04-13T21:51:08.119Z"
+    },
+    {
+      "lead_id": "1b937f87-4367-458a-af05-acb3ef32709f",
+      "full_name": "Helena Duarte",
+      "email": "helena.duarte@example.com",
+      "status": "new",
+      "source_channel": "site_home",
+      "source_label": "site_home_primary_cta",
+      "created_at": "2026-04-13T21:45:42.563Z"
+    },
+    {
+      "lead_id": "eb196386-80b6-4577-a182-2b8f96d8eb2d",
+      "full_name": "Paula Monteiro",
+      "email": "paula.monteiro@example.com",
+      "status": "new",
+      "source_channel": "site_home",
+      "source_label": "site_home_primary_cta",
+      "created_at": "2026-04-13T21:24:55.105Z"
+    }
+  ],
+  "recentEvents": [
+    {
+      "event_id": "6e52ace0-3765-496b-b2ad-2fd17b9f38cd",
+      "event_name": "t2_intake_submit_failed",
+      "occurred_at": "2026-04-13T21:53:33.025Z",
+      "related_lead_id": null
+    },
+    {
+      "event_id": "410a8769-d75d-4863-a3ea-cef1a0220f79",
+      "event_name": "t2_intake_submitted",
+      "occurred_at": "2026-04-13T21:53:33.020Z",
+      "related_lead_id": null
+    },
+    {
+      "event_id": "5c919d93-4c11-43b5-961e-6a88c1ed7568",
+      "event_name": "t2_intake_submit_succeeded",
+      "occurred_at": "2026-04-13T21:53:32.993Z",
+      "related_lead_id": "a13c2c31-6ddd-4dd1-b553-6ff67aa088ba"
+    },
+    {
+      "event_id": "ca3e24d5-3dcd-4cc9-b7e3-ea456250e457",
+      "event_name": "t2_intake_submitted",
+      "occurred_at": "2026-04-13T21:53:32.986Z",
+      "related_lead_id": null
+    },
+    {
+      "event_id": "9167b5e9-21b7-4d89-b052-71274f7578d3",
+      "event_name": "t2_intake_viewed",
+      "occurred_at": "2026-04-13T21:53:32.900Z",
+      "related_lead_id": null
+    },
+    {
+      "event_id": "3804b630-8419-4321-9a05-4c73b873e5e0",
+      "event_name": "t2_primary_cta_clicked",
+      "occurred_at": "2026-04-13T21:53:32.871Z",
+      "related_lead_id": null
+    },
+    {
+      "event_id": "426bc035-6642-48ef-b76d-50a412642079",
+      "event_name": "t2_landing_viewed",
+      "occurred_at": "2026-04-13T21:53:32.642Z",
+      "related_lead_id": null
+    },
+    {
+      "event_id": "1d320020-8ba1-4b8d-b48c-7ff5c0c3cbfc",
+      "event_name": "t2_intake_submit_failed",
+      "occurred_at": "2026-04-13T21:52:47.082Z",
+      "related_lead_id": null
+    },
+    {
+      "event_id": "b304e1d8-dbb2-4556-8ca6-f8f85aa140e7",
+      "event_name": "t2_intake_submitted",
+      "occurred_at": "2026-04-13T21:52:47.079Z",
+      "related_lead_id": null
+    },
+    {
+      "event_id": "45b3e9d7-ee22-45ca-9387-6b95c8f6d24d",
+      "event_name": "t2_intake_submit_succeeded",
+      "occurred_at": "2026-04-13T21:52:47.038Z",
+      "related_lead_id": "8198a46c-4292-459c-8f25-c24820765340"
+    }
+  ]
+}

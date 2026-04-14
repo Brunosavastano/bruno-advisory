@@ -1,0 +1,7 @@
+{
+  "appRoutesManifestPath": "/root/Bruno-Advisory/bruno-advisory/apps/web/.next/app-path-routes-manifest.json",
+  "cockpitRoutePresent": true,
+  "leadDetailRoutePresent": true,
+  "cockpitLinksToDetail": true,
+  "leadDetailShowsAuditTrail": true
+}
