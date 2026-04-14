@@ -12,7 +12,7 @@ agents:
 
 state:
   active_tranche: T3.5
-  tranche_status: open
+  tranche_status: done
   stage_gate: hardening
   release_mode: shadow
   prod_ready: false
