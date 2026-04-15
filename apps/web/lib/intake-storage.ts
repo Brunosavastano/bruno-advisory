@@ -18,3 +18,4 @@ export * from './storage/flags';
 export * from './storage/pending-flags';
 
 export * from './storage/audit-log';
+export * from './storage/cockpit-auth';

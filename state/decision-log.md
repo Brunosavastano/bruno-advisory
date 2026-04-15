@@ -215,3 +215,14 @@
 - Regression: `npm run test` verde (13/13 testes lógicos; ruído Windows EPERM no shutdown é pré-existente).
 - Limitação assumida: CRUD completo do `cockpit-auth.ts` não foi testado end-to-end neste ciclo (apenas o modelo canônico). Primeiro caller real é o Ciclo 2 (bootstrap-admin CLI).
 - Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-15 — T6 Cycle 2 aceito: Bootstrap admin CLI
+
+- Entregue: `scripts/bootstrap-admin.ts` (CLI idempotente, argv + stdin interativo com senha em modo silencioso via raw TTY, exit codes 0/2/3/4) e rota self-locking `apps/web/app/api/cockpit/bootstrap-admin/route.ts` (GET de status + POST que retorna 409 `already_bootstrapped` quando `countActiveAdmins() > 0`).
+- Decisão de design: lockout no código da rota (não em feature flag ou env). Bootstrap fica permanentemente inerte após o primeiro admin sem depender de alguém lembrar de desligar uma flag.
+- Decisão de design: rota pública (`/api/cockpit/bootstrap-admin`) em vez de `_internal/` porque Next trata `_*` como pastas privadas e as exclui do roteamento. Proteção real é o self-lock + `COCKPIT_SECRET` do middleware atual.
+- Decisão técnica: CLI invoca a rota compilada via `requireUserland` contra `.next/server/app/api/cockpit/bootstrap-admin/route.js`, mesmo padrão de `seed-beta.sh`. Evita esbarrar no barrel ESM do core e prova que a rota build-passa. Auto-build quando o artifact não existe.
+- Bug capturado pelo verifier: `db.ts` captura `repoRoot = findRepoRoot(process.cwd())` em tempo de carregamento do módulo; `process.chdir(tempRoot)` precisa vir ANTES do `requireFromRoot(routePath)` ou o handler abre o DB real do dev em vez do isolado. Correção aplicada antes de aceitar a evidência.
+- Verificação: `infra/scripts/verify-t6-cycle-2-local.sh` com verifier TS que roda o CLI 2× contra um `tempRoot` isolado e faz snapshot diff (userId, passwordHash, createdAt inalterados) + chamada direta ao GET e POST da rota para confirmar `needsBootstrap: false` e `directPostAfterLockoutStatus: 409` / `code: "already_bootstrapped"`. Evidência `state/evidence/T6-cycle-2/summary-local.json` com `ok: true`.
+- Limitação assumida: CLI ainda depende do `COCKPIT_SECRET` do middleware atual para autorizar o POST. Ciclo 4 precisa resolver o caminho autorizado do bootstrap quando o middleware for substituído (provavelmente abrindo a rota enquanto `adminCount === 0`).
+- Dono: Vulcanus. Aceito por Zeus.
