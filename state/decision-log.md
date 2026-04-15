@@ -276,3 +276,16 @@
 - Limitação assumida: tasks/notes/flags/pending-flags/review-queue não foram tocados — eles não escrevem audit ou estão fora do caminho T6. Permanecem gated APENAS pelo middleware Edge, que os testes bypassam via loadUserland. Risco aceitável para T6; T7/T8 podem endurecer.
 - Limitação assumida: Cycle 3 verifier tinha contract-guard `callsitesWithActorId === 0` que agora está propositalmente quebrado. Se alguém rodar o verifier do Cycle 3 isoladamente, vai falhar. Cycle 8 closure deve reconciliar.
 - Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-15 — T6 Cycle 7 aceito: Users admin UI
+
+- Entregue: helper `requireCockpitAdmin` (wrap de `requireCockpitSession` + check `role === 'admin'`, 403 caso contrário); API admin-only em `/api/cockpit/users` (GET lista, POST cria com 400/409 canônicos) e `/api/cockpit/users/[userId]` (PATCH para displayName/role/isActive/password); página `/cockpit/users` com form de criação + ações inline de role e toggle ativo; layout `apps/web/app/cockpit/layout.tsx` com header de navegação, display do usuário logado, banner "Sessão legada (COCKPIT_SECRET)" no fallback, e botão de logout; página `/cockpit/page.tsx` redireciona para `/cockpit/leads`.
+- Decisão de design: fallback `COCKPIT_SECRET` (role=operator do Cycle 4) NÃO passa pelo gate admin. Users admin exige sessão real. Isso é intencional — força a migração para autenticação individual antes de T7 remover o secret.
+- Decisão de design: last-admin protection em duas camadas. API valida `countActiveAdmins() <= 1` antes de permitir demote/deactivate do último admin (409 `last_admin_protected`); página replica o check nas server actions para UX imediata. Ambas consultam o mesmo helper.
+- Decisão de design: deactivation drop sessions já estava implementada em `updateCockpitUser` desde Cycle 1 (DELETE sessions do alvo na mesma transação). Cycle 7 apenas expõe via UI + API. Verifier G prova end-to-end: PATCH isActive=false → 0 sessions → operator cookie → 401 em `/api/cockpit/session`.
+- Decisão de design: layout como single source of truth para header. Server component lê cookies uma vez, renderiza condicionalmente (sessão real → display, legacy → banner amarelo, anônimo → sem header). Custo: +1 session lookup por render de página cockpit — aceitável no scale atual.
+- Decisão explícita: users admin actions (criar/promover/desativar) NÃO escrevem `writeAuditLog` neste ciclo. Compliance pode exigir trail disso — deferido para T7+ como novo entityType='cockpit_user'.
+- Verificação: `infra/scripts/verify-t6-cycle-7-local.sh` com verifier TS em `infra/scripts/verifiers/t6-cycle-7.ts`. 8 cenários runtime (A-H) + 8 source-text checks, todos verdes. Evidência `state/evidence/T6-cycle-7/summary-local.json` com `ok: true`.
+- Regression: inner test suite verde (13/13 lógicos; EPERM Windows permanece pré-existente).
+- Limitação assumida: sem CSRF explícito nas server actions (Next App Router tem proteção built-in via Origin check, mas é opaca); sem rate-limit no login; layout refetch session a cada page render (cacheável em futura iteração); last-admin protection tem janela de corrida teórica (dois admins tentando se demote simultâneamente).
+- Dono: Vulcanus. Aceito por Zeus.

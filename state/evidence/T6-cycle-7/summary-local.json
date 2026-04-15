@@ -1,0 +1,51 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T18:00:45.185Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle7-DhCpjE\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "sourceChecks": {
+    "requireAdminExported": true,
+    "requireAdminReturns403": true,
+    "layoutLogoutAction": true,
+    "layoutLegacyBanner": true,
+    "layoutUsersLinkAdminOnly": true,
+    "usersPageAdminGate": true,
+    "usersPageLastAdminGuard": true,
+    "rootPageRedirects": true
+  },
+  "scenarios": {
+    "A_admin_list": {
+      "status": 200,
+      "count": 2
+    },
+    "B_operator_forbidden": {
+      "status": 403,
+      "reason": "admin_required"
+    },
+    "C_legacy_forbidden": {
+      "status": 403,
+      "reason": "admin_required"
+    },
+    "D_no_auth_unauthorized": {
+      "status": 401
+    },
+    "E_admin_create": {
+      "status": 201,
+      "newUserId": "cf29099d-36bf-418e-93e9-f86b137e21dd"
+    },
+    "F_duplicate_email": {
+      "status": 409,
+      "error": "email_already_exists"
+    },
+    "G_deactivate_drops_sessions": {
+      "status": 200,
+      "survivingSessions": 0,
+      "operatorSessionEndpoint": 401
+    },
+    "H_last_admin_protected": {
+      "status": 409,
+      "error": "last_admin_protected",
+      "adminRoleUnchanged": true
+    }
+  },
+  "note": "T6 cycle 7: users admin API + UI. requireCockpitAdmin gates admin-only surface. Legacy fallback cannot reach admin routes (role=operator). Deactivation drops sessions atomically. Last-admin protection prevents lockout."
+}

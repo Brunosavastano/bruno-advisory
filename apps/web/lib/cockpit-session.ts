@@ -138,3 +138,19 @@ export async function requireCockpitSession(request: Request): Promise<CockpitSe
 
   return { ok: false, status: 401, body: { ok: false, error: 'unauthorized' } };
 }
+
+/**
+ * Like requireCockpitSession, but additionally requires `role === 'admin'`.
+ *
+ * Legacy `COCKPIT_SECRET` fallback always resolves to `role: 'operator'` — so
+ * admin-only surfaces (users management, role changes, deactivation) cannot be
+ * reached via the legacy path. Only real admin sessions pass.
+ */
+export async function requireCockpitAdmin(request: Request): Promise<CockpitSessionCheck> {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return check;
+  if (check.context.role !== 'admin') {
+    return { ok: false, status: 403, body: { ok: false, error: 'forbidden', reason: 'admin_required' } };
+  }
+  return check;
+}

@@ -19,27 +19,18 @@ Replace the single-secret cockpit auth model with per-user accounts, roles (admi
 | 4 | Middleware + requireCockpitSession | ✅ accepted |
 | 5 | Login / logout API + page | ✅ accepted |
 | 6 | Actor propagation (19 callsites) | ✅ accepted |
-| 7 | Users admin UI | 🔴 open |
-| 8 | Regression + closure | ⏳ pending |
+| 7 | Users admin UI | ✅ accepted |
+| 8 | Regression + closure | 🔴 open |
 
 ## Current cycle
-**Cycle 7 — Users admin UI**
+**Cycle 8 — Regression + closure**
 
 ### Deliverables
-- Página `/cockpit/users` (`apps/web/app/cockpit/users/page.tsx`): lista usuários do cockpit com (email, displayName, role, isActive, createdAt, lastLoginAt se disponível). Visível apenas para `role === 'admin'` — outros papéis recebem 403.
-- Server actions: `createCockpitUser` (admin-only form de email/displayName/password/role), `updateCockpitUser` (edit displayName/role/isActive/password), `deactivateCockpitUser` (toggle isActive → false + sessions deletadas atomicamente).
-- Header do cockpit (`apps/web/app/cockpit/layout.tsx` ou similar): mostra o usuário logado (email ou displayName) + botão de logout que posta para `/api/cockpit/logout` e redireciona para `/cockpit/login`. Legacy context mostra "sessão legada (COCKPIT_SECRET)" para sinalizar que T7 vai remover.
-- Página `/cockpit` como landing autenticado (seja linha-de-dashboard simples ou redirect para `/cockpit/leads`, decisão no opening).
-- Role gating helper: extender `requireCockpitSession` ou adicionar `requireCockpitAdmin(request)` que chama `requireCockpitSession` + confere `role === 'admin'`.
-- `infra/scripts/verify-t6-cycle-7-local.sh` + `infra/scripts/verifiers/t6-cycle-7.ts`: 
-  (a) admin lista users → 200 com rows
-  (b) operator lista users → 403
-  (c) legacy session lista users → 403 (role='operator' do fallback)
-  (d) admin cria user → 201 + row no DB + actor_id do creator
-  (e) admin desativa user → sessões do alvo deletadas + audit row
-  (f) logout funcional cobre setup/teardown
-- `state/evidence/T6-cycle-7/summary-local.json`.
-- State note: `state/t6-cycle-7-users-admin-ui.md`.
+- Reconciliar o contract-guard do Cycle 3 verifier (`callsitesWithActorId === 0`): Cycle 6 quebrou-o por design; substituir pela assertion "callsites > 0 && coerência de signature" OU retirar a assertion explicitamente com comentário "quebrado por Cycle 6".
+- Rodar `npm run typecheck`, `npm run test` e os 7 verifiers de cycle em sequência — atualizar `state/evidence/T6-cycle-*/summary-local.json` se necessário — e confirmar todos `ok: true`.
+- `state/t6-closure.md`: critérios do prompt/roadmap de T6 cumpridos, evidência consolidada, deferrals explícitos (T7: remover `COCKPIT_SECRET` + sentinel `legacy-secret`; audit trail para users admin actions; rate-limit no login).
+- Atualizar `project.yaml` para `tranche_status: done`, `active_tranche: T6` (e marcar próximo `stage_gate` apropriado).
+- Commit de closure + push.
 
 ### Histórico dos Ciclos anteriores
 - **Ciclo 1.** Schema + scrypt. Ver `state/t6-cycle-1-schema-scrypt.md`.
@@ -47,7 +38,8 @@ Replace the single-secret cockpit auth model with per-user accounts, roles (admi
 - **Ciclo 3.** `writeAuditLog` com `actorId` aditivo. Ver `state/t6-cycle-3-audit-actor-id.md`.
 - **Ciclo 4.** `requireCockpitSession` + proxy.ts com presença. Ver `state/t6-cycle-4-middleware-session.md`.
 - **Ciclo 5.** Login/logout API + página `/cockpit/login`. Ver `state/t6-cycle-5-login-logout.md`.
-- **Ciclo 6.** Actor propagado em 15 storage helpers + 12 rotas de cockpit; `actor_id` = userId (real) ou `'legacy-secret'` (fallback). Ver `state/t6-cycle-6-actor-propagation.md`.
+- **Ciclo 6.** Actor propagado em 15 storage helpers + 12 rotas. Ver `state/t6-cycle-6-actor-propagation.md`.
+- **Ciclo 7.** Users admin UI + layout com logout header + `requireCockpitAdmin` + last-admin protection + deactivation drop sessions. Ver `state/t6-cycle-7-users-admin-ui.md`.
 
 ## Acceptance bar
 Each cycle: artifacts present + local verifier passes + state note written + evidence JSON in `state/evidence/T6-cycle-N/`. `npm run test` stays green. `COCKPIT_SECRET` fallback remains functional throughout.
@@ -69,6 +61,7 @@ Each cycle: artifacts present + local verifier passes + state note written + evi
 - `state/t6-cycle-4-middleware-session.md`
 - `state/t6-cycle-5-login-logout.md`
 - `state/t6-cycle-6-actor-propagation.md`
+- `state/t6-cycle-7-users-admin-ui.md`
 - `project.yaml`
 - `ROADMAP.md`
 - `T6_auth_rbac_prompt.md`
