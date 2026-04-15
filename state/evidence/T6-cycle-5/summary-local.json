@@ -1,0 +1,62 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T16:52:06.414Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle5-oxBDqE\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "middlewareChecks": {
+    "exemptsLoginPage": true,
+    "exemptsLoginApi": true,
+    "exemptsLogoutApi": true,
+    "publicShortCircuit": true
+  },
+  "pageChecks": {
+    "usesCookieName": true,
+    "usesHttpOnly": true,
+    "usesSameSite": true,
+    "usesPath": true,
+    "usesMaxAge": true,
+    "callsVerifyPassword": true,
+    "callsCreateSession": true,
+    "redirectsToLeads": true
+  },
+  "scenarios": {
+    "A_valid_login": {
+      "status": 200,
+      "cookieFlags": {
+        "hasHttpOnly": true,
+        "hasSameSiteLax": true,
+        "hasPath": true,
+        "hasMaxAge": true,
+        "notSecure": true
+      },
+      "sessionRowWritten": true
+    },
+    "B_unknown_email": {
+      "status": 401,
+      "error": "invalid_credentials"
+    },
+    "C_wrong_password": {
+      "status": 401,
+      "error": "invalid_credentials"
+    },
+    "D_disabled_user": {
+      "status": 403,
+      "error": "user_disabled"
+    },
+    "E_session_after_login": {
+      "status": 200,
+      "legacy": false,
+      "userIdMatches": true
+    },
+    "F_logout_with_cookie": {
+      "status": 200,
+      "revoked": true,
+      "sessionGone": true,
+      "sessionEndpointAfterLogout": 401
+    },
+    "G_logout_without_cookie": {
+      "status": 200,
+      "revoked": false
+    }
+  },
+  "note": "T6 cycle 5: login/logout API + /cockpit/login page. Cookie flags verified; middleware exempts the public auth paths; session round-trip with Cycle 4 surface is green."
+}

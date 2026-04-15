@@ -24,6 +24,15 @@ function isPortalPublicRoute(pathname: string) {
   return pathname === '/portal/login';
 }
 
+function isCockpitPublicRoute(pathname: string) {
+  // Routes that must be reachable WITHOUT authentication so users can log in.
+  return (
+    pathname === '/cockpit/login' ||
+    pathname === '/api/cockpit/login' ||
+    pathname === '/api/cockpit/logout'
+  );
+}
+
 function hasCockpitSessionCookie(request: NextRequest) {
   // Edge middleware only checks for PRESENCE — the real session validation runs
   // inside route handlers via `requireCockpitSession` (Node runtime + SQLite).
@@ -92,6 +101,11 @@ export function proxy(request: NextRequest) {
   }
 
   if (!cockpitApiRoute && !cockpitPageRoute) {
+    return NextResponse.next();
+  }
+
+  // Login/logout endpoints must stay reachable even for unauthenticated clients.
+  if (isCockpitPublicRoute(pathname)) {
     return NextResponse.next();
   }
 

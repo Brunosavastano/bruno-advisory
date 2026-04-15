@@ -249,3 +249,16 @@
 - Regression: inner loop do test suite verde (13/13 lógicos; EPERM Windows permanece pré-existente).
 - Limitação assumida: nenhuma rota produtiva além de `/api/cockpit/session` consome o helper ainda. Propagação para os 19 callsites do `writeAuditLog` + rotas mutadoras é Cycle 6. Login/logout que populam o cookie são Cycle 5.
 - Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-15 — T6 Cycle 5 aceito: Login / logout API + page
+
+- Entregue: `POST /api/cockpit/login` (valida credenciais, emite sessão, seta cookie `cockpit_session` com `HttpOnly; SameSite=Lax; Path=/; Max-Age=<n>`; `Secure` condicional ao `x-forwarded-proto=https`), `POST /api/cockpit/logout` (revoga sessão no DB, expira cookie com `Max-Age=0`, idempotente), página `/cockpit/login` (server action mirror do padrão `/portal/login`, redireciona para `/cockpit/leads` em sucesso), e middleware (`proxy.ts`) estendido com `isCockpitPublicRoute` que exenta `/cockpit/login`, `/api/cockpit/login`, `/api/cockpit/logout` do gating.
+- Decisão de design: 401 genérico unificado para unknown-email e wrong-password (body `{ok:false, error:'invalid_credentials'}`). scrypt é constante no tempo → sem vazamento lateral. Disabled é 403 `user_disabled` (distinguível porque o atacante já passou na senha).
+- Decisão de design: `Secure` condicional ao header `x-forwarded-proto` em vez de `NODE_ENV==='production'`. Preserva HTTPS local atrás de tunnel/proxy; não quebra dev http.
+- Decisão de design: Set-Cookie montado como string manual em vez de `response.cookies.set(...)`. Portabilidade entre versões do Next e debug direto no teste. Web standard `Response` aceita `headers.set('set-cookie', ...)`.
+- Decisão de design: server action (tal qual `/portal/login`) em vez de fetch cliente-side. Login funciona com JS desabilitado; cookie setado no servidor sem round-trip extra. Erros via query string (aceitável para página de login; Cycle 7 revisita).
+- Decisão de design: exemption de login/logout no middleware em vez de nos route handlers. Rotas de entrada NUNCA devem passar pela checagem de sessão — são a porta. Lugar canônico para marcar como pública é o proxy.
+- Verificação: `infra/scripts/verify-t6-cycle-5-local.sh` com verifier TS em `infra/scripts/verifiers/t6-cycle-5.ts`. 7 cenários runtime (A-G) + 4 middleware source-checks + 8 page source-checks, todos verdes. Evidência `state/evidence/T6-cycle-5/summary-local.json` com `ok: true`.
+- Regression: inner loop do test suite verde (13/13 lógicos; EPERM Windows permanece pré-existente).
+- Limitação assumida: login sem rate-limit. Brute-force offline-style custa ~50-100ms por tentativa via scrypt N=16384 (~1k tentativas = 1min). Para PF premium com senhas longas é aceitável; T7 revisita se surgirem credenciais fracas.
+- Dono: Vulcanus. Aceito por Zeus.
