@@ -1,8 +1,9 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { portalInviteModel } from '@bruno-advisory/core';
+import { cockpitAuthModel, portalInviteModel } from '@bruno-advisory/core';
 
 const COCKPIT_TOKEN_COOKIE = 'cockpit_token';
+const COCKPIT_SESSION_COOKIE = cockpitAuthModel.cookie.name;
 const LOGIN_QUERY_PARAM = 'login';
 const TOKEN_QUERY_PARAM = 'token';
 const PORTAL_SESSION_COOKIE = portalInviteModel.cookie.name;
@@ -23,7 +24,17 @@ function isPortalPublicRoute(pathname: string) {
   return pathname === '/portal/login';
 }
 
+function hasCockpitSessionCookie(request: NextRequest) {
+  // Edge middleware only checks for PRESENCE — the real session validation runs
+  // inside route handlers via `requireCockpitSession` (Node runtime + SQLite).
+  // Middleware cannot open the DB here.
+  return Boolean(request.cookies.get(COCKPIT_SESSION_COOKIE)?.value);
+}
+
 function isAuthorizedCockpit(request: NextRequest, secret: string) {
+  if (hasCockpitSessionCookie(request)) {
+    return true;
+  }
   const authorization = request.headers.get('authorization');
   const bearerToken = authorization?.startsWith('Bearer ')
     ? authorization.slice('Bearer '.length)

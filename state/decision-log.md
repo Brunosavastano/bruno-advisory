@@ -237,3 +237,15 @@
 - Regression: inner loop do test suite verde (13/13 lógicos; ruído Windows EPERM no shutdown da tempdir é pré-existente, não bloqueia).
 - Limitação assumida: nenhum caller real exercita `actorId: string` ainda. O primeiro será o fallback `legacy-secret` em Ciclo 4 (middleware), seguido pelos 19 callsites em Ciclo 6.
 - Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-15 — T6 Cycle 4 aceito: Middleware + requireCockpitSession
+
+- Entregue: helper `requireCockpitSession(request)` em `apps/web/lib/cockpit-session.ts` (Node runtime), middleware `apps/web/proxy.ts` estendido para aceitar presença do cookie `cockpit_session` (não só `cockpit_token=SECRET`), e rota consumidora `GET /api/cockpit/session` que retorna o contexto serializado.
+- Decisão de design: retorno do helper é tagged union `{ok:true, context} | {ok:false, status, body}` — route handlers escrevem `if (!check.ok) return Response.json(check.body, {status})` sem try/catch. Mais legível que throw + catch central.
+- Decisão de design: middleware Edge só checa PRESENÇA de cookie (SQLite indisponível em Edge runtime). Validação real acontece no Node runtime dentro da rota via `findCockpitSessionByToken` + `isCockpitSessionValid`. Atacante com cookie arbitrário passa pelo middleware mas leva 401 da rota — custo zero.
+- Decisão de design: 401 de sessão inválida carrega `reason: 'session_expired' | 'user_disabled'`, mas 401 de "sem auth nenhuma" não carrega reason. Evita enumeração ("esse email existe mas está bloqueado") enquanto ainda permite UX decente ("sua sessão expirou").
+- Decisão de design: fallback `COCKPIT_SECRET` prevalece mesmo se o cliente mandar `cockpit_session` sujo (Cenário G). Garante que ninguém quebra acesso de emergência durante T6 enviando cookie aleatório. Fallback gera contexto com `role: 'operator'` (menor privilégio funcional), `userId: null`, `actorId: 'legacy-secret'`.
+- Verificação: `infra/scripts/verify-t6-cycle-4-local.sh` com verifier TS dedicado em `infra/scripts/verifiers/t6-cycle-4.ts`. 7 cenários runtime (A-G) + 4 middleware source-checks + 7 helper source-checks, todos verdes. Evidência `state/evidence/T6-cycle-4/summary-local.json` com `ok: true`.
+- Regression: inner loop do test suite verde (13/13 lógicos; EPERM Windows permanece pré-existente).
+- Limitação assumida: nenhuma rota produtiva além de `/api/cockpit/session` consome o helper ainda. Propagação para os 19 callsites do `writeAuditLog` + rotas mutadoras é Cycle 6. Login/logout que populam o cookie são Cycle 5.
+- Dono: Vulcanus. Aceito por Zeus.

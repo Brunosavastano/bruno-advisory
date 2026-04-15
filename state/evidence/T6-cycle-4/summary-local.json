@@ -1,0 +1,57 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T16:37:33.694Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle4-cIgqzV\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "middlewareChecks": {
+    "importsCockpitAuthModel": true,
+    "sessionCookieConst": true,
+    "presenceOnlyCheck": true,
+    "isAuthorizedChecksSession": true
+  },
+  "helperChecks": {
+    "exportsRequire": true,
+    "readsSessionCookie": true,
+    "readsLegacyCookie": true,
+    "setsLegacyActorId": true,
+    "usesIsValid": true,
+    "distinguishesDisabled": true,
+    "distinguishesExpired": true
+  },
+  "scenarios": {
+    "A_valid_session": {
+      "status": 200,
+      "legacy": false,
+      "role": "admin",
+      "actorIdEqualsUserId": true
+    },
+    "B_no_auth": {
+      "status": 401,
+      "body": {
+        "ok": false,
+        "error": "unauthorized"
+      }
+    },
+    "C_legacy_token": {
+      "status": 200,
+      "legacy": true,
+      "actorId": "legacy-secret",
+      "role": "operator"
+    },
+    "D_expired_session": {
+      "status": 401,
+      "reason": "session_expired"
+    },
+    "E_disabled_user": {
+      "status": 401,
+      "reason": "user_disabled"
+    },
+    "F_bogus_session": {
+      "status": 401
+    },
+    "G_bogus_session_plus_legacy": {
+      "status": 200,
+      "legacy": true
+    }
+  },
+  "note": "T6 cycle 4: requireCockpitSession validates session cookies against DB inside route handlers; middleware (proxy.ts) only checks presence. COCKPIT_SECRET fallback yields legacy context with actorId=legacy-secret."
+}

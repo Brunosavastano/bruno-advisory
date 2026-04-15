@@ -16,27 +16,28 @@ Replace the single-secret cockpit auth model with per-user accounts, roles (admi
 | 1 | Schema & scrypt foundation | ✅ accepted |
 | 2 | Bootstrap admin CLI | ✅ accepted |
 | 3 | Audit log actor_id signature | ✅ accepted |
-| 4 | Middleware + requireCockpitSession | 🔴 open |
-| 5 | Login / logout API + page | ⏳ pending |
+| 4 | Middleware + requireCockpitSession | ✅ accepted |
+| 5 | Login / logout API + page | 🔴 open |
 | 6 | Actor propagation (28 callsites) | ⏳ pending |
 | 7 | Users admin UI | ⏳ pending |
 | 8 | Regression + closure | ⏳ pending |
 
 ## Current cycle
-**Cycle 4 — Middleware + requireCockpitSession**
+**Cycle 5 — Login / logout API + page**
 
 ### Deliverables
-- Helper `requireCockpitSession(request)` em `apps/web/lib/cockpit-auth-server.ts` (ou similar) que roda DENTRO de route handlers (Node runtime), lê o cookie de sessão, valida via `findCockpitSessionByToken` + `isCockpitSessionValid`, devolve `{ userId, role }` ou 401/410. Jamais é chamado em `middleware.ts` (Edge runtime não pode tocar SQLite).
-- Middleware Edge mantém apenas checagem barata: presença de cookie OU `COCKPIT_SECRET`. Se nenhum, redireciona/401. Se tem cookie, passa adiante — route handler valida de verdade.
-- Fallback `COCKPIT_SECRET`: quando o middleware aceita via secret (sem cookie de sessão), o route handler detecta essa condição e passa `actorId: 'legacy-secret'` às chamadas de `writeAuditLog`. Primeira rota a receber esse tratamento fica a critério do ciclo (provavelmente uma rota de cockpit leve).
-- `infra/scripts/verify-t6-cycle-4-local.sh` + `infra/scripts/verifiers/t6-cycle-4.ts` — assert: (a) `requireCockpitSession` retorna contexto válido com cookie de sessão real; (b) retorna 401 sem cookie e sem secret; (c) com secret mas sem cookie, retorna contexto com `role: 'operator'` (fallback) e o caller que escrever audit_log grava `actor_id: 'legacy-secret'`; (d) sessão expirada é rejeitada (401); (e) sessão de usuário desativado é rejeitada.
-- `state/evidence/T6-cycle-4/summary-local.json`.
-- State note: `state/t6-cycle-4-middleware-session.md`.
+- `POST /api/cockpit/login` em `apps/web/app/api/cockpit/login/route.ts`: recebe `{ email, password }`, valida via `findCockpitUserByEmail` + `verifyCockpitPassword`, cria sessão com `createCockpitSession`, seta cookie `cockpit_session` com `{ httpOnly: true, sameSite: 'lax', path: '/', secure: (prod), maxAge: sessionExpiryDays * 24 * 3600 }`, retorna `{ ok, userId, role, expiresAt }`. Respostas canônicas: 200 sucesso, 400 payload inválido, 401 credenciais erradas, 403 usuário desativado.
+- `POST /api/cockpit/logout` em `apps/web/app/api/cockpit/logout/route.ts`: lê o cookie de sessão, chama `deleteCockpitSessionByToken`, expira o cookie via `Set-Cookie: cockpit_session=; Max-Age=0`, retorna `{ ok: true }`. Idempotente — logout sem cookie retorna 200.
+- Página `/cockpit/login` (`apps/web/app/cockpit/login/page.tsx`): form mínimo não-autenticado (não é gated pela proxy — precisa ajuste no matcher ou em `isCockpitPageRoute` para excluir este path do gating), posta JSON para `/api/cockpit/login`, em sucesso redireciona para `/cockpit`, em erro mostra mensagem em linha.
+- `infra/scripts/verify-t6-cycle-5-local.sh` + `infra/scripts/verifiers/t6-cycle-5.ts` — cenários: (a) login correto → 200 + cookie setado + sessão existe no DB; (b) login com email inexistente → 401; (c) login com senha errada → 401; (d) login com usuário inativo → 403; (e) logout remove a sessão do DB e expira o cookie; (f) após login, `GET /api/cockpit/session` retorna contexto real (integração com Cycle 4).
+- `state/evidence/T6-cycle-5/summary-local.json`.
+- State note: `state/t6-cycle-5-login-logout.md`.
 
 ### Histórico dos Ciclos anteriores
-- **Ciclo 1.** Entregue. Schema (`cockpit_users`, `cockpit_sessions`, coluna `audit_log.actor_id`), hashing canônico com scrypt no modelo do core, types públicos e read-path do audit já com `actorId`. Ver `state/t6-cycle-1-schema-scrypt.md`.
-- **Ciclo 2.** Entregue. CLI `scripts/bootstrap-admin.ts` + rota self-locking `apps/web/app/api/cockpit/bootstrap-admin/route.ts`. Idempotência via snapshot diff; lockout via 409 `already_bootstrapped`. Ver `state/t6-cycle-2-bootstrap-admin.md`.
-- **Ciclo 3.** Entregue. Assinatura aditiva `actorId?: string | null` em `writeAuditLog`, INSERT atualizado, 19 callsites intactos. Read-path já entrega `actorId`; verifier cobre source+runtime+round-trip. Ver `state/t6-cycle-3-audit-actor-id.md`.
+- **Ciclo 1.** Schema + scrypt. `cockpit_users`, `cockpit_sessions`, `audit_log.actor_id`. Ver `state/t6-cycle-1-schema-scrypt.md`.
+- **Ciclo 2.** CLI de bootstrap + rota self-locking `/api/cockpit/bootstrap-admin`. Ver `state/t6-cycle-2-bootstrap-admin.md`.
+- **Ciclo 3.** `writeAuditLog` com `actorId` aditivo; 19 callsites intactos. Ver `state/t6-cycle-3-audit-actor-id.md`.
+- **Ciclo 4.** Helper `requireCockpitSession`, proxy.ts estendido para presença de cookie, rota `GET /api/cockpit/session`. 7 cenários verdes incluindo fallback legado com `actorId='legacy-secret'`. Ver `state/t6-cycle-4-middleware-session.md`.
 
 ## Acceptance bar
 Each cycle: artifacts present + local verifier passes + state note written + evidence JSON in `state/evidence/T6-cycle-N/`. `npm run test` stays green. `COCKPIT_SECRET` fallback remains functional throughout.
@@ -55,6 +56,7 @@ Each cycle: artifacts present + local verifier passes + state note written + evi
 - `state/t6-cycle-1-schema-scrypt.md`
 - `state/t6-cycle-2-bootstrap-admin.md`
 - `state/t6-cycle-3-audit-actor-id.md`
+- `state/t6-cycle-4-middleware-session.md`
 - `project.yaml`
 - `ROADMAP.md`
 - `T6_auth_rbac_prompt.md`
