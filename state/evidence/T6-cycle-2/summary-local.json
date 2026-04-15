@@ -1,11 +1,11 @@
 {
   "ok": true,
-  "checkedAt": "2026-04-15T14:42:03.901Z",
-  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle2-gWjjXz\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "checkedAt": "2026-04-15T18:09:20.351Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle2-qxdSM6\\data\\dev\\bruno-advisory-dev.sqlite3",
   "firstRun": {
     "exitCode": 0,
-    "stdoutHead": "[bootstrap-admin] Created admin bruno+t6-cycle2@example.com (cdcd1d5d-29ee-4fc6-97ca-b63b12d1a373). Cockpit bootstrap is now locked. | ",
-    "createdUserId": "cdcd1d5d-29ee-4fc6-97ca-b63b12d1a373",
+    "stdoutHead": "[bootstrap-admin] Created admin bruno+t6-cycle2@example.com (6569ad64-4c7d-46ae-addf-26b741d09a7c). Cockpit bootstrap is now locked. | ",
+    "createdUserId": "6569ad64-4c7d-46ae-addf-26b741d09a7c",
     "createdEmail": "bruno+t6-cycle2@example.com",
     "createdRole": "admin",
     "adminCountAfter": 1,
@@ -13,7 +13,7 @@
   },
   "secondRun": {
     "exitCode": 2,
-    "stderrHead": "(node:2608) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/bruno/AppData/Local/Temp/bruno-advisory/scripts/bootstrap-admin.ts is not specified and it doesn't parse as CommonJS. | Reparsing as ES module because module syntax was detected. This incurs a performance overhead.",
+    "stderrHead": "(node:34832) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/bruno/AppData/Local/Temp/bruno-advisory/scripts/bootstrap-admin.ts is not specified and it doesn't parse as CommonJS. | Reparsing as ES module because module syntax was detected. This incurs a performance overhead.",
     "rejected": true,
     "unchangedUserId": true,
     "unchangedPasswordHash": true,

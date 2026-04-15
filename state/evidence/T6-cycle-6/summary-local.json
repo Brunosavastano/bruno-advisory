@@ -1,13 +1,13 @@
 {
   "ok": true,
-  "checkedAt": "2026-04-15T17:49:21.727Z",
-  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle6-EjpMN3\\data\\dev\\bruno-advisory-dev.sqlite3",
-  "adminUserId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e",
+  "checkedAt": "2026-04-15T18:10:44.780Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle6-3maHEZ\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "adminUserId": "3e4514e2-ff1d-41ed-9c3f-2480dfd34982",
   "moduleResults": {
     "leads_commercial_stage": {
       "real": {
         "status": 200,
-        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+        "actorId": "3e4514e2-ff1d-41ed-9c3f-2480dfd34982"
       },
       "legacy": {
         "status": 200,
@@ -17,7 +17,7 @@
     "billing_record": {
       "real": {
         "status": 201,
-        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+        "actorId": "3e4514e2-ff1d-41ed-9c3f-2480dfd34982"
       },
       "legacy": {
         "status": 201,
@@ -27,7 +27,7 @@
     "portal_invite_create": {
       "real": {
         "status": 200,
-        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+        "actorId": "3e4514e2-ff1d-41ed-9c3f-2480dfd34982"
       },
       "legacy": {
         "status": 200,
@@ -37,7 +37,7 @@
     "research_workflows_status": {
       "real": {
         "status": 200,
-        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+        "actorId": "3e4514e2-ff1d-41ed-9c3f-2480dfd34982"
       },
       "legacy": {
         "status": 200,
@@ -47,7 +47,7 @@
     "memos_status": {
       "real": {
         "status": 200,
-        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+        "actorId": "3e4514e2-ff1d-41ed-9c3f-2480dfd34982"
       },
       "legacy": {
         "status": 200,
@@ -57,7 +57,7 @@
     "recommendations_publish": {
       "real": {
         "status": 200,
-        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+        "actorId": "3e4514e2-ff1d-41ed-9c3f-2480dfd34982"
       },
       "legacy": {
         "status": 200,
@@ -67,7 +67,7 @@
     "documents_review": {
       "real": {
         "status": 200,
-        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+        "actorId": "3e4514e2-ff1d-41ed-9c3f-2480dfd34982"
       },
       "legacy": {
         "status": 200,

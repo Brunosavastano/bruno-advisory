@@ -4,7 +4,7 @@
 2026-04-15
 
 ## Status
-T6 is OPEN.
+T6 is CLOSED (accepted 2026-04-15). See `state/t6-closure.md`.
 
 ## Tranche objective
 Replace the single-secret cockpit auth model with per-user accounts, roles (admin/operator/viewer), session-based login, and individualized audit log traceability. Preserve `COCKPIT_SECRET` fallback during this tranche (removed in T7).
@@ -20,26 +20,27 @@ Replace the single-secret cockpit auth model with per-user accounts, roles (admi
 | 5 | Login / logout API + page | ✅ accepted |
 | 6 | Actor propagation (19 callsites) | ✅ accepted |
 | 7 | Users admin UI | ✅ accepted |
-| 8 | Regression + closure | 🔴 open |
+| 8 | Regression + closure | ✅ accepted |
 
 ## Current cycle
-**Cycle 8 — Regression + closure**
+Nenhum. T6 fechada.
 
-### Deliverables
-- Reconciliar o contract-guard do Cycle 3 verifier (`callsitesWithActorId === 0`): Cycle 6 quebrou-o por design; substituir pela assertion "callsites > 0 && coerência de signature" OU retirar a assertion explicitamente com comentário "quebrado por Cycle 6".
-- Rodar `npm run typecheck`, `npm run test` e os 7 verifiers de cycle em sequência — atualizar `state/evidence/T6-cycle-*/summary-local.json` se necessário — e confirmar todos `ok: true`.
-- `state/t6-closure.md`: critérios do prompt/roadmap de T6 cumpridos, evidência consolidada, deferrals explícitos (T7: remover `COCKPIT_SECRET` + sentinel `legacy-secret`; audit trail para users admin actions; rate-limit no login).
-- Atualizar `project.yaml` para `tranche_status: done`, `active_tranche: T6` (e marcar próximo `stage_gate` apropriado).
-- Commit de closure + push.
+### Cycle 8 deliverables entregues
+- Contract-guard do Cycle 3 verifier reconciliado: assertion temporal (`callsitesWithActorId === 0`) retirada com comentário; runtime check da rota de stage agora usa fallback legacy e valida `actor_id='legacy-secret'`.
+- `state/t6-closure.md` escrito.
+- `project.yaml` atualizado para `tranche_status: done`, `stage_gate: auth_hardening_done`.
+- Todos 7 verifiers rodaram verde em sequência. `npm run typecheck` limpo. Inner test suite 13/13 lógicos.
+- Commit de closure pushado.
 
-### Histórico dos Ciclos anteriores
-- **Ciclo 1.** Schema + scrypt. Ver `state/t6-cycle-1-schema-scrypt.md`.
-- **Ciclo 2.** CLI de bootstrap + rota self-locking. Ver `state/t6-cycle-2-bootstrap-admin.md`.
-- **Ciclo 3.** `writeAuditLog` com `actorId` aditivo. Ver `state/t6-cycle-3-audit-actor-id.md`.
-- **Ciclo 4.** `requireCockpitSession` + proxy.ts com presença. Ver `state/t6-cycle-4-middleware-session.md`.
-- **Ciclo 5.** Login/logout API + página `/cockpit/login`. Ver `state/t6-cycle-5-login-logout.md`.
-- **Ciclo 6.** Actor propagado em 15 storage helpers + 12 rotas. Ver `state/t6-cycle-6-actor-propagation.md`.
-- **Ciclo 7.** Users admin UI + layout com logout header + `requireCockpitAdmin` + last-admin protection + deactivation drop sessions. Ver `state/t6-cycle-7-users-admin-ui.md`.
+### Histórico consolidado (8 ciclos)
+- **Ciclo 1.** Schema (`cockpit_users`, `cockpit_sessions`, `audit_log.actor_id`) + scrypt canônico. Ver `state/t6-cycle-1-schema-scrypt.md`.
+- **Ciclo 2.** CLI `scripts/bootstrap-admin.ts` + rota self-locking `/api/cockpit/bootstrap-admin`. Ver `state/t6-cycle-2-bootstrap-admin.md`.
+- **Ciclo 3.** `writeAuditLog` com `actorId?: string | null` aditivo. Ver `state/t6-cycle-3-audit-actor-id.md`.
+- **Ciclo 4.** Helper `requireCockpitSession` + proxy.ts presence-only + `/api/cockpit/session`. Ver `state/t6-cycle-4-middleware-session.md`.
+- **Ciclo 5.** `POST /api/cockpit/login` + `POST /api/cockpit/logout` + página `/cockpit/login`. Ver `state/t6-cycle-5-login-logout.md`.
+- **Ciclo 6.** `actorId` propagado em 15 helpers + 12 rotas. Ver `state/t6-cycle-6-actor-propagation.md`.
+- **Ciclo 7.** Users admin UI + API + `requireCockpitAdmin` + cockpit layout. Ver `state/t6-cycle-7-users-admin-ui.md`.
+- **Ciclo 8.** Regression + closure. Ver `state/t6-closure.md`.
 
 ## Acceptance bar
 Each cycle: artifacts present + local verifier passes + state note written + evidence JSON in `state/evidence/T6-cycle-N/`. `npm run test` stays green. `COCKPIT_SECRET` fallback remains functional throughout.
@@ -62,6 +63,7 @@ Each cycle: artifacts present + local verifier passes + state note written + evi
 - `state/t6-cycle-5-login-logout.md`
 - `state/t6-cycle-6-actor-propagation.md`
 - `state/t6-cycle-7-users-admin-ui.md`
+- `state/t6-closure.md`
 - `project.yaml`
 - `ROADMAP.md`
 - `T6_auth_rbac_prompt.md`

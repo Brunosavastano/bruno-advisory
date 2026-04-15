@@ -1,7 +1,7 @@
 {
   "ok": true,
-  "checkedAt": "2026-04-15T14:22:28.840Z",
-  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle1-hcZhQs\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "checkedAt": "2026-04-15T18:08:52.712Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle1-IQTL0w\\data\\dev\\bruno-advisory-dev.sqlite3",
   "checks": {
     "cockpitUsersColumns": [
       "created_at",

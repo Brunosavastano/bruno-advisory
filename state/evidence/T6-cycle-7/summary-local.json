@@ -1,7 +1,7 @@
 {
   "ok": true,
-  "checkedAt": "2026-04-15T18:00:45.185Z",
-  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle7-DhCpjE\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "checkedAt": "2026-04-15T18:11:14.177Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle7-DVcmXz\\data\\dev\\bruno-advisory-dev.sqlite3",
   "sourceChecks": {
     "requireAdminExported": true,
     "requireAdminReturns403": true,
@@ -30,7 +30,7 @@
     },
     "E_admin_create": {
       "status": 201,
-      "newUserId": "cf29099d-36bf-418e-93e9-f86b137e21dd"
+      "newUserId": "a732c343-a05c-4191-8511-32fba1f7aaed"
     },
     "F_duplicate_email": {
       "status": 409,

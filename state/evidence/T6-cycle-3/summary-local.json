@@ -1,14 +1,15 @@
 {
   "ok": true,
-  "checkedAt": "2026-04-15T16:28:09.404Z",
-  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle3-7vZ2ST\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "checkedAt": "2026-04-15T18:08:00.051Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle3-HHWjnG\\data\\dev\\bruno-advisory-dev.sqlite3",
   "checks": {
     "signatureHasActorId": true,
     "insertIncludesActorIdColumn": true,
     "insertPassesNormalizedActorId": true,
-    "callsiteCount": 19,
-    "callsitesWithActorId": 0,
+    "callsiteCount": 20,
+    "callsitesWithActorId": 11,
     "callsiteFiles": [
+      "apps\\web\\lib\\cockpit-session.ts",
       "apps\\web\\lib\\storage\\billing.ts",
       "apps\\web\\lib\\storage\\checklist.ts",
       "apps\\web\\lib\\storage\\documents.ts",
@@ -18,14 +19,14 @@
       "apps\\web\\lib\\storage\\recommendations.ts",
       "apps\\web\\lib\\storage\\research-workflows.ts"
     ],
-    "probeLeadId": "0aa6b82c-ef38-47da-9e79-a32ef2dcc829",
+    "probeLeadId": "98de8f45-3d41-4a44-b96b-27efaea9ef5f",
     "existingCallerAuditRowCount": 1,
-    "existingCallerActorIdAllNull": true,
     "existingCallerActions": [
       "commercial_stage_changed"
     ],
+    "stageCallerActorIdIsLegacy": true,
     "readPathHasActorIdField": true,
-    "readPathAllNullForExistingCallers": true,
+    "readPathReturnsLegacyForStage": true,
     "probeRowActorIdRoundTrip": true,
     "probeRowAction": "cycle3_probe_action",
     "explicitNullRoundTrip": true

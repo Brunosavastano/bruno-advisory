@@ -1,7 +1,7 @@
 {
   "ok": true,
-  "checkedAt": "2026-04-15T16:52:06.414Z",
-  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle5-oxBDqE\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "checkedAt": "2026-04-15T18:10:13.602Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle5-1RMU8H\\data\\dev\\bruno-advisory-dev.sqlite3",
   "middlewareChecks": {
     "exemptsLoginPage": true,
     "exemptsLoginApi": true,

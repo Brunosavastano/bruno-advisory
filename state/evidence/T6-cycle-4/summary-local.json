@@ -1,7 +1,7 @@
 {
   "ok": true,
-  "checkedAt": "2026-04-15T16:37:33.694Z",
-  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle4-cIgqzV\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "checkedAt": "2026-04-15T18:09:46.391Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle4-9HRlw8\\data\\dev\\bruno-advisory-dev.sqlite3",
   "middlewareChecks": {
     "importsCockpitAuthModel": true,
     "sessionCookieConst": true,

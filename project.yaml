@@ -12,8 +12,8 @@ agents:
 
 state:
   active_tranche: T6
-  tranche_status: active
-  stage_gate: auth_hardening
+  tranche_status: done
+  stage_gate: auth_hardening_done
   release_mode: shadow
   prod_ready: true
 

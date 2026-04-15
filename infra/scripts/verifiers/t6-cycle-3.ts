@@ -106,9 +106,9 @@ checks.callsiteFiles = callsiteFiles.sort();
 if (callsiteCount < 10) {
   throw new Error(`expected at least 10 writeAuditLog callsites, found ${callsiteCount}`);
 }
-if (callsitesWithActorId !== 0) {
-  throw new Error(`Cycle 3 contract violated: ${callsitesWithActorId} callsites already pass actorId (should be 0; Cycle 6 propagates).`);
-}
+// NOTE: Cycle 3 originally asserted `callsitesWithActorId === 0` as a temporal
+// contract ("no caller propagates actorId yet"). Cycle 6 legitimately broke
+// this by design. The assertion is retired and the count is reported only.
 
 // ---------- 2. Trigger schema + existing callers leave actor_id NULL ----------
 async function json(res: Response) {
@@ -144,13 +144,19 @@ const createdLeadId = (intakeResp.body as { leadId?: string }).leadId;
 if (!createdLeadId) throw new Error('intake probe did not return leadId');
 checks.probeLeadId = createdLeadId;
 
-// Trigger an existing writeAuditLog caller — commercial stage transition writes
-// an audit_log row via writeAuditLog({ actorType: 'operator', ... }) WITHOUT actorId.
+// Trigger an existing writeAuditLog caller via the compiled stage route.
+// Post-Cycle-6, the stage route calls requireCockpitSession — we supply the
+// COCKPIT_SECRET fallback cookie so the route writes actor_id='legacy-secret'.
+// This proves the end-to-end chain (route → helper → writeAuditLog → audit_log
+// column) is wired correctly in the post-Cycle-6 world.
+const CYCLE3_SECRET = 'cycle3-legacy-secret-xyz';
+process.env.COCKPIT_SECRET = CYCLE3_SECRET;
+
 const stageRoute = loadUserland('api/cockpit/leads/[leadId]/commercial-stage');
 const stageResp = await json(await stageRoute.POST(
   new Request(`http://localhost/api/cockpit/leads/${createdLeadId}/commercial-stage`, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    headers: { 'content-type': 'application/json', cookie: `cockpit_token=${CYCLE3_SECRET}` },
     body: JSON.stringify({ toStage: 'contato_inicial', changedBy: 'cycle3_probe_operator' })
   }),
   { params: Promise.resolve({ leadId: createdLeadId }) }
@@ -165,25 +171,25 @@ const rowsForLead = inspect.prepare(`SELECT id, actor_id, action FROM audit_log 
 inspect.close();
 
 checks.existingCallerAuditRowCount = rowsForLead.length;
-checks.existingCallerActorIdAllNull = rowsForLead.every((r) => r.actor_id === null);
 checks.existingCallerActions = rowsForLead.map((r) => r.action).sort();
+// Post-Cycle-6: legacy fallback path writes actor_id='legacy-secret'.
+checks.stageCallerActorIdIsLegacy = rowsForLead.every((r) => r.actor_id === 'legacy-secret');
 if (rowsForLead.length === 0) {
   throw new Error('stage transition did not write any audit_log rows');
 }
-if (!checks.existingCallerActorIdAllNull) {
-  const offender = rowsForLead.find((r) => r.actor_id !== null);
-  throw new Error(`Cycle 3 contract violated: existing caller wrote actor_id="${String(offender?.actor_id)}" (should be NULL).`);
+if (!checks.stageCallerActorIdIsLegacy) {
+  const offender = rowsForLead.find((r) => r.actor_id !== 'legacy-secret');
+  throw new Error(`expected actor_id='legacy-secret' (legacy fallback), got "${String(offender?.actor_id)}"`);
 }
 
-// ---------- 3. Read-path round-trip returns actorId: null ----------
+// ---------- 3. Read-path round-trip includes actorId field ----------
 const auditRoute = loadUserland('api/cockpit/audit-log');
 const listResp = await json(await auditRoute.GET(new Request(`http://localhost/api/cockpit/audit-log?leadId=${encodeURIComponent(createdLeadId)}&limit=50`)));
 if (listResp.status !== 200) throw new Error(`audit-log GET failed: ${listResp.status}`);
 const readEntries = (listResp.body as { entries: Array<{ id: string; actorId: string | null }> }).entries;
 checks.readPathHasActorIdField = readEntries.every((e) => Object.prototype.hasOwnProperty.call(e, 'actorId'));
-checks.readPathAllNullForExistingCallers = readEntries.every((e) => e.actorId === null);
+checks.readPathReturnsLegacyForStage = readEntries.filter((e) => e.id).every((e) => e.actorId === 'legacy-secret' || e.actorId === null);
 if (!checks.readPathHasActorIdField) throw new Error('listAuditLog response missing actorId field on at least one entry');
-if (!checks.readPathAllNullForExistingCallers) throw new Error('read-path returned non-null actorId for intake-created rows (Cycle 3 contract violated)');
 
 // ---------- 4. Schema accepts strings; read-path round-trips the value ----------
 // Simulate a Cycle 4+ caller by writing a row directly via DatabaseSync using the same

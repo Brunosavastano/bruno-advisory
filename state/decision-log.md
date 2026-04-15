@@ -289,3 +289,12 @@
 - Regression: inner test suite verde (13/13 lógicos; EPERM Windows permanece pré-existente).
 - Limitação assumida: sem CSRF explícito nas server actions (Next App Router tem proteção built-in via Origin check, mas é opaca); sem rate-limit no login; layout refetch session a cada page render (cacheável em futura iteração); last-admin protection tem janela de corrida teórica (dois admins tentando se demote simultâneamente).
 - Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-15 — T6 fechada: Cockpit Auth & RBAC entregue
+
+- Entregue: os 8 ciclos planejados fecharam todos verdes. `project.yaml` atualizado para `tranche_status: done`, `stage_gate: auth_hardening_done`. Fechamento documentado em `state/t6-closure.md`.
+- Resultado: cockpit agora roda com contas individuais (scrypt + session cookie + RBAC admin/operator/viewer), auditoria individualizada via `audit_log.actor_id` e UI admin para gestão de usuários. `COCKPIT_SECRET` fallback permanece ativo (sentinel `legacy-secret` marca seu uso) — removido em T7.
+- Cycle 8 especificamente: reconciliou o contract-guard do Cycle 3 verifier (`callsitesWithActorId === 0`) que era temporal e foi legitimamente quebrado por Cycle 6 — assertion removida, runtime check agora prova o pipeline pós-Cycle-6 via fallback legacy. Rodou 7 verifiers em sequência (todos `ok: true`), typecheck limpo, inner test suite 13/13 lógicos.
+- Deferrals explícitos documentados em `state/t6-closure.md`: T7 remove `COCKPIT_SECRET` + sentinel; T7+ adiciona audit trail de users admin, rate-limit no login, CSRF explícito, password reset self-service, 2FA, SSO.
+- Abertura de T7 depende de autorização explícita de Bruno.
+- Dono: Vulcanus. Aceito por Zeus.
