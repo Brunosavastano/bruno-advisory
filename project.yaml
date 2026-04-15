@@ -11,9 +11,9 @@ agents:
   additional_openclaws_allowed_before_t3: false
 
 state:
-  active_tranche: T5
-  tranche_status: done
-  stage_gate: go-live
+  active_tranche: T6
+  tranche_status: active
+  stage_gate: auth_hardening
   release_mode: shadow
   prod_ready: true
 

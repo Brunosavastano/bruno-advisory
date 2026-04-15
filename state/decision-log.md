@@ -195,3 +195,13 @@
 - Portal invisibility comprovado: flags não aparecem em dashboard, ledger nem documents.
 - Evidência: `state/evidence/T4-cycle-5/summary-local.json` (ok: true).
 - Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-15 — T6 aberta: Cockpit Auth & RBAC
+
+- T6 substitui o modelo de autenticação do cockpit baseado em segredo global único por contas individuais com papéis (admin/operator/viewer) e rastreabilidade individualizada.
+- Motivo: single secret impede rastreabilidade individual (CVM), revogação granular (LGPD), e separação de papéis. Hoje aceitável porque só Bruno usa, mas quebra na primeira expansão.
+- Escopo: schema + scrypt nativo + middleware + login + RBAC + admin UI + audit actor propagation.
+- Fallback `COCKPIT_SECRET` preservado durante T6 (sentinel `actor_id='legacy-secret'`). Remoção em T7.
+- Anti-escopo: 2FA, OAuth, SSO, reset por email, rate limiting, refresh tokens, remoção do secret.
+- Restrição técnica: middleware Next.js roda em Edge runtime e não pode chamar SQLite. Validação real acontece dentro das route handlers via `requireCockpitSession()`, não no proxy.
+- 8 ciclos planejados. Bruno autorizou. Dono: Vulcanus.

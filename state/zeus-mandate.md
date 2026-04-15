@@ -1,47 +1,53 @@
-# Zeus Mandate — T4 Portal do Cliente
+# Zeus Mandate — T6 Cockpit Auth & RBAC
 
 ## Date
-2026-04-14 05:58 GMT-3
+2026-04-15
 
 ## Status
-T4 is OPEN.
+T6 is OPEN.
 
 ## Tranche objective
-Deliver a private client portal with minimum functional set for onboarding and ongoing relationship.
+Replace the single-secret cockpit auth model with per-user accounts, roles (admin/operator/viewer), session-based login, and individualized audit log traceability. Preserve `COCKPIT_SECRET` fallback during this tranche (removed in T7).
 
 ## Cycles
 
 | # | Name | Status |
 |---|------|--------|
-| 1 | Client auth skeleton (invite-code) | ✅ accepted |
-| 2 | Client dashboard + onboarding checklist | ✅ accepted |
-| 3 | Document upload | ✅ accepted |
-| 4 | Recommendation ledger | ✅ accepted |
-| 5 | Internal pending flags + Bruno overview | ✅ accepted |
-| 6 | End-to-end proof + push + close | 🔴 open |
+| 1 | Schema & scrypt foundation | 🔴 open |
+| 2 | Bootstrap admin CLI | ⏳ pending |
+| 3 | Audit log actor_id signature | ⏳ pending |
+| 4 | Middleware + requireCockpitSession | ⏳ pending |
+| 5 | Login / logout API + page | ⏳ pending |
+| 6 | Actor propagation (28 callsites) | ⏳ pending |
+| 7 | Users admin UI | ⏳ pending |
+| 8 | Regression + closure | ⏳ pending |
 
 ## Current cycle
-**Cycle 6 — End-to-end proof + push + close**
+**Cycle 1 — Schema & scrypt foundation**
 
 ### Deliverables
-- E2E verifier: client logs in → completes checklist item → uploads document → sees ledger entry
-- Operator verifier: creates invite → sees upload → creates recommendation → views pending flags
-- git add + commit + push all T4 work
-- Update `project.yaml`: `tranche_status: done`
-- Create `state/t4-closure.md`
-- Create `state/evidence/T4-cycle-6/summary-local.json`
+- `packages/core/src/cockpit-auth-model.ts` (canonical roles enum, TTL constant)
+- `apps/web/lib/storage/cockpit-auth.ts` (scrypt helpers, user CRUD, session CRUD)
+- DDL + `ensureCockpitAuthColumns()` in `apps/web/lib/storage/db.ts`
+- Types added to `apps/web/lib/storage/types.ts`
+- Verifier: `infra/scripts/verify-t6-cycle-1-local.sh`
+- Evidence: `state/evidence/T6-cycle-1/summary-local.json` with `{ok, checkedAt, scryptRoundTrip, userCreated, sessionCreated}`
+- State note: `state/t6-cycle-1-schema-scrypt.md`
 
 ## Acceptance bar
-Each cycle: artifacts present + local verifier passes + state note written + evidence JSON in `state/evidence/T4-cycle-N/`.
+Each cycle: artifacts present + local verifier passes + state note written + evidence JSON in `state/evidence/T6-cycle-N/`. `npm run test` stays green. `COCKPIT_SECRET` fallback remains functional throughout.
 
 ## Rules
-- No external auth providers without Bruno's approval
-- No external file storage without Bruno's approval
-- No new npm dependencies without Bruno's approval
-- Client routes isolated from cockpit routes
+- No external auth/crypto dependencies (bcrypt, argon2, JWT libs — all forbidden; use node:crypto)
+- No middleware DB calls (Edge runtime incompatibility)
+- No callsite changes in cycles 1–3 (additive work only)
+- Cookie hygiene: httpOnly + sameSite=lax + path=/ explicit
+- `COCKPIT_SECRET` stays active all of T6
+- No VLH dependency of any kind
 
 ## Canonical references
-- `state/t4-opening.md`
+- `state/t6-opening.md`
+- `state/t6-prompt.md`
 - `project.yaml`
 - `ROADMAP.md`
-- `T4_portal_prompt.md`
+- `T6_auth_rbac_prompt.md`
