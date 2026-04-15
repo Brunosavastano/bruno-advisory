@@ -1,0 +1,71 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T04:09:24.730Z",
+  "leadA": "1979a158-2d83-46a7-a9af-bbc32b5e36b4",
+  "leadB": "2bbf1180-3374-46c0-967c-000812a10ab3",
+  "taskId": "c2f57b98-623f-44de-a68b-0e743ae252f5",
+  "billingRecordId": "b5337409-07dd-4c67-ad50-1734cf8d7e20",
+  "firstChargeId": "ea4c616b-e02b-46d0-9b1f-cc1740a8399a",
+  "settlementId": "c6ecc206-2579-4fe1-9dc4-5850cd4532d4",
+  "progressedChargeId": "8802e08c-ae6b-4b20-9005-ca5880b097fa",
+  "inviteAId": "422e9d94-ae05-4fbd-bd72-84893fd26c6f",
+  "inviteBId": "f1453cd1-a524-4077-b9c6-bac7724ebcba",
+  "memoInReview": {
+    "id": "19ebf35f-5c5e-4e0d-94f0-2656b0fe437d",
+    "leadId": "1979a158-2d83-46a7-a9af-bbc32b5e36b4",
+    "researchWorkflowId": null,
+    "title": "Memo auditado",
+    "body": "Memo pronto para revisão.",
+    "status": "pending_review",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:09:24.712Z",
+    "updatedAt": "2026-04-15T04:09:24.719Z"
+  },
+  "approvedMemo": {
+    "id": "19ebf35f-5c5e-4e0d-94f0-2656b0fe437d",
+    "leadId": "1979a158-2d83-46a7-a9af-bbc32b5e36b4",
+    "researchWorkflowId": null,
+    "title": "Memo auditado",
+    "body": "Memo pronto para revisão.",
+    "status": "approved",
+    "reviewRejectionReason": null,
+    "reviewedAt": "2026-04-15T04:09:24.722Z",
+    "createdAt": "2026-04-15T04:09:24.712Z",
+    "updatedAt": "2026-04-15T04:09:24.722Z"
+  },
+  "dbPath": "/tmp/ba-t5-cycle4-7XFoat/data/dev/bruno-advisory-dev.sqlite3",
+  "leadAAuditActionCount": 10,
+  "leadAActions": [
+    "memo_approved",
+    "portal_session_deleted",
+    "portal_session_created",
+    "portal_invite_created",
+    "charge_progressed",
+    "charge_settled",
+    "charge_created",
+    "billing_record_activated",
+    "billing_record_created",
+    "commercial_stage_changed"
+  ],
+  "leadBAuditActions": [
+    "portal_invite_created"
+  ],
+  "routeChecks": {
+    "fullAuditEntryCount": 11,
+    "filteredAuditEntryCount": 10,
+    "leadAuditEntryCount": 10,
+    "filteredAuditOnlyLeadA": true,
+    "leadAuditOnlyLeadA": true
+  },
+  "surfaceChecks": {
+    "auditLogApiRoutePresent": true,
+    "leadAuditLogApiRoutePresent": true,
+    "auditLogPagePresent": true,
+    "auditLogPageHasFilter": true,
+    "leadDetailUsesUnifiedAuditLog": true,
+    "auditLogRouteSupportsLeadFilter": true,
+    "leadAuditLogRouteUsesLeadId": true
+  },
+  "note": "HTTP bind may be blocked in this sandbox (listen EPERM); verification ran by invoking compiled route handlers directly against an isolated temp-root SQLite database."
+}

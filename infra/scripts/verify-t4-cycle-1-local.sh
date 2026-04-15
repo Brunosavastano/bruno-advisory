@@ -7,6 +7,8 @@ cd "$ROOT"
 EVIDENCE_DIR="${EVIDENCE_DIR:-state/evidence/T4-cycle-1}"
 mkdir -p "$EVIDENCE_DIR"
 
+rm -rf apps/web/.next apps/web/.next.partial.* 2>/dev/null || true
+
 build_ok=0
 for attempt in 1 2 3; do
   if npm run build >/dev/null; then

@@ -1,7 +1,9 @@
-import { billingEntryModel, commercialStageModel, documentUploadModel, localBillingChargeModel, localBillingChargeProgressionModel, localBillingModel, localBillingSettlementModel, localBillingSettlementTargetingModel, recommendationCategories, recommendationModel } from '@bruno-advisory/core';
+import { billingEntryModel, commercialStageModel, documentUploadModel, localBillingChargeModel, localBillingChargeProgressionModel, localBillingModel, localBillingSettlementModel, localBillingSettlementTargetingModel, memoModel, memoStatuses, recommendationCategories, recommendationModel, researchWorkflowModel, researchWorkflowStatuses } from '@bruno-advisory/core';
 import { notFound } from 'next/navigation';
 import { Fragment } from 'react';
 import { LeadFlagsPanel } from './lead-flags-panel';
+import { ResearchWorkflowsPanel } from './research-workflows-panel';
+import { MemosPanel } from './memos-panel';
 import {
   leadTaskStatuses,
   getIntakeStoragePaths,
@@ -19,9 +21,12 @@ import {
   listLeadInternalTaskAudit,
   listLeadInternalTasks,
   listRecommendations,
+  listWorkflows,
+  listMemos,
   listLeadPendingFlags,
   getStoredLeadById,
-  listLeadCommercialStageAudit
+  listLeadCommercialStageAudit,
+  listAuditLog
 } from '../../../../lib/intake-storage';
 
 export const dynamic = 'force-dynamic';
@@ -65,9 +70,12 @@ export default async function LeadDetailPage({
   }
 
   const auditRows = listLeadCommercialStageAudit(lead.leadId);
+  const unifiedAuditLog = listAuditLog({ leadId: lead.leadId, limit: 20 });
   const portalInvites = listInvitesByLeadId(lead.leadId);
   const checklistItems = listChecklistItems(lead.leadId);
   const documents = listDocuments(lead.leadId);
+  const researchWorkflows = listWorkflows(lead.leadId);
+  const memos = listMemos(lead.leadId);
   const recommendations = listRecommendations(lead.leadId);
   const pendingFlags = listLeadPendingFlags(lead.leadId, 'active');
   const notes = listLeadInternalNotes(lead.leadId);
@@ -98,11 +106,17 @@ export default async function LeadDetailPage({
           <p>{lead.email}</p>
         </div>
         <div className="actions">
+          <a className="btn btn-secondary" href="/cockpit/review-queue">
+            Review queue
+          </a>
           <a className="btn btn-secondary" href="/cockpit/flags">
             Flags overview
           </a>
           <a className="btn btn-secondary" href="/cockpit/billing">
             Billing overview
+          </a>
+          <a className="btn btn-secondary" href={`/cockpit/audit-log?leadId=${lead.leadId}`}>
+            Audit log do lead
           </a>
           <a className="btn btn-secondary" href="/cockpit/leads">
             Voltar para lista
@@ -153,6 +167,41 @@ export default async function LeadDetailPage({
             Atualizar estágio
           </button>
         </form>
+      </section>
+
+      <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">Unified audit log T5 cycle 4</div>
+        <p>Últimos <strong>{unifiedAuditLog.length}</strong> eventos críticos deste lead.</p>
+        {unifiedAuditLog.length === 0 ? (
+          <p>Nenhum evento auditado ainda.</p>
+        ) : (
+          <div className="table-wrap" style={{ marginTop: 8 }}>
+            <table>
+              <thead>
+                <tr>
+                  <th>createdAt</th>
+                  <th>action</th>
+                  <th>entityType</th>
+                  <th>entityId</th>
+                  <th>actorType</th>
+                  <th>detail</th>
+                </tr>
+              </thead>
+              <tbody>
+                {unifiedAuditLog.map((entry) => (
+                  <tr key={entry.id}>
+                    <td>{entry.createdAt}</td>
+                    <td>{entry.action}</td>
+                    <td>{entry.entityType}</td>
+                    <td>{entry.entityId}</td>
+                    <td>{entry.actorType}</td>
+                    <td>{entry.detail ? JSON.stringify(entry.detail) : '-'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>
@@ -653,6 +702,21 @@ export default async function LeadDetailPage({
         )}
       </section>
 
+      <ResearchWorkflowsPanel
+        leadId={lead.leadId}
+        initialWorkflows={researchWorkflows}
+        statuses={researchWorkflowStatuses}
+        canonicalArtifact={researchWorkflowModel.canonicalArtifact}
+      />
+
+      <MemosPanel
+        leadId={lead.leadId}
+        initialMemos={memos}
+        workflows={researchWorkflows}
+        statuses={memoStatuses}
+        canonicalArtifact={memoModel.canonicalArtifact}
+      />
+
       <section className="card" style={{ marginTop: 16 }}>
         <div className="kicker">Recommendation ledger T4 cycle 4</div>
         {typeof resolvedSearchParams?.recommendationCreated === 'string' ? (
@@ -673,10 +737,6 @@ export default async function LeadDetailPage({
           <label>
             Título
             <input name="title" type="text" placeholder="Ex.: Rebalanceamento tático da carteira" required />
-          </label>
-          <label>
-            Data da recomendação
-            <input name="recommendationDate" type="date" required />
           </label>
           <label>
             Categoria (opcional)
@@ -702,7 +762,6 @@ export default async function LeadDetailPage({
               <thead>
                 <tr>
                   <th>createdAt</th>
-                  <th>date</th>
                   <th>title</th>
                   <th>category</th>
                   <th>visibility</th>
@@ -716,7 +775,6 @@ export default async function LeadDetailPage({
                 {recommendations.map((recommendation) => (
                   <tr key={recommendation.recommendationId}>
                     <td>{recommendation.createdAt}</td>
-                    <td>{recommendation.recommendationDate}</td>
                     <td>{recommendation.title}</td>
                     <td>{renderValue(recommendation.category)}</td>
                     <td>{recommendation.visibility}</td>

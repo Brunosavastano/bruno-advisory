@@ -13,4 +13,6 @@ export * from './portal-invite-model';
 export * from './onboarding-checklist-model';
 export * from './document-upload-model';
 export * from './recommendation-model';
+export * from './research-workflow-model';
+export * from './memo-model';
 export * from './pending-flag-model';

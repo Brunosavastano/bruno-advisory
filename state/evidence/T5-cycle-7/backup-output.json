@@ -1,0 +1,10 @@
+{
+  "ok": true,
+  "provider": "sqlite",
+  "archivePath": "/root/Bruno-Advisory/bruno-advisory/infra/backups/t5-cycle-7-local-latest.tar.gz",
+  "archiveSizeBytes": 321629,
+  "databasePath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+  "uploadsIncluded": true,
+  "uploadsFileCount": 1,
+  "note": "PostgreSQL backup is not implemented in this cycle. Use pg_dump/pg_restore for the PG equivalent."
+}

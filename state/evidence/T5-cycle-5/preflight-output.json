@@ -1,0 +1,13 @@
+{
+  "ok": true,
+  "provider": "sqlite",
+  "databasePath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+  "checkedTables": [
+    "intake_leads",
+    "memos",
+    "research_workflows",
+    "audit_log",
+    "lead_billing_records",
+    "portal_invites"
+  ]
+}

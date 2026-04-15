@@ -282,3 +282,27 @@ export type LeadPendingFlagOverviewRow = {
   activeFlags: LeadPendingFlagCode[];
   activeFlagCount: number;
 };
+
+export type ReviewQueueItem = {
+  type: 'memo' | 'research_workflow';
+  id: string;
+  leadId: string;
+  leadName: string;
+  title: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AuditActorType = 'operator' | 'client' | 'system';
+
+export type AuditLogEntry = {
+  id: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  leadId: string | null;
+  actorType: AuditActorType;
+  detail: Record<string, unknown> | null;
+  createdAt: string;
+};

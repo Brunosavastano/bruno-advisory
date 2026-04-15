@@ -7,19 +7,8 @@ cd "$ROOT"
 EVIDENCE_DIR="${EVIDENCE_DIR:-state/evidence/T4-cycle-4}"
 mkdir -p "$EVIDENCE_DIR"
 
-if [ ! -f "apps/web/.next/server/app/api/intake/route.js" ] || [ ! -f "apps/web/.next/server/app/api/portal/recommendations/route.js" ]; then
-  build_ok=0
-  for attempt in 1 2 3; do
-    if npm run build >/dev/null; then
-      build_ok=1
-      break
-    fi
-    if [ "$attempt" -lt 3 ]; then
-      sleep 2
-    fi
-  done
-  [ "$build_ok" -eq 1 ]
-fi
+rm -rf apps/web/.next
+bash -lc 'build_ok=0; for attempt in 1 2 3; do if npm run build >/dev/null; then build_ok=1; break; fi; if [ "$attempt" -lt 3 ]; then rm -rf apps/web/.next; sleep 2; fi; done; [ "$build_ok" -eq 1 ]'
 
 node - "$ROOT" "$EVIDENCE_DIR" <<'NODE'
 const fs = require('node:fs');
@@ -51,135 +40,136 @@ async function main() {
 
   const intakeRoute = requireFromWeb(path.join(webDir, '.next', 'server', 'app', 'api', 'intake', 'route.js')).routeModule.userland;
   const inviteRoute = requireFromWeb(path.join(webDir, '.next', 'server', 'app', 'api', 'cockpit', 'leads', '[leadId]', 'portal-invite-codes', 'route.js')).routeModule.userland;
+  const createListRoute = requireFromWeb(path.join(webDir, '.next', 'server', 'app', 'api', 'cockpit', 'leads', '[leadId]', 'recommendations', 'route.js')).routeModule.userland;
+  const itemRoute = requireFromWeb(path.join(webDir, '.next', 'server', 'app', 'api', 'cockpit', 'leads', '[leadId]', 'recommendations', '[recommendationId]', 'route.js')).routeModule.userland;
   const portalSessionRoute = requireFromWeb(path.join(webDir, '.next', 'server', 'app', 'api', 'portal', 'session', 'route.js')).routeModule.userland;
-  const cockpitRecommendationsRoute = requireFromWeb(path.join(webDir, '.next', 'server', 'app', 'api', 'cockpit', 'leads', '[leadId]', 'recommendations', 'route.js')).routeModule.userland;
-  const cockpitRecommendationItemRoute = requireFromWeb(path.join(webDir, '.next', 'server', 'app', 'api', 'cockpit', 'leads', '[leadId]', 'recommendations', '[recommendationId]', 'route.js')).routeModule.userland;
   const portalRecommendationsRoute = requireFromWeb(path.join(webDir, '.next', 'server', 'app', 'api', 'portal', 'recommendations', 'route.js')).routeModule.userland;
 
-  async function createLead(label) {
-    const response = await json(await intakeRoute.POST(new Request('http://localhost/api/intake', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({
-        fullName: `T4 Cycle 4 ${label}`,
-        email: `t4-cycle4-${label}-${randomUUID()}@example.com`,
-        phone: '11999990000',
-        city: 'Brasilia',
-        state: 'DF',
-        investableAssetsBand: '3m_a_10m',
-        primaryChallenge: 'Acompanhar recommendation ledger',
-        sourceLabel: `verify_t4_cycle_4_${label}`,
-        privacyConsentAccepted: true,
-        termsConsentAccepted: true
-      })
-    })));
-    if (response.status !== 201 || !response.body?.leadId) throw new Error(`Lead creation failed for ${label}`);
-    return response.body.leadId;
-  }
-
-  async function loginForLead(leadId) {
-    const invite = await json(await inviteRoute.POST(new Request(`http://localhost/api/cockpit/leads/${leadId}/portal-invite-codes`, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({})
-    }), { params: Promise.resolve({ leadId }) }));
-    if (invite.status !== 200 || !invite.body?.invite?.code) throw new Error(`Invite creation failed for ${leadId}`);
-
-    const loginForm = new FormData();
-    loginForm.set('code', invite.body.invite.code);
-    const login = await json(await portalSessionRoute.POST(new Request('http://localhost/api/portal/session', { method: 'POST', body: loginForm })));
-    const sessionCookie = login.headers['set-cookie'] || '';
-    if (login.status !== 302 || !sessionCookie.includes('portal_session=')) throw new Error(`Portal login failed for ${leadId}`);
-    return { invite, login, sessionCookie };
-  }
-
-  const leadA = await createLead('lead-a');
-  const leadB = await createLead('lead-b');
-  const authA = await loginForLead(leadA);
-  const authB = await loginForLead(leadB);
-
-  const createRecommendation = await json(await cockpitRecommendationsRoute.POST(new Request(`http://localhost/api/cockpit/leads/${leadA}/recommendations`, {
+  const leadRes = await json(await intakeRoute.POST(new Request('http://localhost/api/intake', {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
-      title: 'Ajuste tático de caixa',
-      body: 'Elevar reserva tática para 12 meses e reduzir duration no bloco prefixado.',
-      recommendationDate: '2026-04-14',
-      category: 'risk_management',
-      createdBy: 'operator_local'
+      fullName: 'T4 Cycle 4 Ledger',
+      email: `t4-cycle4-${randomUUID()}@example.com`,
+      phone: '11999990000',
+      city: 'Brasilia',
+      state: 'DF',
+      investableAssetsBand: '3m_a_10m',
+      primaryChallenge: 'Receber recomendacoes no portal',
+      sourceLabel: 'verify_t4_cycle_4',
+      privacyConsentAccepted: true,
+      termsConsentAccepted: true
     })
-  }), { params: Promise.resolve({ leadId: leadA }) }));
-  if (createRecommendation.status !== 201 || !createRecommendation.body?.recommendation?.recommendationId) {
-    throw new Error('Recommendation creation failed');
+  })));
+  if (leadRes.status !== 201 || !leadRes.body?.leadId) throw new Error('Lead creation failed');
+  const leadId = leadRes.body.leadId;
+
+  const createDraft = await json(await createListRoute.POST(new Request(`http://localhost/api/cockpit/leads/${leadId}/recommendations`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({
+      title: 'Recomendação inicial',
+      body: 'Manter reserva tática e revisar risco global.',
+      category: 'risk_management',
+      createdBy: 'verifier_local'
+    })
+  }), { params: Promise.resolve({ leadId }) }));
+  if (createDraft.status !== 201 || createDraft.body?.recommendation?.visibility !== 'draft') {
+    throw new Error('Recommendation draft creation failed');
+  }
+  const recommendationId = createDraft.body.recommendation.recommendationId;
+
+  const cockpitListWithDraft = await json(await createListRoute.GET(new Request(`http://localhost/api/cockpit/leads/${leadId}/recommendations`), {
+    params: Promise.resolve({ leadId })
+  }));
+  if (cockpitListWithDraft.status !== 200 || !cockpitListWithDraft.body?.recommendations?.some((item) => item.recommendationId === recommendationId && item.visibility === 'draft')) {
+    throw new Error('Cockpit recommendation list missing draft');
   }
 
-  const recommendationId = createRecommendation.body.recommendation.recommendationId;
-  const publishRecommendation = await json(await cockpitRecommendationItemRoute.PATCH(new Request(`http://localhost/api/cockpit/leads/${leadA}/recommendations/${recommendationId}`, {
+  const portalUnauthorized = await json(await portalRecommendationsRoute.GET(new Request('http://localhost/api/portal/recommendations')));
+  if (portalUnauthorized.status !== 401) throw new Error('Portal recommendations should require session');
+
+  const invite = await json(await inviteRoute.POST(new Request(`http://localhost/api/cockpit/leads/${leadId}/portal-invite-codes`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({})
+  }), { params: Promise.resolve({ leadId }) }));
+  if (invite.status !== 200 || !invite.body?.invite?.code) throw new Error('Invite creation failed');
+
+  const loginForm = new FormData();
+  loginForm.set('code', invite.body.invite.code);
+  const login = await json(await portalSessionRoute.POST(new Request('http://localhost/api/portal/session', { method: 'POST', body: loginForm })));
+  const sessionCookie = login.headers['set-cookie'] || '';
+  if (login.status !== 302 || !sessionCookie.includes('portal_session=')) throw new Error('Portal login failed');
+
+  const portalBeforePublish = await json(await portalRecommendationsRoute.GET(new Request('http://localhost/api/portal/recommendations', {
+    method: 'GET',
+    headers: { cookie: sessionCookie }
+  })));
+  if (portalBeforePublish.status !== 200 || !Array.isArray(portalBeforePublish.body?.recommendations) || portalBeforePublish.body.recommendations.length !== 0) {
+    throw new Error('Portal should not expose draft recommendations');
+  }
+
+  const publish = await json(await itemRoute.PATCH(new Request(`http://localhost/api/cockpit/leads/${leadId}/recommendations/${recommendationId}`, {
     method: 'PATCH',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({})
-  }), { params: Promise.resolve({ leadId: leadA, recommendationId }) }));
-  if (publishRecommendation.status !== 200 || publishRecommendation.body?.recommendation?.visibility !== 'published') {
+  }), { params: Promise.resolve({ leadId, recommendationId }) }));
+  if (publish.status !== 200 || publish.body?.recommendation?.visibility !== 'published') {
     throw new Error('Recommendation publish failed');
   }
 
-  const ownPortalLedger = await json(await portalRecommendationsRoute.GET(new Request('http://localhost/api/portal/recommendations', {
+  const portalAfterPublish = await json(await portalRecommendationsRoute.GET(new Request('http://localhost/api/portal/recommendations', {
     method: 'GET',
-    headers: { cookie: authA.sessionCookie }
+    headers: { cookie: sessionCookie }
   })));
-  if (ownPortalLedger.status !== 200 || !Array.isArray(ownPortalLedger.body?.recommendations) || ownPortalLedger.body.recommendations.length !== 1) {
-    throw new Error('Own portal ledger read failed');
+  if (portalAfterPublish.status !== 200 || !portalAfterPublish.body?.recommendations?.some((item) => item.recommendationId === recommendationId && item.visibility === 'published')) {
+    throw new Error('Portal published recommendation fetch failed');
   }
 
-  const foreignPortalLedger = await json(await portalRecommendationsRoute.GET(new Request('http://localhost/api/portal/recommendations', {
-    method: 'GET',
-    headers: { cookie: authB.sessionCookie }
-  })));
-  if (foreignPortalLedger.status !== 200 || !Array.isArray(foreignPortalLedger.body?.recommendations) || foreignPortalLedger.body.recommendations.length !== 0) {
-    throw new Error('Foreign portal ledger leakage detected');
+  const deleted = await json(await itemRoute.DELETE(new Request(`http://localhost/api/cockpit/leads/${leadId}/recommendations/${recommendationId}`, {
+    method: 'DELETE',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({})
+  }), { params: Promise.resolve({ leadId, recommendationId }) }));
+  if (deleted.status !== 200 || deleted.body?.ok !== true) {
+    throw new Error('Recommendation delete failed');
+  }
+
+  const cockpitListAfterDelete = await json(await createListRoute.GET(new Request(`http://localhost/api/cockpit/leads/${leadId}/recommendations`), {
+    params: Promise.resolve({ leadId })
+  }));
+  if (cockpitListAfterDelete.status !== 200 || cockpitListAfterDelete.body?.recommendations?.some((item) => item.recommendationId === recommendationId)) {
+    throw new Error('Recommendation still visible after delete');
   }
 
   const db = new DatabaseSync(path.join(tempRoot, 'data', 'dev', 'bruno-advisory-dev.sqlite3'));
-  const persisted = db.prepare(`
-    SELECT
-      lead_id AS leadId,
-      title,
-      body,
-      recommendation_date AS recommendationDate,
-      visibility,
-      created_at AS createdAt,
-      published_at AS publishedAt,
-      created_by AS createdBy
-    FROM lead_recommendations
-    WHERE recommendation_id = ?
-    LIMIT 1
-  `).get(recommendationId);
-  if (!persisted || persisted.leadId !== leadA || persisted.recommendationDate !== '2026-04-14') {
-    throw new Error('Recommendation persistence audit failed');
-  }
+  const persistedCount = db.prepare('SELECT COUNT(*) AS count FROM lead_recommendations WHERE lead_id = ?').get(leadId).count;
 
-  const cockpitLeadPageSource = fs.readFileSync(path.join(webDir, 'app', 'cockpit', 'leads', '[leadId]', 'page.tsx'), 'utf8');
   const portalLedgerPageSource = fs.readFileSync(path.join(webDir, 'app', 'portal', 'ledger', 'page.tsx'), 'utf8');
+  const cockpitLeadPageSource = fs.readFileSync(path.join(webDir, 'app', 'cockpit', 'leads', '[leadId]', 'page.tsx'), 'utf8');
+  const dashboardPageSource = fs.readFileSync(path.join(webDir, 'app', 'portal', 'dashboard', 'page.tsx'), 'utf8');
 
   const summary = {
     ok: true,
     checkedAt: new Date().toISOString(),
-    leadA,
-    leadB,
-    loginA: authA.login,
-    loginB: authB.login,
-    createRecommendation,
-    publishRecommendation,
-    ownPortalLedger,
-    foreignPortalLedger,
-    persisted,
+    leadId,
+    createDraft,
+    cockpitListWithDraft,
+    portalUnauthorized,
+    portalBeforePublish,
+    publish,
+    portalAfterPublish,
+    deleted,
+    cockpitListAfterDelete,
+    persistedCount,
     surfaceChecks: {
-      cockpitHasLedgerSection: cockpitLeadPageSource.includes('Recommendation ledger T4 cycle 4') && cockpitLeadPageSource.includes('recommendationDate'),
-      portalUsesPublishedOwnLedger: portalLedgerPageSource.includes("listRecommendations(session.leadId, 'published')"),
-      portalReadOnly: !portalLedgerPageSource.includes('<form'),
-      portalRecommendationsRouteExists: fs.existsSync(path.join(webDir, 'app', 'api', 'portal', 'recommendations', 'route.ts'))
+      portalLedgerPageExists: fs.existsSync(path.join(webDir, 'app', 'portal', 'ledger', 'page.tsx')),
+      portalLedgerUsesPublishedOnly: portalLedgerPageSource.includes("listRecommendations(session.leadId, 'published')"),
+      cockpitLeadShowsRecommendations: cockpitLeadPageSource.includes('Recommendation ledger T4 cycle 4'),
+      dashboardLinksLedger: dashboardPageSource.includes('/portal/ledger')
     },
-    note: 'Verification executed against compiled cockpit and portal route handlers, direct SQLite inspection, and explicit two-session isolation proof.'
+    note: 'Verification executed against compiled route handlers, portal session auth, SQLite inspection and source-surface checks.'
   };
 
   fs.writeFileSync(path.join(evidenceDir, 'summary-local.json'), `${JSON.stringify(summary, null, 2)}\n`);

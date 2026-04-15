@@ -21,6 +21,7 @@ import {
   type LocalBillingSettlementEventType,
   type LocalBillingSettlementStatus
 } from '@bruno-advisory/core';
+import { writeAuditLog } from './audit-log';
 import {
   billingChargeEventsTable,
   billingChargesTable,
@@ -355,6 +356,19 @@ export function createLeadLocalBillingRecord(params: { leadId: string; actor: st
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `).run(randomUUID(), billingRecordId, params.leadId, 'billing_record_created', now, cleanActor, cleanNote || null);
 
+    writeAuditLog({
+      action: 'billing_record_created',
+      entityType: 'billing_record',
+      entityId: billingRecordId,
+      leadId: params.leadId,
+      actorType: 'operator',
+      detail: {
+        actor: cleanActor,
+        note: cleanNote || null,
+        status: recordStatus
+      }
+    });
+
     if (recordStatus === 'active_local') {
       db.prepare(`
         INSERT INTO ${billingEventsTable} (billing_event_id, billing_record_id, lead_id, event_type, occurred_at, actor, note)
@@ -368,6 +382,18 @@ export function createLeadLocalBillingRecord(params: { leadId: string; actor: st
         cleanActor,
         'Lead entrou em operacao billable local.'
       );
+
+      writeAuditLog({
+        action: 'billing_record_activated',
+        entityType: 'billing_record',
+        entityId: billingRecordId,
+        leadId: params.leadId,
+        actorType: 'operator',
+        detail: {
+          actor: cleanActor,
+          activatedAt: now
+        }
+      });
     }
 
     db.exec('COMMIT');
@@ -443,6 +469,21 @@ export function createLeadLocalBillingCharge(params: { leadId: string; actor: st
       INSERT INTO ${billingChargeEventsTable} (charge_event_id, charge_id, billing_record_id, lead_id, event_type, occurred_at, actor, note)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(randomUUID(), chargeId, billingRecord.billingRecordId, params.leadId, 'charge_posted', now, cleanActor, 'Primeira cobranca local recorrente entrou em estado de cobranca.');
+
+    writeAuditLog({
+      action: 'charge_created',
+      entityType: 'billing_charge',
+      entityId: chargeId,
+      leadId: params.leadId,
+      actorType: 'operator',
+      detail: {
+        actor: cleanActor,
+        billingRecordId: billingRecord.billingRecordId,
+        chargeSequence: localBillingChargeModel.firstChargeSequence,
+        amountCents: billingRecord.monthlyFeeCents,
+        dueDate
+      }
+    });
 
     db.exec('COMMIT');
   } catch (error) {
@@ -520,6 +561,23 @@ export function createNextLeadLocalBillingCharge(params: { leadId: string; actor
       INSERT INTO ${billingChargeEventsTable} (charge_event_id, charge_id, billing_record_id, lead_id, event_type, occurred_at, actor, note)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(randomUUID(), chargeId, billingRecord.billingRecordId, params.leadId, 'charge_posted', now, cleanActor, `Cobranca recorrente local sequencia ${nextChargeSequence} entrou em estado de cobranca apos a sequencia ${latestCharge.chargeSequence}.`);
+
+    writeAuditLog({
+      action: 'charge_progressed',
+      entityType: 'billing_charge',
+      entityId: chargeId,
+      leadId: params.leadId,
+      actorType: 'operator',
+      detail: {
+        actor: cleanActor,
+        billingRecordId: billingRecord.billingRecordId,
+        previousChargeId: latestCharge.chargeId,
+        previousChargeSequence: latestCharge.chargeSequence,
+        chargeSequence: nextChargeSequence,
+        amountCents: billingRecord.monthlyFeeCents,
+        dueDate
+      }
+    });
 
     db.exec('COMMIT');
   } catch (error) {
@@ -615,6 +673,21 @@ export function settleLeadLocalBillingChargeById(params: { leadId: string; charg
       INSERT INTO ${billingChargeEventsTable} (charge_event_id, charge_id, billing_record_id, lead_id, event_type, occurred_at, actor, note)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(randomUUID(), charge.chargeId, billingRecord.billingRecordId, params.leadId, 'charge_settled', now, cleanActor, cleanNote || `Liquidacao local direcionada persistida para a cobranca ${charge.chargeId}.`);
+
+    writeAuditLog({
+      action: 'charge_settled',
+      entityType: 'billing_charge',
+      entityId: charge.chargeId,
+      leadId: params.leadId,
+      actorType: 'operator',
+      detail: {
+        actor: cleanActor,
+        settlementId,
+        billingRecordId: billingRecord.billingRecordId,
+        amountCents: charge.amountCents,
+        note: cleanNote || null
+      }
+    });
 
     db.exec('COMMIT');
   } catch (error) {

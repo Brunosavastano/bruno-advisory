@@ -1,7 +1,7 @@
 # T4 closure
 
 - Date: 2026-04-14
-- Status: T4 closed
+- Status: T4 closed after cycle 6 E2E gate passed
 
 ## Evidence
 - Cycle 1: `state/evidence/T4-cycle-1/summary-local.json`
@@ -12,6 +12,7 @@
 - Cycle 6: `state/evidence/T4-cycle-6/summary-local.json`
 
 ## Gate result
-- Client can access the portal through invite redemption.
-- Client can complete checklist items, upload documents, and see published ledger entries.
-- Bruno can create invites, publish recommendations, inspect uploaded documents, and track pending internal items without leaking flags into the client portal.
+- Cliente autentica por invite e conclui checklist, upload de documento e leitura de ledger publicado.
+- Operador cria e revoga invites, enxerga uploads no cockpit, cria e publica recommendation e acompanha pending flags no overview.
+- A persistência local em SQLite foi auditada para checklist, documentos, ledger, pending flags e revogação de sessions.
+- O portal não expõe pending flags em dashboard, documents ou ledger.

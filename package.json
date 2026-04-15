@@ -40,6 +40,12 @@
     "verify:t3:cycle9": "bash infra/scripts/verify-t3-cycle-9.sh",
     "verify:t3:cycle9:local": "bash infra/scripts/verify-t3-cycle-9-local.sh",
     "verify:t3:cycle10": "bash infra/scripts/verify-t3-cycle-10.sh",
-    "verify:t3:cycle10:local": "bash infra/scripts/verify-t3-cycle-10-local.sh"
+    "verify:t3:cycle10:local": "bash infra/scripts/verify-t3-cycle-10-local.sh",
+    "verify:t5:cycle1:local": "bash infra/scripts/verify-t5-cycle-1-local.sh",
+    "verify:t5:cycle2:local": "bash infra/scripts/verify-t5-cycle-2-local.sh",
+    "verify:t5:cycle3:local": "bash infra/scripts/verify-t5-cycle-3-local.sh",
+    "verify:t5:cycle4:local": "bash infra/scripts/verify-t5-cycle-4-local.sh",
+    "verify:t5:cycle5:local": "bash infra/scripts/verify-t5-cycle-5-local.sh",
+    "verify:t5:cycle7:local": "bash infra/scripts/verify-t5-cycle-7-local.sh"
   }
 }

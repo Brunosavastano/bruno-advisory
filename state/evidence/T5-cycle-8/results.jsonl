@@ -1,0 +1,9 @@
+{"name": "typecheck", "exitCode": 0, "ok": true, "logPath": "state/evidence/T5-cycle-8/typecheck.log", "evidencePath": null}
+{"name": "build", "exitCode": 0, "ok": true, "logPath": "state/evidence/T5-cycle-8/build.log", "evidencePath": null}
+{"name": "end-to-end", "exitCode": 0, "ok": true, "logPath": "state/evidence/T5-cycle-8/end-to-end.log", "evidencePath": "state/evidence/T5-cycle-8/end-to-end-summary.json"}
+{"name": "billing-tests", "exitCode": 0, "ok": true, "logPath": "state/evidence/T5-cycle-8/billing-tests.log", "evidencePath": null}
+{"name": "verify-t5-cycle1-local", "exitCode": 0, "ok": true, "logPath": "state/evidence/T5-cycle-8/verify-t5-cycle1-local.log", "evidencePath": "state/evidence/T5-cycle-1/summary-local.json"}
+{"name": "verify-t5-cycle2-local", "exitCode": 0, "ok": true, "logPath": "state/evidence/T5-cycle-8/verify-t5-cycle2-local.log", "evidencePath": "state/evidence/T5-cycle-2/summary-local.json"}
+{"name": "verify-t5-cycle3-local", "exitCode": 0, "ok": true, "logPath": "state/evidence/T5-cycle-8/verify-t5-cycle3-local.log", "evidencePath": "state/evidence/T5-cycle-3/summary-local.json"}
+{"name": "verify-t5-cycle4-local", "exitCode": 0, "ok": true, "logPath": "state/evidence/T5-cycle-8/verify-t5-cycle4-local.log", "evidencePath": "state/evidence/T5-cycle-4/summary-local.json"}
+{"name": "verify-t5-cycle5-local", "exitCode": 0, "ok": true, "logPath": "state/evidence/T5-cycle-8/verify-t5-cycle5-local.log", "evidencePath": "state/evidence/T5-cycle-5/summary-local.json"}

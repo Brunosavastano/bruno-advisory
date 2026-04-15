@@ -4,7 +4,6 @@ import { createRecommendation, listRecommendations } from '../../../../../../lib
 type RecommendationPayload = {
   title?: string;
   body?: string;
-  recommendationDate?: string;
   category?: string | null;
   createdBy?: string;
   returnTo?: string;
@@ -20,7 +19,6 @@ async function parsePayload(request: Request): Promise<RecommendationPayload> {
   return {
     title: String(formData.get('title') ?? ''),
     body: String(formData.get('body') ?? ''),
-    recommendationDate: String(formData.get('recommendationDate') ?? ''),
     category: String(formData.get('category') ?? ''),
     createdBy: String(formData.get('createdBy') ?? ''),
     returnTo: String(formData.get('returnTo') ?? '')
@@ -53,7 +51,6 @@ export async function POST(request: Request, context: { params: Promise<{ leadId
     leadId,
     payload.title ?? '',
     payload.body ?? '',
-    payload.recommendationDate ?? '',
     normalizeCategory(payload.category),
     payload.createdBy?.trim() || 'operator_local'
   );

@@ -5,6 +5,7 @@ import {
   type OnboardingChecklistItem,
   type OnboardingChecklistStatus
 } from '@bruno-advisory/core';
+import { writeAuditLog } from './audit-log';
 import { getDatabase, leadsTable, onboardingChecklistItemsTable } from './db';
 
 function normalizeChecklistRow(row: Record<string, unknown>): OnboardingChecklistItem {
@@ -122,7 +123,22 @@ export function completeChecklistItem(itemId: string, leadId: string, completedB
     LIMIT 1
   `).get(itemId, leadId) as Record<string, unknown> | undefined;
 
-  return row ? normalizeChecklistRow(row) : null;
+  const item = row ? normalizeChecklistRow(row) : null;
+  if (item) {
+    writeAuditLog({
+      action: 'checklist_item_completed',
+      entityType: 'checklist_item',
+      entityId: item.itemId,
+      leadId: item.leadId,
+      actorType: completedBy === 'client' ? 'client' : 'operator',
+      detail: {
+        title: item.title,
+        completedBy: item.completedBy
+      }
+    });
+  }
+
+  return item;
 }
 
 export function uncompleteChecklistItem(itemId: string, leadId: string): OnboardingChecklistItem | null {

@@ -1,26 +1,39 @@
-# T3.5 Cycle 2 — Cockpit auth básica
+# T3.5 Cycle 2 — Cockpit auth
 
-## O que foi feito
-- Endureci a superfície protegida do cockpit com gate por `COCKPIT_SECRET` no `apps/web/middleware.ts`.
-- As rotas `/cockpit/*` e `/api/cockpit/*` agora exigem segredo válido.
-- O segredo pode ser enviado por `Authorization: Basic ...`, `Authorization: Bearer ...` ou `x-cockpit-secret`, mantendo a validação centralizada no middleware.
-- Sem segredo válido, as rotas protegidas respondem `401`.
-- As rotas públicas do canon permanecem fora do matcher do middleware e seguem abertas.
+## Status
+Completed locally on 2026-04-14.
 
-## Onde está
-- `apps/web/proxy.ts`
-- `infra/scripts/verify-t35-cycle-2-local.sh`
-- `state/evidence/T3.5-cycle-2/summary-local.json`
+## What changed
+- Added shared-secret cockpit protection in `apps/web/proxy.ts`.
+- Protected cockpit surfaces:
+  - `/cockpit/*`
+  - `/api/cockpit/*`
+- Auth accepts:
+  - `Authorization: Bearer <COCKPIT_SECRET>`
+  - cookie `cockpit_token=<COCKPIT_SECRET>`
+  - browser bootstrap via `?token=<COCKPIT_SECRET>` which sets the cookie and redirects
+- Unauthenticated cockpit API requests return `401 { ok: false, error: "unauthorized" }`.
+- Unauthenticated cockpit page requests redirect to `?login=1`, which renders a simple inline login prompt.
+- If `COCKPIT_SECRET` is unset, cockpit requests pass through unchanged for local/dev backwards compatibility.
 
-## Como verificar
-- `bash infra/scripts/verify-t35-cycle-2-local.sh`
-- Confirmar no JSON de evidência:
-  - `protectedChecks.cockpitPageWithoutSecret.status = 401`
-  - `protectedChecks.cockpitApiWithoutSecret.status = 401`
-  - `protectedChecks.cockpitPageWithSecret.next = true`
-  - `protectedChecks.cockpitApiWithSecret.next = true`
-  - todas as entradas de `publicRouteChecks` com `next = true`
+## Public routes kept open
+- `/`
+- `/intake`
+- `/api/intake`
+- `/api/intake-events`
+- `/api/health`
+- `/health`
+- `/como-funciona`
+- `/para-quem-e`
+- `/privacidade`
+- `/termos`
+- `/go/intake`
 
-## O que falta
-- Seguir para o próximo ciclo de hardening sem abrir escopo novo.
-- Em produção real, decidir se o canal oficial será Basic auth puro ou header secreto, mas sem mudar o gate funcional desta tranche.
+## Verification
+- Verifier: `infra/scripts/verify-t35-cycle-2-local.sh`
+- Evidence: `state/evidence/T3.5-cycle-2/summary-local.json`
+- Method: compiled Next app route handlers invoked directly after `next build`, because HTTP bind is blocked in this sandbox.
+
+## Note
+- This repo is on Next.js 16, where `middleware.ts` is deprecated in favor of `proxy.ts`.
+- The auth implementation therefore lives in `apps/web/proxy.ts` to match the framework’s current runtime behavior.

@@ -11,5 +11,10 @@ export * from './storage/onboarding';
 export * from './storage/documents';
 export * from './storage/uploads';
 export * from './storage/recommendations';
+export * from './storage/research-workflows';
+export { createMemo, listMemos, getMemo, updateStatus as updateMemoStatus, updateBody as updateMemoBody, deleteMemo } from './storage/memos';
+export * from './storage/review-queue';
 export * from './storage/flags';
 export * from './storage/pending-flags';
+
+export * from './storage/audit-log';

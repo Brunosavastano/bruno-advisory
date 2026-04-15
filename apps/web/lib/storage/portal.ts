@@ -7,6 +7,7 @@ import {
   type PortalSessionLookup,
   type PortalSessionRecord
 } from '@bruno-advisory/core';
+import { writeAuditLog } from './audit-log';
 import { getDatabase, leadsTable, portalInvitesTable, portalSessionsTable } from './db';
 import { getStoredLeadById } from './leads';
 import { listChecklistItems } from './checklist';
@@ -78,6 +79,15 @@ export function createInvite(leadId: string): PortalInviteRecord | null {
     VALUES (?, ?, ?, ?, ?, NULL, NULL)
   `).run(inviteId, leadId, code, 'active', createdAt);
 
+  writeAuditLog({
+    action: 'portal_invite_created',
+    entityType: 'portal_invite',
+    entityId: inviteId,
+    leadId,
+    actorType: 'operator',
+    detail: { status: 'active' }
+  });
+
   return { inviteId, leadId, code, status: 'active', createdAt, usedAt: null, revokedAt: null };
 }
 
@@ -100,10 +110,41 @@ export function revokeInvite(inviteId: string): PortalInviteRecord | null {
   }
 
   const revokedAt = new Date().toISOString();
+  const existingSessions = db.prepare(`
+    SELECT session_id AS sessionId, lead_id AS leadId, invite_id AS inviteId, created_at AS createdAt, expires_at AS expiresAt
+    FROM ${portalSessionsTable}
+    WHERE invite_id = ?
+  `).all(inviteId) as Array<Record<string, unknown>>;
+
   db.exec('BEGIN');
   try {
     db.prepare(`UPDATE ${portalInvitesTable} SET status = 'revoked', revoked_at = ? WHERE invite_id = ?`).run(revokedAt, inviteId);
     db.prepare(`DELETE FROM ${portalSessionsTable} WHERE invite_id = ?`).run(inviteId);
+
+    writeAuditLog({
+      action: 'portal_invite_revoked',
+      entityType: 'portal_invite',
+      entityId: current.inviteId,
+      leadId: current.leadId,
+      actorType: 'operator',
+      detail: { revokedAt }
+    });
+
+    for (const sessionRow of existingSessions) {
+      writeAuditLog({
+        action: 'portal_session_deleted',
+        entityType: 'portal_session',
+        entityId: String(sessionRow.sessionId),
+        leadId: String(sessionRow.leadId),
+        actorType: 'operator',
+        detail: {
+          inviteId: String(sessionRow.inviteId),
+          reason: 'invite_revoked',
+          expiresAt: String(sessionRow.expiresAt)
+        }
+      });
+    }
+
     db.exec('COMMIT');
   } catch (error) {
     db.exec('ROLLBACK');
@@ -154,6 +195,19 @@ export function redeemInvite(code: string): PortalSessionRecord | null {
       INSERT INTO ${portalSessionsTable} (session_id, lead_id, invite_id, session_token, created_at, expires_at)
       VALUES (?, ?, ?, ?, ?, ?)
     `).run(session.sessionId, session.leadId, session.inviteId, session.sessionToken, session.createdAt, session.expiresAt);
+
+    writeAuditLog({
+      action: 'portal_session_created',
+      entityType: 'portal_session',
+      entityId: session.sessionId,
+      leadId: session.leadId,
+      actorType: 'client',
+      detail: {
+        inviteId: session.inviteId,
+        expiresAt: session.expiresAt
+      }
+    });
+
     db.exec('COMMIT');
   } catch (error) {
     db.exec('ROLLBACK');
@@ -193,6 +247,17 @@ export function getSession(sessionToken: string): PortalSessionLookup | null {
 
   if (Date.parse(session.expiresAt) <= Date.now()) {
     db.prepare(`DELETE FROM ${portalSessionsTable} WHERE session_token = ?`).run(sessionToken);
+    writeAuditLog({
+      action: 'portal_session_deleted',
+      entityType: 'portal_session',
+      entityId: session.sessionId,
+      leadId: session.leadId,
+      actorType: 'system',
+      detail: {
+        inviteId: session.inviteId,
+        reason: 'expired'
+      }
+    });
     return null;
   }
 
@@ -201,8 +266,31 @@ export function getSession(sessionToken: string): PortalSessionLookup | null {
 
 export function deleteSession(sessionToken: string) {
   const db = getDatabase();
+  const current = db.prepare(`
+    SELECT session_id AS sessionId, lead_id AS leadId, invite_id AS inviteId, expires_at AS expiresAt
+    FROM ${portalSessionsTable}
+    WHERE session_token = ?
+    LIMIT 1
+  `).get(sessionToken) as Record<string, unknown> | undefined;
+
   const result = db.prepare(`DELETE FROM ${portalSessionsTable} WHERE session_token = ?`).run(sessionToken);
-  return result.changes > 0;
+  if (result.changes > 0 && current) {
+    writeAuditLog({
+      action: 'portal_session_deleted',
+      entityType: 'portal_session',
+      entityId: String(current.sessionId),
+      leadId: String(current.leadId),
+      actorType: 'client',
+      detail: {
+        inviteId: String(current.inviteId),
+        reason: 'logout',
+        expiresAt: String(current.expiresAt)
+      }
+    });
+    return true;
+  }
+
+  return false;
 }
 
 export function getPortalDashboardContext(sessionToken: string) {

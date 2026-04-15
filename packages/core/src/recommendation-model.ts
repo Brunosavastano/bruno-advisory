@@ -18,7 +18,6 @@ export const recommendationModel = {
     'leadId',
     'title',
     'body',
-    'recommendationDate',
     'category',
     'visibility',
     'createdAt',
@@ -32,7 +31,6 @@ export type RecommendationRecord = {
   leadId: string;
   title: string;
   body: string;
-  recommendationDate: string;
   category: RecommendationCategory | null;
   visibility: RecommendationVisibility;
   createdAt: string;

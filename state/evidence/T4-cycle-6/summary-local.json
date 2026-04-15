@@ -1,268 +1,326 @@
 {
   "ok": true,
-  "checkedAt": "2026-04-14T04:41:08.706Z",
-  "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-  "steps": {
-    "intake": {
-      "status": 201,
-      "body": {
-        "ok": true,
-        "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61"
-      }
+  "checkedAt": "2026-04-14T04:45:10.285Z",
+  "leadA": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+  "leadB": "19a12f87-6d0e-4262-84e8-68f13b40d2aa",
+  "clientFlow": {
+    "inviteA": {
+      "inviteId": "d93c9e42-ecdf-4a5b-bd9a-d1993ea6a76c",
+      "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+      "code": "b041788f01f45c4a7b18798eb8da4e34",
+      "status": "active",
+      "createdAt": "2026-04-14T04:45:10.055Z",
+      "usedAt": null,
+      "revokedAt": null
     },
-    "inviteCreate": {
-      "status": 200,
-      "body": {
-        "ok": true,
-        "invite": {
-          "inviteId": "d1272bd1-1aa3-4bf5-b2aa-3b156cacaf66",
-          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-          "code": "a4be4334d9bccaea50e0ceba6f17ee0b",
-          "status": "active",
-          "createdAt": "2026-04-14T04:41:07.888Z",
-          "usedAt": null,
-          "revokedAt": null
-        }
-      }
-    },
-    "inviteRedeem": {
+    "loginA": {
       "status": 302,
-      "hasSessionCookie": false,
-      "sessionCookieCaptured": true
+      "headers": {
+        "location": "http://localhost/portal/dashboard",
+        "set-cookie": "portal_session=91a95a85-864f-4e3f-ba47-9f2b1c3b6724; Path=/; HttpOnly; SameSite=lax; Max-Age=2592000"
+      },
+      "body": null
     },
-    "checklistCreate": {
-      "status": 201,
-      "body": {
-        "ok": true,
-        "item": {
-          "itemId": "98f7249d-51d9-4a0f-86de-7a56c881f5e9",
-          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-          "title": "Enviar comprovante de residencia",
-          "description": "Subir comprovante atualizado no portal",
-          "status": "pending",
-          "createdAt": "2026-04-14T04:41:08.091Z",
-          "completedAt": null,
-          "completedBy": null
-        }
-      }
-    },
-    "checklistComplete": {
+    "ownChecklistComplete": {
       "status": 303,
-      "cockpitListStatus": 200,
-      "cockpitListBody": {
-        "ok": true,
-        "items": [
-          {
-            "itemId": "98f7249d-51d9-4a0f-86de-7a56c881f5e9",
-            "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-            "title": "Enviar comprovante de residencia",
-            "description": "Subir comprovante atualizado no portal",
-            "status": "completed",
-            "createdAt": "2026-04-14T04:41:08.091Z",
-            "completedAt": "2026-04-14T04:41:08.168Z",
-            "completedBy": "client"
-          }
-        ]
+      "headers": {
+        "location": "http://localhost/portal/dashboard?checklistCompleted=f2b8e708-55dd-488c-8730-c1f0f0bc7d23"
       },
-      "dbRow": {
-        "itemId": "98f7249d-51d9-4a0f-86de-7a56c881f5e9",
-        "status": "completed",
-        "completedBy": "client",
-        "completedAt": "2026-04-14T04:41:08.168Z"
-      }
+      "body": null
     },
-    "recommendationDraft": {
-      "status": 201,
+    "foreignChecklistAttempt": {
+      "status": 403,
+      "headers": {
+        "content-type": "application/json"
+      },
       "body": {
-        "ok": true,
-        "recommendation": {
-          "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
-          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-          "title": "Rebalancear reserva tatica",
-          "body": "Publicar ajuste conservador com foco em liquidez.",
-          "recommendationDate": "2026-04-14",
-          "category": "asset_allocation",
-          "visibility": "draft",
-          "createdAt": "2026-04-14T04:41:08.236Z",
-          "publishedAt": null,
-          "createdBy": "operator_local"
-        }
-      },
-      "portalBeforeStatus": 200,
-      "portalBeforeBody": {
-        "ok": true,
-        "recommendations": []
-      }
-    },
-    "recommendationPublish": {
-      "status": 200,
-      "body": {
-        "ok": true,
-        "recommendation": {
-          "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
-          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-          "title": "Rebalancear reserva tatica",
-          "body": "Publicar ajuste conservador com foco em liquidez.",
-          "recommendationDate": "2026-04-14",
-          "category": "asset_allocation",
-          "visibility": "published",
-          "createdAt": "2026-04-14T04:41:08.236Z",
-          "publishedAt": "2026-04-14T04:41:08.327Z",
-          "createdBy": "operator_local"
-        }
-      },
-      "portalAfterStatus": 200,
-      "portalAfterBody": {
-        "ok": true,
-        "recommendations": [
-          {
-            "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
-            "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-            "title": "Rebalancear reserva tatica",
-            "body": "Publicar ajuste conservador com foco em liquidez.",
-            "recommendationDate": "2026-04-14",
-            "category": "asset_allocation",
-            "visibility": "published",
-            "createdAt": "2026-04-14T04:41:08.236Z",
-            "publishedAt": "2026-04-14T04:41:08.327Z",
-            "createdBy": "operator_local"
-          }
-        ]
-      },
-      "dbRow": {
-        "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
-        "visibility": "published",
-        "publishedAt": "2026-04-14T04:41:08.327Z"
-      }
-    },
-    "pendingFlagHiddenFromPortal": {
-      "status": 201,
-      "body": {
-        "ok": true,
-        "flag": {
-          "flagId": "f4744fa2-5ae4-4050-ad19-faa8f710824b",
-          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-          "flagCode": "pending_document",
-          "status": "active",
-          "createdAt": "2026-04-14T04:41:08.386Z",
-          "createdBy": "operator_local",
-          "removedAt": null,
-          "removedBy": null
-        }
-      },
-      "portalDashboardStatus": 200,
-      "dashboardLeaksPendingFlag": false,
-      "dbRow": {
-        "flagId": "f4744fa2-5ae4-4050-ad19-faa8f710824b",
-        "flagType": "pending_document",
-        "clearedAt": null
+        "ok": false,
+        "error": "Checklist item nao pertence a esta sessao."
       }
     },
     "documentUpload": {
-      "portalBeforeStatus": 200,
-      "portalBeforeBody": {
-        "ok": true,
-        "documents": []
+      "status": 201,
+      "headers": {
+        "content-type": "application/json"
       },
-      "uploadStatus": 201,
-      "uploadBody": {
+      "body": {
         "ok": true,
         "document": {
-          "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
-          "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-          "originalFilename": "documento-cliente.txt",
-          "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
-          "mimeType": "text/plain",
-          "sizeBytes": 30,
+          "documentId": "8b84f007-5a12-46e4-98ab-81979e707d3b",
+          "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+          "originalFilename": "rg-cycle-6.pdf",
+          "storedFilename": "8b84f007-5a12-46e4-98ab-81979e707d3b-rg-cycle-6.pdf",
+          "mimeType": "application/pdf",
+          "sizeBytes": 24,
           "status": "received",
-          "uploadedAt": "2026-04-14T04:41:08.565Z",
+          "uploadedAt": "2026-04-14T04:45:10.231Z",
           "reviewedAt": null,
           "reviewedBy": null,
           "reviewNote": null
         }
+      }
+    },
+    "portalDocumentsOwn": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json"
       },
-      "portalAfterStatus": 200,
-      "portalAfterBody": {
+      "body": {
         "ok": true,
         "documents": [
           {
-            "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
-            "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-            "originalFilename": "documento-cliente.txt",
-            "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
-            "mimeType": "text/plain",
-            "sizeBytes": 30,
+            "documentId": "8b84f007-5a12-46e4-98ab-81979e707d3b",
+            "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+            "originalFilename": "rg-cycle-6.pdf",
+            "storedFilename": "8b84f007-5a12-46e4-98ab-81979e707d3b-rg-cycle-6.pdf",
+            "mimeType": "application/pdf",
+            "sizeBytes": 24,
             "status": "received",
-            "uploadedAt": "2026-04-14T04:41:08.565Z",
+            "uploadedAt": "2026-04-14T04:45:10.231Z",
             "reviewedAt": null,
             "reviewedBy": null,
             "reviewNote": null
           }
         ]
+      }
+    },
+    "portalDocumentsForeign": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json"
       },
-      "cockpitStatus": 200,
-      "cockpitBody": {
+      "body": {
         "ok": true,
-        "documents": [
+        "documents": []
+      }
+    },
+    "portalLedgerOwn": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "ok": true,
+        "recommendations": [
           {
-            "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
-            "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-            "originalFilename": "documento-cliente.txt",
-            "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
-            "mimeType": "text/plain",
-            "sizeBytes": 30,
-            "status": "received",
-            "uploadedAt": "2026-04-14T04:41:08.565Z",
-            "reviewedAt": null,
-            "reviewedBy": null,
-            "reviewNote": null
+            "recommendationId": "9f169357-cf37-460c-aa6d-5273fd93a891",
+            "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+            "title": "Rebalanceamento de caixa tático",
+            "body": "Elevar caixa de segurança e reduzir duration prefixada.",
+            "recommendationDate": "2026-04-14",
+            "category": "risk_management",
+            "visibility": "published",
+            "createdAt": "2026-04-14T04:45:10.236Z",
+            "publishedAt": "2026-04-14T04:45:10.248Z",
+            "createdBy": "operator_local"
           }
         ]
+      }
+    },
+    "portalLedgerForeign": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json"
       },
-      "dbRow": {
-        "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
-        "originalFilename": "documento-cliente.txt",
-        "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
-        "status": "received"
+      "body": {
+        "ok": true,
+        "recommendations": []
       }
     }
   },
-  "sqliteProof": {
-    "inviteUsed": {
-      "inviteId": "d1272bd1-1aa3-4bf5-b2aa-3b156cacaf66",
-      "status": "used",
-      "usedAt": "2026-04-14T04:41:08.003Z"
+  "operatorFlow": {
+    "inviteB": {
+      "inviteId": "a0535d68-7ba7-4728-854e-3afb071cc632",
+      "leadId": "19a12f87-6d0e-4262-84e8-68f13b40d2aa",
+      "code": "a0cbb020023fef27cddf06d2e3e80404",
+      "status": "active",
+      "createdAt": "2026-04-14T04:45:10.065Z",
+      "usedAt": null,
+      "revokedAt": null
     },
-    "activeSession": {
-      "leadId": "5629e009-2966-4d02-aa67-979d1dc0da61",
-      "inviteId": "d1272bd1-1aa3-4bf5-b2aa-3b156cacaf66",
-      "sessionToken": "5fa9020a-cb9f-4fda-9b17-0f52c397a15d"
+    "revokedInviteA": {
+      "inviteId": "70b70e57-1986-4c03-8c64-f89e5837f98d",
+      "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+      "code": "24653c76dbb52b18f3646070da68f184",
+      "status": "active",
+      "createdAt": "2026-04-14T04:45:10.075Z",
+      "usedAt": null,
+      "revokedAt": null
     },
-    "checklistItem": {
-      "itemId": "98f7249d-51d9-4a0f-86de-7a56c881f5e9",
-      "status": "completed",
-      "completedBy": "client",
-      "completedAt": "2026-04-14T04:41:08.168Z"
+    "revokeInvite": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "ok": true,
+        "invite": {
+          "inviteId": "70b70e57-1986-4c03-8c64-f89e5837f98d",
+          "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+          "code": "24653c76dbb52b18f3646070da68f184",
+          "status": "revoked",
+          "createdAt": "2026-04-14T04:45:10.075Z",
+          "usedAt": null,
+          "revokedAt": "2026-04-14T04:45:10.160Z"
+        }
+      }
     },
-    "recommendation": {
-      "recommendationId": "9cddfde7-0b77-44b1-963c-cbd8334909a2",
-      "visibility": "published",
-      "publishedAt": "2026-04-14T04:41:08.327Z"
+    "cockpitDocuments": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "ok": true,
+        "documents": [
+          {
+            "documentId": "8b84f007-5a12-46e4-98ab-81979e707d3b",
+            "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+            "originalFilename": "rg-cycle-6.pdf",
+            "storedFilename": "8b84f007-5a12-46e4-98ab-81979e707d3b-rg-cycle-6.pdf",
+            "mimeType": "application/pdf",
+            "sizeBytes": 24,
+            "status": "received",
+            "uploadedAt": "2026-04-14T04:45:10.231Z",
+            "reviewedAt": null,
+            "reviewedBy": null,
+            "reviewNote": null
+          }
+        ]
+      }
     },
-    "pendingFlag": {
-      "flagId": "f4744fa2-5ae4-4050-ad19-faa8f710824b",
-      "flagType": "pending_document",
-      "clearedAt": null
+    "createRecommendation": {
+      "status": 201,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "ok": true,
+        "recommendation": {
+          "recommendationId": "9f169357-cf37-460c-aa6d-5273fd93a891",
+          "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+          "title": "Rebalanceamento de caixa tático",
+          "body": "Elevar caixa de segurança e reduzir duration prefixada.",
+          "recommendationDate": "2026-04-14",
+          "category": "risk_management",
+          "visibility": "draft",
+          "createdAt": "2026-04-14T04:45:10.236Z",
+          "publishedAt": null,
+          "createdBy": "operator_local"
+        }
+      }
     },
-    "latestDocument": {
-      "documentId": "dd6ed4e3-7341-4760-aade-870dfb09ffd1",
-      "originalFilename": "documento-cliente.txt",
-      "storedFilename": "dd6ed4e3-7341-4760-aade-870dfb09ffd1-documento-cliente.txt",
-      "status": "received"
+    "publishRecommendation": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "ok": true,
+        "recommendation": {
+          "recommendationId": "9f169357-cf37-460c-aa6d-5273fd93a891",
+          "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+          "title": "Rebalanceamento de caixa tático",
+          "body": "Elevar caixa de segurança e reduzir duration prefixada.",
+          "recommendationDate": "2026-04-14",
+          "category": "risk_management",
+          "visibility": "published",
+          "createdAt": "2026-04-14T04:45:10.236Z",
+          "publishedAt": "2026-04-14T04:45:10.248Z",
+          "createdBy": "operator_local"
+        }
+      }
+    },
+    "setPendingFlag": {
+      "status": 201,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "ok": true,
+        "flag": {
+          "flagId": "7bf503c7-ba9f-4980-8387-4dd3d9809579",
+          "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+          "flagType": "pending_document",
+          "note": "Aguardando comprovante complementar",
+          "setAt": "2026-04-14T04:45:10.268Z",
+          "setBy": "operator_local",
+          "clearedAt": null,
+          "clearedBy": null
+        }
+      }
+    },
+    "cockpitFlagsOverview": {
+      "status": 200,
+      "headers": {
+        "content-type": "application/json"
+      },
+      "body": {
+        "ok": true,
+        "leads": [
+          {
+            "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+            "fullName": "T4 Cycle 6 lead-a",
+            "flags": [
+              {
+                "flagId": "7bf503c7-ba9f-4980-8387-4dd3d9809579",
+                "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+                "flagType": "pending_document",
+                "note": "Aguardando comprovante complementar",
+                "setAt": "2026-04-14T04:45:10.268Z",
+                "setBy": "operator_local",
+                "clearedAt": null,
+                "clearedBy": null
+              }
+            ]
+          }
+        ]
+      }
     }
   },
-  "artifacts": {
-    "summaryPath": "state/evidence/T4-cycle-6/summary-local.json",
-    "serverLog": "state/evidence/T4-cycle-6/server.log"
-  }
+  "persisted": {
+    "checklistPersisted": {
+      "itemId": "f2b8e708-55dd-488c-8730-c1f0f0bc7d23",
+      "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+      "status": "completed",
+      "completedBy": "client"
+    },
+    "documentPersisted": {
+      "documentId": "8b84f007-5a12-46e4-98ab-81979e707d3b",
+      "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+      "originalFilename": "rg-cycle-6.pdf",
+      "storedFilename": "8b84f007-5a12-46e4-98ab-81979e707d3b-rg-cycle-6.pdf",
+      "status": "received"
+    },
+    "recommendationPersisted": {
+      "recommendationId": "9f169357-cf37-460c-aa6d-5273fd93a891",
+      "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+      "visibility": "published",
+      "recommendationDate": "2026-04-14",
+      "publishedAt": "2026-04-14T04:45:10.248Z"
+    },
+    "pendingFlagPersisted": {
+      "leadId": "ceb543a9-cadb-46ea-a464-e7002655d57d",
+      "flagType": "pending_document",
+      "note": "Aguardando comprovante complementar",
+      "setBy": "operator_local",
+      "clearedAt": null
+    },
+    "revokedInviteSessions": {
+      "count": 0
+    }
+  },
+  "portalInvisibilityProof": {
+    "ownLeadDashboardLeaksFlags": false,
+    "ownLeadDocumentsLeaksFlags": false,
+    "ownLeadLedgerLeaksFlags": false
+  },
+  "surfaceChecks": {
+    "dashboardUsesSessionLead": true,
+    "documentsUsesSessionLead": true,
+    "ledgerUsesPublishedOwnLead": true,
+    "cockpitFlagsOverviewPageExists": true,
+    "cockpitLeadHasFlagPanel": true
+  },
+  "note": "Cycle 6 verifier executes real compiled cockpit and portal handlers end-to-end inside an isolated temp project root, then audits SQLite persistence and portal invisibility."
 }

@@ -26,11 +26,17 @@ export default function LeadsCockpitPage() {
           <p>Leitura direta do storage durável de intake.</p>
         </div>
         <div className="actions">
+          <a className="btn btn-secondary" href="/cockpit/review-queue">
+            Review queue
+          </a>
           <a className="btn btn-secondary" href="/cockpit/flags">
             Pending flags overview
           </a>
           <a className="btn btn-secondary" href="/cockpit/billing">
             Billing overview
+          </a>
+          <a className="btn btn-secondary" href="/cockpit/audit-log">
+            Audit log
           </a>
           <a className="btn btn-secondary" href="/">
             Landing
@@ -48,6 +54,7 @@ export default function LeadsCockpitPage() {
         <p className="hint">Tabela de leads: {paths.leadsTable}</p>
         <p className="hint">Tabela de eventos: {paths.eventsTable}</p>
         <p className="hint">Tabela de auditoria comercial: {paths.stageAuditTable}</p>
+        <p className="hint">Tabela de auditoria unificada: {paths.auditLogTable}</p>
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>

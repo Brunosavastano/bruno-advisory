@@ -7,6 +7,7 @@ import {
   stageAuditTable,
   normalizeLeadRow
 } from './db';
+import { writeAuditLog } from './audit-log';
 import type { LeadCommercialStageAuditRecord, LeadCrmFieldsUpdate, LeadFitLevel, StoredLead } from './types';
 
 const leadSelectColumns = `
@@ -202,6 +203,20 @@ export function updateLeadCommercialStage(params: {
 
     db.prepare(`INSERT INTO ${stageAuditTable} (audit_id, lead_id, from_stage, to_stage, changed_at, changed_by, note) VALUES (?, ?, ?, ?, ?, ?, ?)`)
       .run(randomUUID(), params.leadId, fromStage, params.toStage, now, params.changedBy, cleanNote || null);
+
+    writeAuditLog({
+      action: 'commercial_stage_changed',
+      entityType: 'lead',
+      entityId: params.leadId,
+      leadId: params.leadId,
+      actorType: 'operator',
+      detail: {
+        fromStage,
+        toStage: params.toStage,
+        changedBy: params.changedBy,
+        note: cleanNote || null
+      }
+    });
 
     db.exec('COMMIT');
   } catch (error) {

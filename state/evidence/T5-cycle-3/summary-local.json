@@ -1,0 +1,113 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T04:09:04.992Z",
+  "leadId": "1236ef7e-fa6d-4c2f-b3e8-e3ff3fe6abc9",
+  "memoInReview": {
+    "id": "2f918d8b-e55e-4cc0-835d-9084fa17a693",
+    "leadId": "1236ef7e-fa6d-4c2f-b3e8-e3ff3fe6abc9",
+    "researchWorkflowId": "ad7d0043-9975-4dc7-ae7c-1062780474bd",
+    "title": "Memo aguardando revisão",
+    "body": "Texto final do memo antes da aprovação.",
+    "status": "pending_review",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:09:04.882Z",
+    "updatedAt": "2026-04-15T04:09:04.896Z"
+  },
+  "workflowInReview": {
+    "id": "ad7d0043-9975-4dc7-ae7c-1062780474bd",
+    "leadId": "1236ef7e-fa6d-4c2f-b3e8-e3ff3fe6abc9",
+    "title": "Research aguardando revisão",
+    "topic": "Tese macro para revisão humana",
+    "status": "review",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:09:04.871Z",
+    "updatedAt": "2026-04-15T04:09:04.876Z"
+  },
+  "approvedMemo": {
+    "id": "2f918d8b-e55e-4cc0-835d-9084fa17a693",
+    "leadId": "1236ef7e-fa6d-4c2f-b3e8-e3ff3fe6abc9",
+    "researchWorkflowId": "ad7d0043-9975-4dc7-ae7c-1062780474bd",
+    "title": "Memo aguardando revisão",
+    "body": "Texto final do memo antes da aprovação.",
+    "status": "approved",
+    "reviewRejectionReason": null,
+    "reviewedAt": "2026-04-15T04:09:04.930Z",
+    "createdAt": "2026-04-15T04:09:04.882Z",
+    "updatedAt": "2026-04-15T04:09:04.930Z"
+  },
+  "rejectedWorkflow": {
+    "id": "ad7d0043-9975-4dc7-ae7c-1062780474bd",
+    "leadId": "1236ef7e-fa6d-4c2f-b3e8-e3ff3fe6abc9",
+    "title": "Research aguardando revisão",
+    "topic": "Tese macro para revisão humana",
+    "status": "rejected",
+    "reviewRejectionReason": "Hipótese central insuficientemente suportada para aprovação.",
+    "reviewedAt": "2026-04-15T04:09:04.948Z",
+    "createdAt": "2026-04-15T04:09:04.871Z",
+    "updatedAt": "2026-04-15T04:09:04.948Z"
+  },
+  "queueBefore": [
+    {
+      "type": "memo",
+      "id": "2f918d8b-e55e-4cc0-835d-9084fa17a693",
+      "leadId": "1236ef7e-fa6d-4c2f-b3e8-e3ff3fe6abc9",
+      "leadName": "T5 Cycle 3 Lead",
+      "title": "Memo aguardando revisão",
+      "status": "pending_review",
+      "createdAt": "2026-04-15T04:09:04.882Z",
+      "updatedAt": "2026-04-15T04:09:04.896Z"
+    },
+    {
+      "type": "research_workflow",
+      "id": "ad7d0043-9975-4dc7-ae7c-1062780474bd",
+      "leadId": "1236ef7e-fa6d-4c2f-b3e8-e3ff3fe6abc9",
+      "leadName": "T5 Cycle 3 Lead",
+      "title": "Research aguardando revisão",
+      "status": "review",
+      "createdAt": "2026-04-15T04:09:04.871Z",
+      "updatedAt": "2026-04-15T04:09:04.876Z"
+    }
+  ],
+  "queueAfter": [],
+  "dbPath": "/tmp/ba-t5-cycle3-9RpOGA/data/dev/bruno-advisory-dev.sqlite3",
+  "memoRow": {
+    "id": "2f918d8b-e55e-4cc0-835d-9084fa17a693",
+    "status": "approved",
+    "reviewRejectionReason": null,
+    "reviewedAt": "2026-04-15T04:09:04.930Z"
+  },
+  "workflowRow": {
+    "id": "ad7d0043-9975-4dc7-ae7c-1062780474bd",
+    "status": "rejected",
+    "reviewRejectionReason": "Hipótese central insuficientemente suportada para aprovação.",
+    "reviewedAt": "2026-04-15T04:09:04.948Z"
+  },
+  "memoEvents": [
+    {
+      "id": "3c9eb260-afde-4291-9c42-6de12bf00a7c",
+      "entityId": "2f918d8b-e55e-4cc0-835d-9084fa17a693",
+      "action": "approved",
+      "reason": null,
+      "createdAt": "2026-04-15T04:09:04.930Z"
+    }
+  ],
+  "workflowEvents": [
+    {
+      "id": "b6da44a5-93bd-4a31-a79b-6efe329c17fb",
+      "entityId": "ad7d0043-9975-4dc7-ae7c-1062780474bd",
+      "action": "rejected",
+      "reason": "Hipótese central insuficientemente suportada para aprovação.",
+      "createdAt": "2026-04-15T04:09:04.948Z"
+    }
+  ],
+  "surfaceChecks": {
+    "reviewQueueRoutePresent": true,
+    "reviewQueuePagePresent": true,
+    "queuePageRendersPanel": true,
+    "queuePanelHasApproveAndReject": true,
+    "queueRouteListsItems": true
+  },
+  "note": "HTTP bind may be blocked in this sandbox (listen EPERM); verification ran by invoking compiled route handlers directly against an isolated temp-root SQLite database."
+}

@@ -1,0 +1,238 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T04:14:59.366Z",
+  "leadA": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+  "leadB": "d629f594-5ac8-4e4b-985e-3ad64ef0b32f",
+  "billing": {
+    "readiness": {
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "isBillingReady": true,
+      "requiredCommercialStage": "cliente_convertido",
+      "currentCommercialStage": "cliente_convertido",
+      "totalTasks": 1,
+      "doneTasks": 1,
+      "pendingTasks": 0,
+      "unmetConditions": [],
+      "unmetConditionLabels": []
+    },
+    "billingRecord": {
+      "billingRecordId": "2cf4a84d-37d2-4e9d-bf9f-f0d59d9754b5",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "status": "active_local",
+      "currency": "BRL",
+      "entryFeeCents": 950000,
+      "monthlyFeeCents": 350000,
+      "minimumCommitmentMonths": 6,
+      "activatedAt": "2026-04-15T04:14:59.184Z",
+      "createdAt": "2026-04-15T04:14:59.184Z"
+    },
+    "charge": {
+      "chargeId": "0145bbc4-dd41-4160-94f9-3109c67cbc61",
+      "billingRecordId": "2cf4a84d-37d2-4e9d-bf9f-f0d59d9754b5",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "chargeSequence": 1,
+      "chargeKind": "monthly_recurring",
+      "status": "pending_local",
+      "currency": "BRL",
+      "amountCents": 350000,
+      "dueDate": "2026-05-15",
+      "postedAt": "2026-04-15T04:14:59.190Z",
+      "createdAt": "2026-04-15T04:14:59.190Z"
+    }
+  },
+  "portal": {
+    "inviteA": {
+      "inviteId": "cd94b5a0-d3b6-411c-b290-eba74098172e",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "code": "bd986d1343f5ae9c58650465923b9d23",
+      "status": "active",
+      "createdAt": "2026-04-15T04:14:59.195Z",
+      "usedAt": null,
+      "revokedAt": null
+    },
+    "inviteB": {
+      "inviteId": "c9e77491-15ff-4beb-babe-18dbe4191988",
+      "leadId": "d629f594-5ac8-4e4b-985e-3ad64ef0b32f",
+      "code": "276678e636a58bce7ce58b8763522158",
+      "status": "active",
+      "createdAt": "2026-04-15T04:14:59.202Z",
+      "usedAt": null,
+      "revokedAt": null
+    },
+    "loginAStatus": 302,
+    "loginBStatus": 302
+  },
+  "checklist": {
+    "ownCompletionStatus": 303,
+    "foreignAttemptStatus": 403
+  },
+  "documents": {
+    "uploadedDocument": {
+      "documentId": "a6406c65-de8c-4b31-9526-5f2192f647bf",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "originalFilename": "regression-proof.pdf",
+      "storedFilename": "a6406c65-de8c-4b31-9526-5f2192f647bf-regression-proof.pdf",
+      "mimeType": "application/pdf",
+      "sizeBytes": 20,
+      "status": "received",
+      "uploadedAt": "2026-04-15T04:14:59.244Z",
+      "reviewedAt": null,
+      "reviewedBy": null,
+      "reviewNote": null
+    },
+    "reviewedDocument": {
+      "documentId": "a6406c65-de8c-4b31-9526-5f2192f647bf",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "originalFilename": "regression-proof.pdf",
+      "storedFilename": "a6406c65-de8c-4b31-9526-5f2192f647bf-regression-proof.pdf",
+      "mimeType": "application/pdf",
+      "sizeBytes": 20,
+      "status": "accepted",
+      "uploadedAt": "2026-04-15T04:14:59.244Z",
+      "reviewedAt": "2026-04-15T04:14:59.250Z",
+      "reviewedBy": "verify_t5_full_regression",
+      "reviewNote": "Documento validado na regressão full."
+    },
+    "portalDocumentsA": [
+      "a6406c65-de8c-4b31-9526-5f2192f647bf"
+    ],
+    "portalDocumentsB": [],
+    "cockpitDocumentsA": [
+      "a6406c65-de8c-4b31-9526-5f2192f647bf"
+    ]
+  },
+  "ledger": {
+    "leadARecommendationIds": [
+      "8286f719-7ea8-466a-bef9-41f2efa3a99d"
+    ],
+    "leadBRecommendationIds": [
+      "a2826d02-62e7-468f-a398-f255cc20eec2"
+    ]
+  },
+  "research": {
+    "leadAPortalIds": [
+      "2127d987-1ea0-4f31-8f07-7404edb5f1da"
+    ],
+    "leadBPortalIds": [
+      "41aa54e0-e4bf-4f3d-84f9-4f1bd798478d"
+    ],
+    "rejectedWorkflowId": "297acc06-d501-4036-9c3d-ee2e18ba9365"
+  },
+  "memos": {
+    "leadAPortalIds": [
+      "cf37b422-09f6-4a31-809b-a15209f487c4"
+    ],
+    "leadBPortalIds": [
+      "2808157f-50fd-472a-a8c9-7e696e65c728"
+    ],
+    "approvedMemoId": "0ac57e18-a2a6-4628-8eab-c65e882e8494"
+  },
+  "reviewQueue": {
+    "queueBefore": [
+      {
+        "type": "memo",
+        "id": "0ac57e18-a2a6-4628-8eab-c65e882e8494",
+        "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+        "leadName": "T5 Full Regression Lead A",
+        "title": "Memo em revisão",
+        "status": "pending_review",
+        "createdAt": "2026-04-15T04:14:59.314Z",
+        "updatedAt": "2026-04-15T04:14:59.324Z"
+      },
+      {
+        "type": "research_workflow",
+        "id": "297acc06-d501-4036-9c3d-ee2e18ba9365",
+        "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+        "leadName": "T5 Full Regression Lead A",
+        "title": "Research em revisão",
+        "status": "review",
+        "createdAt": "2026-04-15T04:14:59.284Z",
+        "updatedAt": "2026-04-15T04:14:59.288Z"
+      }
+    ],
+    "queueAfter": []
+  },
+  "audit": {
+    "totalEntries": 15,
+    "leadAEntries": 12,
+    "requiredLeadAActions": [
+      "commercial_stage_changed",
+      "billing_record_created",
+      "billing_record_activated",
+      "charge_created",
+      "portal_invite_created",
+      "portal_session_created",
+      "checklist_item_completed",
+      "document_uploaded",
+      "document_reviewed",
+      "recommendation_published",
+      "memo_approved",
+      "research_workflow_rejected"
+    ],
+    "leadAActions": [
+      "research_workflow_rejected",
+      "memo_approved",
+      "recommendation_published",
+      "document_reviewed",
+      "document_uploaded",
+      "checklist_item_completed",
+      "portal_session_created",
+      "portal_invite_created",
+      "charge_created",
+      "billing_record_created",
+      "billing_record_activated",
+      "commercial_stage_changed"
+    ]
+  },
+  "persisted": {
+    "checklistRow": {
+      "itemId": "4415c6da-43a0-4e0b-80d5-bf7e2d6266cd",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "status": "completed",
+      "completedBy": "client"
+    },
+    "documentRow": {
+      "documentId": "a6406c65-de8c-4b31-9526-5f2192f647bf",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "status": "accepted",
+      "reviewedBy": "verify_t5_full_regression"
+    },
+    "billingRow": {
+      "billingRecordId": "2cf4a84d-37d2-4e9d-bf9f-f0d59d9754b5",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "status": "active_local"
+    },
+    "chargeRow": {
+      "chargeId": "0145bbc4-dd41-4160-94f9-3109c67cbc61",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "status": "pending_local"
+    },
+    "recommendationRow": {
+      "recommendationId": "8286f719-7ea8-466a-bef9-41f2efa3a99d",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "visibility": "published"
+    },
+    "workflowRow": {
+      "id": "2127d987-1ea0-4f31-8f07-7404edb5f1da",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "status": "delivered"
+    },
+    "memoRow": {
+      "id": "cf37b422-09f6-4a31-809b-a15209f487c4",
+      "leadId": "0d25ca50-1d69-404a-8b03-36b5f22b74ae",
+      "status": "published",
+      "researchWorkflowId": "2127d987-1ea0-4f31-8f07-7404edb5f1da"
+    }
+  },
+  "surfaceChecks": {
+    "dashboardLinksLedger": true,
+    "dashboardLinksMemos": true,
+    "dashboardLinksResearch": true,
+    "ledgerReadsPublishedRecommendations": true,
+    "portalMemosReadPublishedOnly": true,
+    "portalResearchReadsDeliveredOnly": true,
+    "reviewQueuePagePresent": true,
+    "auditLogPagePresent": true
+  },
+  "note": "Full regression executed via compiled route handlers against an isolated temp-root SQLite database to stay truthful when raw HTTP bind is blocked in sandboxed environments."
+}

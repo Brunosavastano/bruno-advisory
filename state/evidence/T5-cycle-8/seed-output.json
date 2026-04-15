@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "seededAt": "2026-04-15T04:16:37.468Z",
+  "leadId": "50574596-27ca-4963-a6c4-7dcd4517b76a",
+  "fullName": "Beta Walkthrough Lead",
+  "email": "beta-walkthrough-1776226597348-4ed29703@example.com",
+  "taskId": "a5b00455-ccee-4c35-bbf1-e5d8f368e392",
+  "commercialStage": "cliente_convertido",
+  "billingRecordId": "481461a2-19ed-4dc0-b7ee-119e6672bfbc",
+  "firstChargeId": "4279a54b-679e-4665-8c4a-f6f9a638b074",
+  "inviteId": "876bc9d8-2a17-4695-a522-53601ba2c641",
+  "inviteCode": "560e66979004d65193e85640a457636a",
+  "checklistItemIds": [
+    "33d6a9aa-a472-4716-9f98-cff08a080e5c",
+    "06502c51-66aa-4474-8dee-d3bf37952675",
+    "06d564d2-eeec-4330-8b9e-612a5722231e"
+  ],
+  "recommendationId": "ad779c51-2653-42be-8439-8d9b02fe33f6",
+  "researchWorkflowId": "7aced510-008c-4f13-84b4-b35243b7f54a",
+  "memoId": "53ccdd33-4910-4fbe-9b40-5845ce787926",
+  "databasePath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+  "note": "cliente_convertido is the current canonical T3/T5 code value for a converted client."
+}

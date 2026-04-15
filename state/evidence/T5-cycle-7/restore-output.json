@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "provider": "sqlite",
+  "archivePath": "/root/Bruno-Advisory/bruno-advisory/infra/backups/t5-cycle-7-local-latest.tar.gz",
+  "restoredDatabasePath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+  "uploadsRestored": true,
+  "uploadsFileCount": 1,
+  "note": "PostgreSQL restore is not implemented in this cycle. Use pg_restore for the PG equivalent."
+}

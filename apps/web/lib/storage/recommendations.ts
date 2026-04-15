@@ -6,6 +6,7 @@ import {
   type RecommendationRecord,
   type RecommendationVisibility
 } from '@bruno-advisory/core';
+import { writeAuditLog } from './audit-log';
 import { getDatabase, leadRecommendationsTable, leadsTable } from './db';
 
 function getLeadExists(leadId: string) {
@@ -35,7 +36,6 @@ function normalizeRecommendationRow(row: Record<string, unknown>): Recommendatio
     leadId: String(row.leadId),
     title: String(row.title),
     body: String(row.body),
-    recommendationDate: String(row.recommendationDate),
     category: normalizeCategory(row.category === null ? null : String(row.category)),
     visibility,
     createdAt: String(row.createdAt),
@@ -44,11 +44,16 @@ function normalizeRecommendationRow(row: Record<string, unknown>): Recommendatio
   };
 }
 
+function hasLegacyRecommendationDateColumn() {
+  const db = getDatabase();
+  const rows = db.prepare(`PRAGMA table_info(${leadRecommendationsTable})`).all() as Array<{ name?: unknown }>;
+  return rows.some((row) => row.name === 'recommendation_date');
+}
+
 export function createRecommendation(
   leadId: string,
   title: string,
   body: string,
-  recommendationDate: string,
   category: RecommendationCategory | null | undefined,
   createdBy: string
 ): RecommendationRecord | null {
@@ -58,45 +63,90 @@ export function createRecommendation(
 
   const normalizedTitle = title.trim();
   const normalizedBody = body.trim();
-  const normalizedDate = recommendationDate.trim();
   const normalizedCreatedBy = createdBy.trim();
   const normalizedCategory = normalizeCategory(category ?? null);
 
-  if (!normalizedTitle || !normalizedBody || !normalizedCreatedBy || !/^\d{4}-\d{2}-\d{2}$/.test(normalizedDate)) {
+  if (!normalizedTitle || !normalizedBody || !normalizedCreatedBy) {
     return null;
   }
 
   const recommendationId = randomUUID();
   const createdAt = new Date().toISOString();
+  const recommendationDate = createdAt.slice(0, 10);
   const db = getDatabase();
 
-  db.prepare(`
-    INSERT INTO ${leadRecommendationsTable} (
-      recommendation_id,
-      lead_id,
-      title,
-      body,
-      recommendation_date,
-      category,
-      visibility,
-      created_at,
-      published_at,
-      created_by
-    ) VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, NULL, ?)
-  `).run(recommendationId, leadId, normalizedTitle, normalizedBody, normalizedDate, normalizedCategory, createdAt, normalizedCreatedBy);
+  if (hasLegacyRecommendationDateColumn()) {
+    db.prepare(`
+      INSERT INTO ${leadRecommendationsTable} (
+        recommendation_id,
+        lead_id,
+        title,
+        body,
+        recommendation_date,
+        category,
+        visibility,
+        created_at,
+        published_at,
+        created_by
+      ) VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, NULL, ?)
+    `).run(
+      recommendationId,
+      leadId,
+      normalizedTitle,
+      normalizedBody,
+      recommendationDate,
+      normalizedCategory,
+      createdAt,
+      normalizedCreatedBy
+    );
+  } else {
+    db.prepare(`
+      INSERT INTO ${leadRecommendationsTable} (
+        recommendation_id,
+        lead_id,
+        title,
+        body,
+        category,
+        visibility,
+        created_at,
+        published_at,
+        created_by
+      ) VALUES (?, ?, ?, ?, ?, 'draft', ?, NULL, ?)
+    `).run(recommendationId, leadId, normalizedTitle, normalizedBody, normalizedCategory, createdAt, normalizedCreatedBy);
+  }
 
   return {
     recommendationId,
     leadId,
     title: normalizedTitle,
     body: normalizedBody,
-    recommendationDate: normalizedDate,
     category: normalizedCategory,
     visibility: 'draft',
     createdAt,
     publishedAt: null,
     createdBy: normalizedCreatedBy
   };
+}
+
+function getRecommendation(recommendationId: string, leadId: string): RecommendationRecord | null {
+  const db = getDatabase();
+  const row = db.prepare(`
+    SELECT
+      recommendation_id AS recommendationId,
+      lead_id AS leadId,
+      title,
+      body,
+      category,
+      visibility,
+      created_at AS createdAt,
+      published_at AS publishedAt,
+      created_by AS createdBy
+    FROM ${leadRecommendationsTable}
+    WHERE recommendation_id = ? AND lead_id = ?
+    LIMIT 1
+  `).get(recommendationId, leadId) as Record<string, unknown> | undefined;
+
+  return row ? normalizeRecommendationRow(row) : null;
 }
 
 export function listRecommendations(
@@ -112,7 +162,6 @@ export function listRecommendations(
             lead_id AS leadId,
             title,
             body,
-            recommendation_date AS recommendationDate,
             category,
             visibility,
             created_at AS createdAt,
@@ -128,7 +177,6 @@ export function listRecommendations(
             lead_id AS leadId,
             title,
             body,
-            recommendation_date AS recommendationDate,
             category,
             visibility,
             created_at AS createdAt,
@@ -144,6 +192,11 @@ export function listRecommendations(
 }
 
 export function publishRecommendation(recommendationId: string, leadId: string): RecommendationRecord | null {
+  const current = getRecommendation(recommendationId, leadId);
+  if (!current) {
+    return null;
+  }
+
   const db = getDatabase();
   const publishedAt = new Date().toISOString();
   const result = db.prepare(`
@@ -162,7 +215,6 @@ export function publishRecommendation(recommendationId: string, leadId: string):
       lead_id AS leadId,
       title,
       body,
-      recommendation_date AS recommendationDate,
       category,
       visibility,
       created_at AS createdAt,
@@ -173,11 +225,49 @@ export function publishRecommendation(recommendationId: string, leadId: string):
     LIMIT 1
   `).get(recommendationId, leadId) as Record<string, unknown> | undefined;
 
-  return row ? normalizeRecommendationRow(row) : null;
+  const recommendation = row ? normalizeRecommendationRow(row) : null;
+  if (recommendation) {
+    writeAuditLog({
+      action: 'recommendation_published',
+      entityType: 'recommendation',
+      entityId: recommendation.recommendationId,
+      leadId: recommendation.leadId,
+      actorType: 'operator',
+      detail: {
+        title: recommendation.title,
+        category: recommendation.category,
+        visibility: recommendation.visibility
+      }
+    });
+  }
+
+  return recommendation;
 }
 
 export function deleteRecommendation(recommendationId: string, leadId: string) {
+  const current = getRecommendation(recommendationId, leadId);
+  if (!current) {
+    return false;
+  }
+
   const db = getDatabase();
   const result = db.prepare(`DELETE FROM ${leadRecommendationsTable} WHERE recommendation_id = ? AND lead_id = ?`).run(recommendationId, leadId);
-  return result.changes > 0;
+
+  if (result.changes > 0) {
+    writeAuditLog({
+      action: 'recommendation_deleted',
+      entityType: 'recommendation',
+      entityId: current.recommendationId,
+      leadId: current.leadId,
+      actorType: 'operator',
+      detail: {
+        title: current.title,
+        category: current.category,
+        visibility: current.visibility
+      }
+    });
+    return true;
+  }
+
+  return false;
 }

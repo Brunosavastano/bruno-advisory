@@ -47,6 +47,8 @@ export default async function PortalDashboardPage() {
         </div>
         <div className="actions">
           <a className="btn btn-secondary" href="/portal/ledger">Recomendações</a>
+          <a className="btn btn-secondary" href="/portal/research">Research</a>
+          <a className="btn btn-secondary" href="/portal/memos">Memos</a>
           <a className="btn btn-secondary" href="/portal/documents">Documentos</a>
           <form method="post" action="/portal/logout">
             <button className="btn btn-secondary" type="submit">Sair</button>
@@ -72,6 +74,18 @@ export default async function PortalDashboardPage() {
         <div className="kicker">Recomendações</div>
         <p>Acompanhe as recomendações publicadas no ledger do portal.</p>
         <a className="btn" href="/portal/ledger">Abrir ledger</a>
+      </section>
+
+      <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">Research</div>
+        <p>Acompanhe os itens de research já entregues no portal.</p>
+        <a className="btn" href="/portal/research">Abrir research</a>
+      </section>
+
+      <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">Memos</div>
+        <p>Acompanhe os memos publicados no portal.</p>
+        <a className="btn" href="/portal/memos">Abrir memos</a>
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>

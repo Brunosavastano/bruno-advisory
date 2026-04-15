@@ -11,11 +11,11 @@ agents:
   additional_openclaws_allowed_before_t3: false
 
 state:
-  active_tranche: T4
+  active_tranche: T5
   tranche_status: done
-  stage_gate: portal
+  stage_gate: go-live
   release_mode: shadow
-  prod_ready: false
+  prod_ready: true
 
 stack:
   frontend: Next.js

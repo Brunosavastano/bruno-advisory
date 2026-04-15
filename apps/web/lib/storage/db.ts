@@ -71,7 +71,12 @@ export const portalSessionsTable = 'portal_sessions';
 export const onboardingChecklistItemsTable = 'onboarding_checklist_items';
 export const leadDocumentsTable = 'lead_documents';
 export const leadRecommendationsTable = 'lead_recommendations';
+export const researchWorkflowsTable = 'research_workflows';
+export const researchWorkflowEventsTable = 'research_workflow_events';
+export const memosTable = 'memos';
+export const memoEventsTable = 'memo_events';
 export const leadPendingFlagsTable = 'lead_pending_flags';
+export const auditLogTable = 'audit_log';
 
 let database: DatabaseSync | undefined;
 
@@ -306,16 +311,24 @@ function migrateLegacyJsonlData(db: DatabaseSync) {
   }
 }
 
-function getLeadColumnNames(db: DatabaseSync) {
-  const columns = db.prepare(`PRAGMA table_info(${leadsTable})`).all() as Array<{ name: string }>;
+function getTableColumnNames(db: DatabaseSync, tableName: string) {
+  const columns = db.prepare(`PRAGMA table_info(${tableName})`).all() as Array<{ name: string }>;
   return new Set(columns.map((column) => column.name));
 }
 
-function addNullableLeadColumnIfMissing(db: DatabaseSync, columnName: string, sqlType = 'TEXT') {
-  const columns = getLeadColumnNames(db);
+function getLeadColumnNames(db: DatabaseSync) {
+  return getTableColumnNames(db, leadsTable);
+}
+
+function addNullableColumnIfMissing(db: DatabaseSync, tableName: string, columnName: string, sqlType = 'TEXT') {
+  const columns = getTableColumnNames(db, tableName);
   if (!columns.has(columnName)) {
-    db.exec(`ALTER TABLE ${leadsTable} ADD COLUMN ${columnName} ${sqlType}`);
+    db.exec(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${sqlType}`);
   }
+}
+
+function addNullableLeadColumnIfMissing(db: DatabaseSync, columnName: string, sqlType = 'TEXT') {
+  addNullableColumnIfMissing(db, leadsTable, columnName, sqlType);
 }
 
 function ensureCommercialStageColumn(db: DatabaseSync) {
@@ -342,6 +355,13 @@ function ensureLeadCrmColumns(db: DatabaseSync) {
   addNullableLeadColumnIfMissing(db, 'cadencia_acordada');
   addNullableLeadColumnIfMissing(db, 'proximo_passo');
   addNullableLeadColumnIfMissing(db, 'risco_de_churn');
+}
+
+function ensureReviewQueueColumns(db: DatabaseSync) {
+  addNullableColumnIfMissing(db, researchWorkflowsTable, 'review_rejection_reason');
+  addNullableColumnIfMissing(db, researchWorkflowsTable, 'reviewed_at');
+  addNullableColumnIfMissing(db, memosTable, 'review_rejection_reason');
+  addNullableColumnIfMissing(db, memosTable, 'reviewed_at');
 }
 
 export function getDatabase() {
@@ -635,7 +655,6 @@ export function getDatabase() {
       lead_id TEXT NOT NULL,
       title TEXT NOT NULL,
       body TEXT NOT NULL,
-      recommendation_date TEXT NOT NULL,
       category TEXT CHECK (category IN ('asset_allocation', 'risk_management', 'tax_planning', 'general') OR category IS NULL),
       visibility TEXT NOT NULL CHECK (visibility IN ('draft', 'published')),
       created_at TEXT NOT NULL,
@@ -646,6 +665,63 @@ export function getDatabase() {
 
     CREATE INDEX IF NOT EXISTS idx_lead_recommendations_lead ON ${leadRecommendationsTable}(lead_id, created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_lead_recommendations_visibility ON ${leadRecommendationsTable}(lead_id, visibility, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${researchWorkflowsTable} (
+      id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      topic TEXT NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('draft', 'in_progress', 'review', 'approved', 'rejected', 'delivered')),
+      review_rejection_reason TEXT,
+      reviewed_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_research_workflows_lead ON ${researchWorkflowsTable}(lead_id, updated_at DESC, id DESC);
+    CREATE INDEX IF NOT EXISTS idx_research_workflows_status ON ${researchWorkflowsTable}(lead_id, status, updated_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${researchWorkflowEventsTable} (
+      id TEXT PRIMARY KEY,
+      entity_id TEXT NOT NULL,
+      action TEXT NOT NULL CHECK (action IN ('approved', 'rejected')),
+      reason TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (entity_id) REFERENCES ${researchWorkflowsTable}(id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_research_workflow_events_entity ON ${researchWorkflowEventsTable}(entity_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${memosTable} (
+      id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      research_workflow_id TEXT,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('draft', 'pending_review', 'approved', 'rejected', 'published')),
+      review_rejection_reason TEXT,
+      reviewed_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id),
+      FOREIGN KEY (research_workflow_id) REFERENCES ${researchWorkflowsTable}(id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_memos_lead ON ${memosTable}(lead_id, updated_at DESC, id DESC);
+    CREATE INDEX IF NOT EXISTS idx_memos_status ON ${memosTable}(lead_id, status, updated_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_memos_research_workflow ON ${memosTable}(research_workflow_id, updated_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${memoEventsTable} (
+      id TEXT PRIMARY KEY,
+      entity_id TEXT NOT NULL,
+      action TEXT NOT NULL CHECK (action IN ('approved', 'rejected')),
+      reason TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (entity_id) REFERENCES ${memosTable}(id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_memo_events_entity ON ${memoEventsTable}(entity_id, created_at DESC);
 
     CREATE TABLE IF NOT EXISTS ${leadPendingFlagsTable} (
       flag_id TEXT PRIMARY KEY,
@@ -661,10 +737,27 @@ export function getDatabase() {
 
     CREATE INDEX IF NOT EXISTS idx_lead_pending_flags_lead_active ON ${leadPendingFlagsTable}(lead_id, cleared_at, set_at DESC);
     CREATE UNIQUE INDEX IF NOT EXISTS idx_lead_pending_flags_active_unique ON ${leadPendingFlagsTable}(lead_id, flag_type) WHERE cleared_at IS NULL;
+
+    CREATE TABLE IF NOT EXISTS ${auditLogTable} (
+      id TEXT PRIMARY KEY,
+      action TEXT NOT NULL,
+      entity_type TEXT NOT NULL,
+      entity_id TEXT NOT NULL,
+      lead_id TEXT,
+      actor_type TEXT NOT NULL CHECK (actor_type IN ('operator', 'client', 'system')),
+      detail TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON ${auditLogTable}(created_at DESC, id DESC);
+    CREATE INDEX IF NOT EXISTS idx_audit_log_lead ON ${auditLogTable}(lead_id, created_at DESC, id DESC);
+    CREATE INDEX IF NOT EXISTS idx_audit_log_action ON ${auditLogTable}(action, created_at DESC, id DESC);
   `);
 
   ensureCommercialStageColumn(db);
   ensureLeadCrmColumns(db);
+  ensureReviewQueueColumns(db);
   db.exec(`CREATE INDEX IF NOT EXISTS idx_intake_leads_commercial_stage ON ${leadsTable}(commercial_stage);`);
   migrateLegacyJsonlData(db);
 
@@ -749,6 +842,11 @@ export function getIntakeStoragePaths() {
     onboardingChecklistItemsTable,
     leadDocumentsTable,
     leadRecommendationsTable,
-    leadPendingFlagsTable
+    researchWorkflowsTable,
+    researchWorkflowEventsTable,
+    memosTable,
+    memoEventsTable,
+    leadPendingFlagsTable,
+    auditLogTable
   };
 }

@@ -1,0 +1,83 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T04:08:31.713Z",
+  "leadA": "6efcaba0-7cfa-40c8-9eec-94896d1e9cad",
+  "leadB": "6d926a2d-3a92-4189-9b61-b1412513e2bb",
+  "deliveredWorkflowLeadA": {
+    "id": "4c8c0398-6f3b-491a-b1e2-cbea5b3ef12e",
+    "leadId": "6efcaba0-7cfa-40c8-9eec-94896d1e9cad",
+    "title": "Research macro abril",
+    "topic": "Juros globais e rebalanceamento",
+    "status": "delivered",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:08:31.668Z",
+    "updatedAt": "2026-04-15T04:08:31.681Z"
+  },
+  "hiddenWorkflowLeadA": {
+    "id": "455bcac4-592d-497c-96b1-1f79dc164ccb",
+    "leadId": "6efcaba0-7cfa-40c8-9eec-94896d1e9cad",
+    "title": "Research interno maio",
+    "topic": "Checklist de hipóteses ainda em revisão",
+    "status": "draft",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:08:31.671Z",
+    "updatedAt": "2026-04-15T04:08:31.671Z"
+  },
+  "deliveredWorkflowLeadB": {
+    "id": "f791bb41-112b-461b-ad31-59cb276a8af7",
+    "leadId": "6d926a2d-3a92-4189-9b61-b1412513e2bb",
+    "title": "Research beta lead B",
+    "topic": "Carteira internacional defensiva",
+    "status": "delivered",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:08:31.676Z",
+    "updatedAt": "2026-04-15T04:08:31.685Z"
+  },
+  "portalLeadAIds": [
+    "4c8c0398-6f3b-491a-b1e2-cbea5b3ef12e"
+  ],
+  "portalLeadBIds": [
+    "f791bb41-112b-461b-ad31-59cb276a8af7"
+  ],
+  "dbPath": "/tmp/ba-t5-cycle1-NI88Og/data/dev/bruno-advisory-dev.sqlite3",
+  "dbRows": [
+    {
+      "id": "f791bb41-112b-461b-ad31-59cb276a8af7",
+      "leadId": "6d926a2d-3a92-4189-9b61-b1412513e2bb",
+      "title": "Research beta lead B",
+      "topic": "Carteira internacional defensiva",
+      "status": "delivered",
+      "createdAt": "2026-04-15T04:08:31.676Z",
+      "updatedAt": "2026-04-15T04:08:31.685Z"
+    },
+    {
+      "id": "4c8c0398-6f3b-491a-b1e2-cbea5b3ef12e",
+      "leadId": "6efcaba0-7cfa-40c8-9eec-94896d1e9cad",
+      "title": "Research macro abril",
+      "topic": "Juros globais e rebalanceamento",
+      "status": "delivered",
+      "createdAt": "2026-04-15T04:08:31.668Z",
+      "updatedAt": "2026-04-15T04:08:31.681Z"
+    },
+    {
+      "id": "455bcac4-592d-497c-96b1-1f79dc164ccb",
+      "leadId": "6efcaba0-7cfa-40c8-9eec-94896d1e9cad",
+      "title": "Research interno maio",
+      "topic": "Checklist de hipóteses ainda em revisão",
+      "status": "draft",
+      "createdAt": "2026-04-15T04:08:31.671Z",
+      "updatedAt": "2026-04-15T04:08:31.671Z"
+    }
+  ],
+  "surfaceChecks": {
+    "cockpitSectionVisible": true,
+    "portalRoutePresent": true,
+    "portalDashboardLinksResearch": true,
+    "portalPageReadsDeliveredOnly": true,
+    "cockpitRouteHasCrudMethods": true
+  },
+  "note": "HTTP bind may be blocked in this sandbox (listen EPERM); verification ran by invoking compiled route handlers directly against an isolated temp-root SQLite database."
+}

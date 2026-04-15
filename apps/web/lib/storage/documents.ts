@@ -8,6 +8,7 @@ import {
   type DocumentUploadRecord,
   type DocumentUploadStatus
 } from '@bruno-advisory/core';
+import { writeAuditLog } from './audit-log';
 import { getDatabase, leadDocumentsTable, leadsTable } from './db';
 
 const uploadsRoot = path.join(process.cwd(), 'data', 'dev', 'uploads');
@@ -109,6 +110,21 @@ export async function saveDocument(leadId: string, file: File): Promise<Document
         review_note
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, NULL)
     `).run(documentId, leadId, originalFilename, storedFilename, file.type, file.size, 'received', uploadedAt);
+
+    writeAuditLog({
+      action: 'document_uploaded',
+      entityType: 'document',
+      entityId: documentId,
+      leadId,
+      actorType: 'client',
+      detail: {
+        originalFilename,
+        mimeType: file.type,
+        sizeBytes: file.size,
+        status: 'received'
+      }
+    });
+
     db.exec('COMMIT');
   } catch (error) {
     db.exec('ROLLBACK');
@@ -162,11 +178,28 @@ export function reviewDocument(
   const db = getDatabase();
   const reviewedAt = new Date().toISOString();
   const cleanNote = reviewNote?.trim() ? reviewNote.trim() : null;
+  const normalizedReviewedBy = reviewedBy.trim() || 'operator_local';
   db.prepare(`
     UPDATE ${leadDocumentsTable}
     SET status = ?, reviewed_at = ?, reviewed_by = ?, review_note = ?
     WHERE document_id = ? AND lead_id = ?
-  `).run(status, reviewedAt, reviewedBy.trim() || 'operator_local', cleanNote, documentId, leadId);
+  `).run(status, reviewedAt, normalizedReviewedBy, cleanNote, documentId, leadId);
 
-  return getDocument(documentId, leadId);
+  const document = getDocument(documentId, leadId);
+  if (document) {
+    writeAuditLog({
+      action: 'document_reviewed',
+      entityType: 'document',
+      entityId: document.documentId,
+      leadId: document.leadId,
+      actorType: 'operator',
+      detail: {
+        status: document.status,
+        reviewedBy: normalizedReviewedBy,
+        reviewNote: document.reviewNote
+      }
+    });
+  }
+
+  return document;
 }

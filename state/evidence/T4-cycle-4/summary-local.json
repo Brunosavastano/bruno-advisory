@@ -1,25 +1,8 @@
 {
   "ok": true,
-  "checkedAt": "2026-04-14T04:12:51.884Z",
-  "leadA": "1fa91f2e-61b5-46d9-90ad-30bedf4b418f",
-  "leadB": "055a9ae8-2abd-4e2a-95d3-399b85d74038",
-  "loginA": {
-    "status": 302,
-    "headers": {
-      "location": "http://localhost/portal/dashboard",
-      "set-cookie": "portal_session=f0b8504b-3583-49fb-9de7-f05d6bda3e39; Path=/; HttpOnly; SameSite=lax; Max-Age=2592000"
-    },
-    "body": null
-  },
-  "loginB": {
-    "status": 302,
-    "headers": {
-      "location": "http://localhost/portal/dashboard",
-      "set-cookie": "portal_session=5fbdfe63-b490-4862-993c-90d7d404e6b8; Path=/; HttpOnly; SameSite=lax; Max-Age=2592000"
-    },
-    "body": null
-  },
-  "createRecommendation": {
+  "checkedAt": "2026-04-15T02:02:53.516Z",
+  "leadId": "bb369727-3a2a-44f4-9a83-05470d8b6578",
+  "createDraft": {
     "status": 201,
     "headers": {
       "content-type": "application/json"
@@ -27,41 +10,19 @@
     "body": {
       "ok": true,
       "recommendation": {
-        "recommendationId": "69cc54f6-57c8-43c9-9459-9112f8a7a11a",
-        "leadId": "1fa91f2e-61b5-46d9-90ad-30bedf4b418f",
-        "title": "Ajuste tático de caixa",
-        "body": "Elevar reserva tática para 12 meses e reduzir duration no bloco prefixado.",
-        "recommendationDate": "2026-04-14",
+        "recommendationId": "f7a58f8b-07c7-4520-a2c5-7204871513be",
+        "leadId": "bb369727-3a2a-44f4-9a83-05470d8b6578",
+        "title": "Recomendação inicial",
+        "body": "Manter reserva tática e revisar risco global.",
         "category": "risk_management",
         "visibility": "draft",
-        "createdAt": "2026-04-14T04:12:51.875Z",
+        "createdAt": "2026-04-15T02:02:53.444Z",
         "publishedAt": null,
-        "createdBy": "operator_local"
+        "createdBy": "verifier_local"
       }
     }
   },
-  "publishRecommendation": {
-    "status": 200,
-    "headers": {
-      "content-type": "application/json"
-    },
-    "body": {
-      "ok": true,
-      "recommendation": {
-        "recommendationId": "69cc54f6-57c8-43c9-9459-9112f8a7a11a",
-        "leadId": "1fa91f2e-61b5-46d9-90ad-30bedf4b418f",
-        "title": "Ajuste tático de caixa",
-        "body": "Elevar reserva tática para 12 meses e reduzir duration no bloco prefixado.",
-        "recommendationDate": "2026-04-14",
-        "category": "risk_management",
-        "visibility": "published",
-        "createdAt": "2026-04-14T04:12:51.875Z",
-        "publishedAt": "2026-04-14T04:12:51.878Z",
-        "createdBy": "operator_local"
-      }
-    }
-  },
-  "ownPortalLedger": {
+  "cockpitListWithDraft": {
     "status": 200,
     "headers": {
       "content-type": "application/json"
@@ -70,21 +31,30 @@
       "ok": true,
       "recommendations": [
         {
-          "recommendationId": "69cc54f6-57c8-43c9-9459-9112f8a7a11a",
-          "leadId": "1fa91f2e-61b5-46d9-90ad-30bedf4b418f",
-          "title": "Ajuste tático de caixa",
-          "body": "Elevar reserva tática para 12 meses e reduzir duration no bloco prefixado.",
-          "recommendationDate": "2026-04-14",
+          "recommendationId": "f7a58f8b-07c7-4520-a2c5-7204871513be",
+          "leadId": "bb369727-3a2a-44f4-9a83-05470d8b6578",
+          "title": "Recomendação inicial",
+          "body": "Manter reserva tática e revisar risco global.",
           "category": "risk_management",
-          "visibility": "published",
-          "createdAt": "2026-04-14T04:12:51.875Z",
-          "publishedAt": "2026-04-14T04:12:51.878Z",
-          "createdBy": "operator_local"
+          "visibility": "draft",
+          "createdAt": "2026-04-15T02:02:53.444Z",
+          "publishedAt": null,
+          "createdBy": "verifier_local"
         }
       ]
     }
   },
-  "foreignPortalLedger": {
+  "portalUnauthorized": {
+    "status": 401,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": false,
+      "error": "Sessao do portal ausente."
+    }
+  },
+  "portalBeforePublish": {
     "status": 200,
     "headers": {
       "content-type": "application/json"
@@ -94,21 +64,73 @@
       "recommendations": []
     }
   },
-  "persisted": {
-    "leadId": "1fa91f2e-61b5-46d9-90ad-30bedf4b418f",
-    "title": "Ajuste tático de caixa",
-    "body": "Elevar reserva tática para 12 meses e reduzir duration no bloco prefixado.",
-    "recommendationDate": "2026-04-14",
-    "visibility": "published",
-    "createdAt": "2026-04-14T04:12:51.875Z",
-    "publishedAt": "2026-04-14T04:12:51.878Z",
-    "createdBy": "operator_local"
+  "publish": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": true,
+      "recommendation": {
+        "recommendationId": "f7a58f8b-07c7-4520-a2c5-7204871513be",
+        "leadId": "bb369727-3a2a-44f4-9a83-05470d8b6578",
+        "title": "Recomendação inicial",
+        "body": "Manter reserva tática e revisar risco global.",
+        "category": "risk_management",
+        "visibility": "published",
+        "createdAt": "2026-04-15T02:02:53.444Z",
+        "publishedAt": "2026-04-15T02:02:53.479Z",
+        "createdBy": "verifier_local"
+      }
+    }
   },
+  "portalAfterPublish": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": true,
+      "recommendations": [
+        {
+          "recommendationId": "f7a58f8b-07c7-4520-a2c5-7204871513be",
+          "leadId": "bb369727-3a2a-44f4-9a83-05470d8b6578",
+          "title": "Recomendação inicial",
+          "body": "Manter reserva tática e revisar risco global.",
+          "category": "risk_management",
+          "visibility": "published",
+          "createdAt": "2026-04-15T02:02:53.444Z",
+          "publishedAt": "2026-04-15T02:02:53.479Z",
+          "createdBy": "verifier_local"
+        }
+      ]
+    }
+  },
+  "deleted": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": true
+    }
+  },
+  "cockpitListAfterDelete": {
+    "status": 200,
+    "headers": {
+      "content-type": "application/json"
+    },
+    "body": {
+      "ok": true,
+      "recommendations": []
+    }
+  },
+  "persistedCount": 0,
   "surfaceChecks": {
-    "cockpitHasLedgerSection": true,
-    "portalUsesPublishedOwnLedger": true,
-    "portalReadOnly": true,
-    "portalRecommendationsRouteExists": true
+    "portalLedgerPageExists": true,
+    "portalLedgerUsesPublishedOnly": true,
+    "cockpitLeadShowsRecommendations": true,
+    "dashboardLinksLedger": true
   },
-  "note": "Verification executed against compiled cockpit and portal route handlers, direct SQLite inspection, and explicit two-session isolation proof."
+  "note": "Verification executed against compiled route handlers, portal session auth, SQLite inspection and source-surface checks."
 }

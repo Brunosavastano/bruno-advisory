@@ -1,0 +1,100 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T04:08:47.357Z",
+  "leadA": "387a996d-b56b-4b5f-a0b5-e499cb5d3f8a",
+  "leadB": "704393c9-caef-4b14-82da-1d21575650b5",
+  "researchWorkflowLeadA": {
+    "id": "3c34c63d-c41e-40d4-8196-a09db3c13d9b",
+    "leadId": "387a996d-b56b-4b5f-a0b5-e499cb5d3f8a",
+    "title": "Research base para memo linkado",
+    "topic": "Cenário macro e proteção de portfólio",
+    "status": "draft",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:08:47.292Z",
+    "updatedAt": "2026-04-15T04:08:47.292Z"
+  },
+  "standaloneMemoLeadA": {
+    "id": "3090a4bf-7105-4b09-9bd5-0294cf46abe2",
+    "leadId": "387a996d-b56b-4b5f-a0b5-e499cb5d3f8a",
+    "researchWorkflowId": null,
+    "title": "Memo standalone publicado",
+    "body": "Memo standalone publicado para o cliente no portal.",
+    "status": "published",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:08:47.295Z",
+    "updatedAt": "2026-04-15T04:08:47.303Z"
+  },
+  "linkedMemoLeadA": {
+    "id": "b995bb32-e251-468f-aba0-bc8ab5a63c9c",
+    "leadId": "387a996d-b56b-4b5f-a0b5-e499cb5d3f8a",
+    "researchWorkflowId": "3c34c63d-c41e-40d4-8196-a09db3c13d9b",
+    "title": "Memo linkado ao research",
+    "body": "Memo linkado atualizado, ainda não publicado.",
+    "status": "pending_review",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:08:47.308Z",
+    "updatedAt": "2026-04-15T04:08:47.314Z"
+  },
+  "standaloneMemoLeadB": {
+    "id": "bf29728a-d76f-45a3-b3e9-29c2bcafd58e",
+    "leadId": "704393c9-caef-4b14-82da-1d21575650b5",
+    "researchWorkflowId": null,
+    "title": "Memo publicado lead B",
+    "body": "Memo publicado do lead B.",
+    "status": "published",
+    "reviewRejectionReason": null,
+    "reviewedAt": null,
+    "createdAt": "2026-04-15T04:08:47.318Z",
+    "updatedAt": "2026-04-15T04:08:47.325Z"
+  },
+  "portalLeadAIds": [
+    "3090a4bf-7105-4b09-9bd5-0294cf46abe2"
+  ],
+  "portalLeadBIds": [
+    "bf29728a-d76f-45a3-b3e9-29c2bcafd58e"
+  ],
+  "dbPath": "/tmp/ba-t5-cycle2-YQysBB/data/dev/bruno-advisory-dev.sqlite3",
+  "dbRows": [
+    {
+      "id": "3090a4bf-7105-4b09-9bd5-0294cf46abe2",
+      "leadId": "387a996d-b56b-4b5f-a0b5-e499cb5d3f8a",
+      "researchWorkflowId": null,
+      "title": "Memo standalone publicado",
+      "body": "Memo standalone publicado para o cliente no portal.",
+      "status": "published",
+      "createdAt": "2026-04-15T04:08:47.295Z",
+      "updatedAt": "2026-04-15T04:08:47.303Z"
+    },
+    {
+      "id": "b995bb32-e251-468f-aba0-bc8ab5a63c9c",
+      "leadId": "387a996d-b56b-4b5f-a0b5-e499cb5d3f8a",
+      "researchWorkflowId": "3c34c63d-c41e-40d4-8196-a09db3c13d9b",
+      "title": "Memo linkado ao research",
+      "body": "Memo linkado atualizado, ainda não publicado.",
+      "status": "pending_review",
+      "createdAt": "2026-04-15T04:08:47.308Z",
+      "updatedAt": "2026-04-15T04:08:47.314Z"
+    },
+    {
+      "id": "bf29728a-d76f-45a3-b3e9-29c2bcafd58e",
+      "leadId": "704393c9-caef-4b14-82da-1d21575650b5",
+      "researchWorkflowId": null,
+      "title": "Memo publicado lead B",
+      "body": "Memo publicado do lead B.",
+      "status": "published",
+      "createdAt": "2026-04-15T04:08:47.318Z",
+      "updatedAt": "2026-04-15T04:08:47.325Z"
+    }
+  ],
+  "surfaceChecks": {
+    "cockpitSectionVisible": true,
+    "portalRoutePresent": true,
+    "portalDashboardLinksMemos": true,
+    "portalPageReadsPublishedOnly": true,
+    "cockpitRouteHasCrudMethods": true
+  },
+  "note": "HTTP bind may be blocked in this sandbox (listen EPERM); verification ran by invoking compiled route handlers directly against an isolated temp-root SQLite database."
+}

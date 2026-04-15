@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T04:09:44.679Z",
+  "preflight": {
+    "ok": true,
+    "provider": "sqlite",
+    "databasePath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+    "checkedTables": [
+      "intake_leads",
+      "memos",
+      "research_workflows",
+      "audit_log",
+      "lead_billing_records",
+      "portal_invites"
+    ]
+  },
+  "seed": {
+    "ok": true,
+    "seededAt": "2026-04-15T04:09:44.612Z",
+    "leadId": "86441b2e-aa84-413e-8130-e173720471cf",
+    "fullName": "Beta Walkthrough Lead",
+    "email": "beta-walkthrough-1776226184509-c1c0a7c0@example.com",
+    "taskId": "957dfcdd-d99f-418b-9243-3c19c4ff46be",
+    "commercialStage": "cliente_convertido",
+    "billingRecordId": "34be37e2-3247-42c2-858a-34b011040c6d",
+    "firstChargeId": "7046ab48-2c6b-439a-a21c-89bf4bbcef50",
+    "inviteId": "7ce8c80d-fcbe-4bb2-a6cd-54c37a2e15f0",
+    "inviteCode": "8341ee31220337c4b2b70d6c4e43b8f4",
+    "checklistItemIds": [
+      "8938fdce-bdd4-4833-9ac7-021814c5fc5d",
+      "e2154f7c-bc7c-4f82-9254-9e40f3b54b6d",
+      "39cd3203-f456-4ed1-9eee-0405f8af5392"
+    ],
+    "recommendationId": "0df6bd8b-3d27-4aaf-9ee0-9942973c2013",
+    "researchWorkflowId": "9046a027-71d7-477f-8fc0-68ba57b3baf2",
+    "memoId": "b7fec408-69bf-4707-a465-f57bb3858178",
+    "databasePath": "/root/Bruno-Advisory/bruno-advisory/data/dev/bruno-advisory-dev.sqlite3",
+    "note": "cliente_convertido is the current canonical T3/T5 code value for a converted client."
+  },
+  "invitePersisted": true,
+  "note": "Verification ran against the repo-local SQLite runtime with honest preflight and seeded beta walkthrough data."
+}
