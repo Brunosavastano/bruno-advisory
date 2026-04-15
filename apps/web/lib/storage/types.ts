@@ -1,6 +1,7 @@
 import {
   billingEntryTaskStates,
   type BillingEntryEvaluation,
+  type CockpitRole,
   type DocumentUploadRecord,
   type DocumentUploadStatus,
   type LocalBillingChargeEventType,
@@ -303,6 +304,36 @@ export type AuditLogEntry = {
   entityId: string;
   leadId: string | null;
   actorType: AuditActorType;
+  actorId: string | null;
   detail: Record<string, unknown> | null;
   createdAt: string;
+};
+
+export type CockpitUser = {
+  userId: string;
+  email: string;
+  displayName: string;
+  role: CockpitRole;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CockpitUserWithHash = CockpitUser & {
+  passwordHash: string;
+};
+
+export type CockpitSession = {
+  sessionId: string;
+  userId: string;
+  sessionToken: string;
+  createdAt: string;
+  expiresAt: string;
+};
+
+export type CockpitSessionLookupRow = CockpitSession & {
+  email: string;
+  displayName: string;
+  role: CockpitRole;
+  isActive: boolean;
 };

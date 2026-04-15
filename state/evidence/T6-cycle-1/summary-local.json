@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T14:22:28.840Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle1-hcZhQs\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "checks": {
+    "cockpitUsersColumns": [
+      "created_at",
+      "display_name",
+      "email",
+      "is_active",
+      "password_hash",
+      "role",
+      "updated_at",
+      "user_id"
+    ],
+    "cockpitSessionsColumns": [
+      "created_at",
+      "expires_at",
+      "session_id",
+      "session_token",
+      "user_id"
+    ],
+    "auditLogHasActorId": true,
+    "cockpitUsersIndexNames": [
+      "idx_cockpit_users_email",
+      "idx_cockpit_users_role_active"
+    ],
+    "cockpitSessionsIndexNames": [
+      "idx_cockpit_sessions_expires",
+      "idx_cockpit_sessions_token",
+      "idx_cockpit_sessions_user"
+    ],
+    "cockpitUsersUniqueEmailPresent": true,
+    "cockpitSessionsHasForeignKey": true,
+    "cockpitUsersRoleCheckPresent": true,
+    "hashFormat": "scrypt",
+    "hashParams": "N=16384,r=8,p=1",
+    "verifyCorrectOk": true,
+    "verifyWrongRejected": true,
+    "verifyTamperRejected": true,
+    "saltRandomness": true,
+    "shortPasswordRejected": true,
+    "isCockpitRoleAdmin": true,
+    "isCockpitRoleGarbage": false,
+    "cockpitRoleCount": 3,
+    "surfaceChecks": {
+      "cockpitAuthStorageExists": true,
+      "cockpitAuthModelExists": true,
+      "auditLogActorIdReadPath": true,
+      "dbHasEnsureCockpitAuthColumns": true
+    }
+  },
+  "note": "T6 cycle 1: DDL for cockpit_users/cockpit_sessions + audit_log.actor_id verified by introspection; hashing verified via canonical model file. Full cockpit-auth CRUD is exercised by Cycle 2 bootstrap-admin CLI."
+}

@@ -77,6 +77,8 @@ export const memosTable = 'memos';
 export const memoEventsTable = 'memo_events';
 export const leadPendingFlagsTable = 'lead_pending_flags';
 export const auditLogTable = 'audit_log';
+export const cockpitUsersTable = 'cockpit_users';
+export const cockpitSessionsTable = 'cockpit_sessions';
 
 let database: DatabaseSync | undefined;
 
@@ -362,6 +364,13 @@ function ensureReviewQueueColumns(db: DatabaseSync) {
   addNullableColumnIfMissing(db, researchWorkflowsTable, 'reviewed_at');
   addNullableColumnIfMissing(db, memosTable, 'review_rejection_reason');
   addNullableColumnIfMissing(db, memosTable, 'reviewed_at');
+}
+
+function ensureCockpitAuthColumns(db: DatabaseSync) {
+  // T6 cycle 1: audit_log gains a nullable actor_id to identify individual
+  // cockpit users. Legacy rows stay NULL (pre-RBAC) and bearer-secret
+  // fallback sessions will write the sentinel 'legacy-secret' (see T7).
+  addNullableColumnIfMissing(db, auditLogTable, 'actor_id');
 }
 
 export function getDatabase() {
@@ -753,11 +762,39 @@ export function getDatabase() {
     CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON ${auditLogTable}(created_at DESC, id DESC);
     CREATE INDEX IF NOT EXISTS idx_audit_log_lead ON ${auditLogTable}(lead_id, created_at DESC, id DESC);
     CREATE INDEX IF NOT EXISTS idx_audit_log_action ON ${auditLogTable}(action, created_at DESC, id DESC);
+
+    CREATE TABLE IF NOT EXISTS ${cockpitUsersTable} (
+      user_id TEXT PRIMARY KEY,
+      email TEXT NOT NULL UNIQUE,
+      display_name TEXT NOT NULL,
+      role TEXT NOT NULL CHECK (role IN ('admin', 'operator', 'viewer')),
+      password_hash TEXT NOT NULL,
+      is_active INTEGER NOT NULL DEFAULT 1 CHECK (is_active IN (0, 1)),
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_cockpit_users_email ON ${cockpitUsersTable}(email);
+    CREATE INDEX IF NOT EXISTS idx_cockpit_users_role_active ON ${cockpitUsersTable}(role, is_active);
+
+    CREATE TABLE IF NOT EXISTS ${cockpitSessionsTable} (
+      session_id TEXT PRIMARY KEY,
+      user_id TEXT NOT NULL,
+      session_token TEXT NOT NULL UNIQUE,
+      created_at TEXT NOT NULL,
+      expires_at TEXT NOT NULL,
+      FOREIGN KEY (user_id) REFERENCES ${cockpitUsersTable}(user_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_cockpit_sessions_token ON ${cockpitSessionsTable}(session_token);
+    CREATE INDEX IF NOT EXISTS idx_cockpit_sessions_user ON ${cockpitSessionsTable}(user_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_cockpit_sessions_expires ON ${cockpitSessionsTable}(expires_at DESC);
   `);
 
   ensureCommercialStageColumn(db);
   ensureLeadCrmColumns(db);
   ensureReviewQueueColumns(db);
+  ensureCockpitAuthColumns(db);
   db.exec(`CREATE INDEX IF NOT EXISTS idx_intake_leads_commercial_stage ON ${leadsTable}(commercial_stage);`);
   migrateLegacyJsonlData(db);
 
@@ -847,6 +884,8 @@ export function getIntakeStoragePaths() {
     memosTable,
     memoEventsTable,
     leadPendingFlagsTable,
-    auditLogTable
+    auditLogTable,
+    cockpitUsersTable,
+    cockpitSessionsTable
   };
 }

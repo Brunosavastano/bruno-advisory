@@ -16,3 +16,4 @@ export * from './recommendation-model';
 export * from './research-workflow-model';
 export * from './memo-model';
 export * from './pending-flag-model';
+export * from './cockpit-auth-model';

@@ -36,6 +36,14 @@ function parseDetail(raw: unknown) {
   }
 }
 
+function normalizeActorId(value: unknown) {
+  if (value === null || value === undefined) {
+    return null;
+  }
+  const text = String(value).trim();
+  return text ? text : null;
+}
+
 function normalizeRow(row: Record<string, unknown>): AuditLogEntry {
   return {
     id: String(row.id),
@@ -44,6 +52,7 @@ function normalizeRow(row: Record<string, unknown>): AuditLogEntry {
     entityId: String(row.entityId),
     leadId: row.leadId === null ? null : String(row.leadId),
     actorType: String(row.actorType) as AuditActorType,
+    actorId: normalizeActorId(row.actorId),
     detail: parseDetail(row.detail),
     createdAt: String(row.createdAt)
   };
@@ -90,7 +99,7 @@ export function listAuditLog(params: { leadId?: string | null; limit?: number; o
   const rows = (leadId
     ? db.prepare(`
         SELECT id, action, entity_type AS entityType, entity_id AS entityId, lead_id AS leadId,
-          actor_type AS actorType, detail, created_at AS createdAt
+          actor_type AS actorType, actor_id AS actorId, detail, created_at AS createdAt
         FROM ${auditLogTable}
         WHERE lead_id = ?
         ORDER BY created_at DESC, id DESC
@@ -98,7 +107,7 @@ export function listAuditLog(params: { leadId?: string | null; limit?: number; o
       `).all(leadId, limit, offset)
     : db.prepare(`
         SELECT id, action, entity_type AS entityType, entity_id AS entityId, lead_id AS leadId,
-          actor_type AS actorType, detail, created_at AS createdAt
+          actor_type AS actorType, actor_id AS actorId, detail, created_at AS createdAt
         FROM ${auditLogTable}
         ORDER BY created_at DESC, id DESC
         LIMIT ? OFFSET ?

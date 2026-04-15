@@ -205,3 +205,13 @@
 - Anti-escopo: 2FA, OAuth, SSO, reset por email, rate limiting, refresh tokens, remoção do secret.
 - Restrição técnica: middleware Next.js roda em Edge runtime e não pode chamar SQLite. Validação real acontece dentro das route handlers via `requireCockpitSession()`, não no proxy.
 - 8 ciclos planejados. Bruno autorizou. Dono: Vulcanus.
+
+## 2026-04-15 — T6 Cycle 1 aceito: Schema & scrypt foundation
+
+- Entregue: `packages/core/src/cockpit-auth-model.ts` (modelo canônico + hashing com `node:crypto.scryptSync`, N=16384/r=8/p=1/keyLen=64/salt=32B, formato self-describing `scrypt$...`), tabelas `cockpit_users` e `cockpit_sessions` com índices e CHECK de role, coluna aditiva `audit_log.actor_id` via `ensureCockpitAuthColumns()`, módulo `apps/web/lib/storage/cockpit-auth.ts` com CRUD completo de users + sessions (inclui deactivação que derruba sessões abertas atomicamente), types públicos em `types.ts`, read-path de `audit-log.ts` já devolvendo `actorId`.
+- Decisão de design: hashing mora no MODELO (core package, folha, só `node:crypto`), não no storage — isso permite verificação isolada via `node --experimental-strip-types` sem passar por bundler. Storage só re-exporta.
+- Decisão de design: deactivar usuário (`isActive=false`) deleta sessões abertas dele na mesma transação, garantindo corte imediato de acesso em vez de esperar expirar.
+- Verificação: `infra/scripts/verify-t6-cycle-1-local.sh` com verifier TS dedicado em `infra/scripts/verifiers/t6-cycle-1.ts`. Evidência `state/evidence/T6-cycle-1/summary-local.json` com `ok: true` e 20+ checks de schema (colunas, índices, FK, CHECK), hashing (formato, round-trip, rejeição de senha errada, rejeição de hash adulterado, salt randomness, senha curta rejeitada) e surface checks.
+- Regression: `npm run test` verde (13/13 testes lógicos; ruído Windows EPERM no shutdown é pré-existente).
+- Limitação assumida: CRUD completo do `cockpit-auth.ts` não foi testado end-to-end neste ciclo (apenas o modelo canônico). Primeiro caller real é o Ciclo 2 (bootstrap-admin CLI).
+- Dono: Vulcanus. Aceito por Zeus.
