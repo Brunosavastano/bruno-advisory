@@ -1,3 +1,7 @@
 {
-  "ok": true
+  "ok": true,
+  "commitHash": "28bf582",
+  "regressionOk": true,
+  "preflightOk": true,
+  "checkedAt": "2026-04-15T04:16:37.643Z"
 }

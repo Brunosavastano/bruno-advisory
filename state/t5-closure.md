@@ -27,7 +27,7 @@
 - added the exhaustive release checklist, final clean regression evidence, final local preflight evidence, tranche status update, and git closeout preparation
 
 ## Git commit hash
-- pending write after commit: `COMMIT_HASH_PENDING`
+- T5 work commit: `28bf582`
 
 ## Known limitations carried forward to post-go-live
 - live PostgreSQL runtime is still not implemented in this local environment; the cutover plan is documented in `docs/postgres-migration.md`
