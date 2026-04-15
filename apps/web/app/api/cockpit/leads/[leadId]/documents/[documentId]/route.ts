@@ -1,5 +1,6 @@
 import { documentUploadStatuses } from '@bruno-advisory/core';
 import { reviewDocument } from '../../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../../lib/cockpit-session';
 
 type ReviewPayload = {
   status?: string;
@@ -28,6 +29,9 @@ function toReturnTo(value: string | null | undefined) {
 }
 
 export async function PATCH(request: Request, context: { params: Promise<{ leadId: string; documentId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId, documentId } = await context.params;
   const payload = await parsePayload(request);
 
@@ -36,7 +40,7 @@ export async function PATCH(request: Request, context: { params: Promise<{ leadI
   }
 
   const status = payload.status as (typeof documentUploadStatuses)[number];
-  const document = reviewDocument(documentId, leadId, status, payload.reviewedBy ?? 'operator_local', payload.reviewNote ?? null);
+  const document = reviewDocument(documentId, leadId, status, payload.reviewedBy ?? 'operator_local', payload.reviewNote ?? null, check.context.actorId);
   if (!document) {
     return Response.json({ ok: false, error: 'Documento nao encontrado.' }, { status: 404 });
   }
@@ -45,6 +49,9 @@ export async function PATCH(request: Request, context: { params: Promise<{ leadI
 }
 
 export async function POST(request: Request, context: { params: Promise<{ leadId: string; documentId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId, documentId } = await context.params;
   const payload = await parsePayload(request);
 
@@ -53,7 +60,7 @@ export async function POST(request: Request, context: { params: Promise<{ leadId
   }
 
   const status = payload.status as (typeof documentUploadStatuses)[number];
-  const document = reviewDocument(documentId, leadId, status, payload.reviewedBy ?? 'operator_local', payload.reviewNote ?? null);
+  const document = reviewDocument(documentId, leadId, status, payload.reviewedBy ?? 'operator_local', payload.reviewNote ?? null, check.context.actorId);
   if (!document) {
     return Response.json({ ok: false, error: 'Documento nao encontrado.' }, { status: 404 });
   }

@@ -1,4 +1,5 @@
 import { createLeadLocalBillingCharge } from '../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 
 type BillingChargePayload = {
   actor?: string;
@@ -34,12 +35,16 @@ function toReturnTo(value: string | undefined) {
 }
 
 export async function POST(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   const payload = await parsePayload(request);
   const result = createLeadLocalBillingCharge({
     leadId,
     actor: toActor(payload.actor),
-    note: payload.note
+    note: payload.note,
+    actorId: check.context.actorId
   });
 
   const returnTo = toReturnTo(payload.returnTo);

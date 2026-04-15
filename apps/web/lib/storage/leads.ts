@@ -180,6 +180,7 @@ export function updateLeadCommercialStage(params: {
   toStage: OperatorCommercialStage;
   changedBy: string;
   note?: string;
+  actorId?: string | null;
 }) {
   const db = getDatabase();
   const now = new Date().toISOString();
@@ -210,6 +211,7 @@ export function updateLeadCommercialStage(params: {
       entityId: params.leadId,
       leadId: params.leadId,
       actorType: 'operator',
+      actorId: params.actorId ?? null,
       detail: {
         fromStage,
         toStage: params.toStage,

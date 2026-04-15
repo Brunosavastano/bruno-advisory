@@ -95,7 +95,12 @@ export function createChecklistItem(leadId: string, title: string, description?:
   };
 }
 
-export function completeChecklistItem(itemId: string, leadId: string, completedBy: OnboardingChecklistCompletionActor): OnboardingChecklistItem | null {
+export function completeChecklistItem(
+  itemId: string,
+  leadId: string,
+  completedBy: OnboardingChecklistCompletionActor,
+  actorId: string | null = null
+): OnboardingChecklistItem | null {
   const db = getDatabase();
   const completedAt = new Date().toISOString();
   const result = db.prepare(`
@@ -131,6 +136,7 @@ export function completeChecklistItem(itemId: string, leadId: string, completedB
       entityId: item.itemId,
       leadId: item.leadId,
       actorType: completedBy === 'client' ? 'client' : 'operator',
+      actorId: completedBy === 'client' ? null : actorId,
       detail: {
         title: item.title,
         completedBy: item.completedBy

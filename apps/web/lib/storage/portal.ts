@@ -64,7 +64,7 @@ export function listInvitesByLeadId(leadId: string): PortalInviteRecord[] {
   return rows.map(normalizeInviteRow);
 }
 
-export function createInvite(leadId: string): PortalInviteRecord | null {
+export function createInvite(leadId: string, actorId: string | null = null): PortalInviteRecord | null {
   if (!getLeadExists(leadId)) {
     return null;
   }
@@ -85,13 +85,14 @@ export function createInvite(leadId: string): PortalInviteRecord | null {
     entityId: inviteId,
     leadId,
     actorType: 'operator',
+    actorId,
     detail: { status: 'active' }
   });
 
   return { inviteId, leadId, code, status: 'active', createdAt, usedAt: null, revokedAt: null };
 }
 
-export function revokeInvite(inviteId: string): PortalInviteRecord | null {
+export function revokeInvite(inviteId: string, actorId: string | null = null): PortalInviteRecord | null {
   const db = getDatabase();
   const row = db.prepare(`
     SELECT invite_id AS inviteId, lead_id AS leadId, code, status, created_at AS createdAt, used_at AS usedAt, revoked_at AS revokedAt
@@ -127,6 +128,7 @@ export function revokeInvite(inviteId: string): PortalInviteRecord | null {
       entityId: current.inviteId,
       leadId: current.leadId,
       actorType: 'operator',
+      actorId,
       detail: { revokedAt }
     });
 
@@ -137,6 +139,7 @@ export function revokeInvite(inviteId: string): PortalInviteRecord | null {
         entityId: String(sessionRow.sessionId),
         leadId: String(sessionRow.leadId),
         actorType: 'operator',
+        actorId,
         detail: {
           inviteId: String(sessionRow.inviteId),
           reason: 'invite_revoked',

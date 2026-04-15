@@ -191,7 +191,7 @@ export function listRecommendations(
   return rows.map(normalizeRecommendationRow);
 }
 
-export function publishRecommendation(recommendationId: string, leadId: string): RecommendationRecord | null {
+export function publishRecommendation(recommendationId: string, leadId: string, actorId: string | null = null): RecommendationRecord | null {
   const current = getRecommendation(recommendationId, leadId);
   if (!current) {
     return null;
@@ -233,6 +233,7 @@ export function publishRecommendation(recommendationId: string, leadId: string):
       entityId: recommendation.recommendationId,
       leadId: recommendation.leadId,
       actorType: 'operator',
+      actorId,
       detail: {
         title: recommendation.title,
         category: recommendation.category,
@@ -244,7 +245,7 @@ export function publishRecommendation(recommendationId: string, leadId: string):
   return recommendation;
 }
 
-export function deleteRecommendation(recommendationId: string, leadId: string) {
+export function deleteRecommendation(recommendationId: string, leadId: string, actorId: string | null = null) {
   const current = getRecommendation(recommendationId, leadId);
   if (!current) {
     return false;
@@ -260,6 +261,7 @@ export function deleteRecommendation(recommendationId: string, leadId: string) {
       entityId: current.recommendationId,
       leadId: current.leadId,
       actorType: 'operator',
+      actorId,
       detail: {
         title: current.title,
         category: current.category,

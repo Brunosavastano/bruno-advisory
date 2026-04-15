@@ -164,7 +164,8 @@ export function reviewDocument(
   leadId: string,
   status: DocumentUploadStatus,
   reviewedBy: string,
-  reviewNote?: string | null
+  reviewNote?: string | null,
+  actorId?: string | null
 ): DocumentUploadRecord | null {
   if (status !== 'processing' && status !== 'accepted' && status !== 'rejected' && status !== 'received') {
     return null;
@@ -193,6 +194,7 @@ export function reviewDocument(
       entityId: document.documentId,
       leadId: document.leadId,
       actorType: 'operator',
+      actorId: actorId ?? null,
       detail: {
         status: document.status,
         reviewedBy: normalizedReviewedBy,

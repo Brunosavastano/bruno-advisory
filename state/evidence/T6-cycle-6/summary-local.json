@@ -1,0 +1,92 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T17:49:21.727Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle6-EjpMN3\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "adminUserId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e",
+  "moduleResults": {
+    "leads_commercial_stage": {
+      "real": {
+        "status": 200,
+        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+      },
+      "legacy": {
+        "status": 200,
+        "actorId": "legacy-secret"
+      }
+    },
+    "billing_record": {
+      "real": {
+        "status": 201,
+        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+      },
+      "legacy": {
+        "status": 201,
+        "actorId": "legacy-secret"
+      }
+    },
+    "portal_invite_create": {
+      "real": {
+        "status": 200,
+        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+      },
+      "legacy": {
+        "status": 200,
+        "actorId": "legacy-secret"
+      }
+    },
+    "research_workflows_status": {
+      "real": {
+        "status": 200,
+        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+      },
+      "legacy": {
+        "status": 200,
+        "actorId": "legacy-secret"
+      }
+    },
+    "memos_status": {
+      "real": {
+        "status": 200,
+        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+      },
+      "legacy": {
+        "status": 200,
+        "actorId": "legacy-secret"
+      }
+    },
+    "recommendations_publish": {
+      "real": {
+        "status": 200,
+        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+      },
+      "legacy": {
+        "status": 200,
+        "actorId": "legacy-secret"
+      }
+    },
+    "documents_review": {
+      "real": {
+        "status": 200,
+        "actorId": "90ff57d8-c21b-4bfc-9a47-af4c105fdc3e"
+      },
+      "legacy": {
+        "status": 200,
+        "actorId": "legacy-secret"
+      }
+    }
+  },
+  "nonOperatorChecks": {
+    "redeemNotThreaded": true,
+    "autoExpireNotThreaded": true,
+    "clientLogoutNotThreaded": true
+  },
+  "sourceAudit": {
+    "operatorCallsitesTotal": 14,
+    "operatorCallsitesWithActorId": 14,
+    "clientCallsitesWithoutActorId": 4
+  },
+  "noAuthScenario": {
+    "status": 401
+  },
+  "note": "T6 cycle 6: actorId propagated across all operator-initiated writes. Real sessions write actor_id=userId; legacy fallback writes actor_id='legacy-secret'. Non-operator writes remain NULL."
+}

@@ -18,28 +18,36 @@ Replace the single-secret cockpit auth model with per-user accounts, roles (admi
 | 3 | Audit log actor_id signature | ✅ accepted |
 | 4 | Middleware + requireCockpitSession | ✅ accepted |
 | 5 | Login / logout API + page | ✅ accepted |
-| 6 | Actor propagation (19 callsites) | 🔴 open |
-| 7 | Users admin UI | ⏳ pending |
+| 6 | Actor propagation (19 callsites) | ✅ accepted |
+| 7 | Users admin UI | 🔴 open |
 | 8 | Regression + closure | ⏳ pending |
 
 ## Current cycle
-**Cycle 6 — Actor propagation (19 callsites)**
+**Cycle 7 — Users admin UI**
 
 ### Deliverables
-- Propagação de `actorId` nas 19 callsites de `writeAuditLog` distribuídas em `apps/web/lib/storage/{billing,checklist,documents,leads,memos,portal,recommendations,research-workflows}.ts`.
-- Cada rota mutadora (estágio comercial, tasks, notes, memos, portal invites, checklist, documents, recommendations, research-workflows, billing, flags, etc.) passa a chamar `requireCockpitSession(request)` no topo, pegar `context.actorId` do resultado e propagar para o helper de storage correspondente.
-- Helpers de storage recebem `actorId` como parâmetro opcional (aditivo, default undefined → NULL no audit) e repassam para `writeAuditLog`.
-- Quando o caller vem do fallback `COCKPIT_SECRET` (context.legacy === true), o `actorId` fica `'legacy-secret'` — sentinel de auditoria para T7 remover.
-- `infra/scripts/verify-t6-cycle-6-local.sh` + `infra/scripts/verifiers/t6-cycle-6.ts`: exercita uma rota representativa de cada módulo de storage via HTTP simulado; assert (a) audit_log row gravada com actor_id === userId da sessão real; (b) mesma rota chamada com cockpit_token fallback grava actor_id='legacy-secret'; (c) mesma rota sem auth retorna 401.
-- `state/evidence/T6-cycle-6/summary-local.json` com contagem de callsites cobertos e resultado por módulo.
-- State note: `state/t6-cycle-6-actor-propagation.md`.
+- Página `/cockpit/users` (`apps/web/app/cockpit/users/page.tsx`): lista usuários do cockpit com (email, displayName, role, isActive, createdAt, lastLoginAt se disponível). Visível apenas para `role === 'admin'` — outros papéis recebem 403.
+- Server actions: `createCockpitUser` (admin-only form de email/displayName/password/role), `updateCockpitUser` (edit displayName/role/isActive/password), `deactivateCockpitUser` (toggle isActive → false + sessions deletadas atomicamente).
+- Header do cockpit (`apps/web/app/cockpit/layout.tsx` ou similar): mostra o usuário logado (email ou displayName) + botão de logout que posta para `/api/cockpit/logout` e redireciona para `/cockpit/login`. Legacy context mostra "sessão legada (COCKPIT_SECRET)" para sinalizar que T7 vai remover.
+- Página `/cockpit` como landing autenticado (seja linha-de-dashboard simples ou redirect para `/cockpit/leads`, decisão no opening).
+- Role gating helper: extender `requireCockpitSession` ou adicionar `requireCockpitAdmin(request)` que chama `requireCockpitSession` + confere `role === 'admin'`.
+- `infra/scripts/verify-t6-cycle-7-local.sh` + `infra/scripts/verifiers/t6-cycle-7.ts`: 
+  (a) admin lista users → 200 com rows
+  (b) operator lista users → 403
+  (c) legacy session lista users → 403 (role='operator' do fallback)
+  (d) admin cria user → 201 + row no DB + actor_id do creator
+  (e) admin desativa user → sessões do alvo deletadas + audit row
+  (f) logout funcional cobre setup/teardown
+- `state/evidence/T6-cycle-7/summary-local.json`.
+- State note: `state/t6-cycle-7-users-admin-ui.md`.
 
 ### Histórico dos Ciclos anteriores
-- **Ciclo 1.** Schema + scrypt. `cockpit_users`, `cockpit_sessions`, `audit_log.actor_id`. Ver `state/t6-cycle-1-schema-scrypt.md`.
-- **Ciclo 2.** CLI de bootstrap + rota self-locking `/api/cockpit/bootstrap-admin`. Ver `state/t6-cycle-2-bootstrap-admin.md`.
-- **Ciclo 3.** `writeAuditLog` com `actorId` aditivo; 19 callsites intactos. Ver `state/t6-cycle-3-audit-actor-id.md`.
-- **Ciclo 4.** Helper `requireCockpitSession`, proxy.ts estendido para presença de cookie, rota `GET /api/cockpit/session`. Fallback com `actorId='legacy-secret'`. Ver `state/t6-cycle-4-middleware-session.md`.
-- **Ciclo 5.** `POST /api/cockpit/login` + `POST /api/cockpit/logout` + página `/cockpit/login` (server action). Middleware exenta rotas públicas. 7 cenários runtime + 12 source-text verdes. Ver `state/t6-cycle-5-login-logout.md`.
+- **Ciclo 1.** Schema + scrypt. Ver `state/t6-cycle-1-schema-scrypt.md`.
+- **Ciclo 2.** CLI de bootstrap + rota self-locking. Ver `state/t6-cycle-2-bootstrap-admin.md`.
+- **Ciclo 3.** `writeAuditLog` com `actorId` aditivo. Ver `state/t6-cycle-3-audit-actor-id.md`.
+- **Ciclo 4.** `requireCockpitSession` + proxy.ts com presença. Ver `state/t6-cycle-4-middleware-session.md`.
+- **Ciclo 5.** Login/logout API + página `/cockpit/login`. Ver `state/t6-cycle-5-login-logout.md`.
+- **Ciclo 6.** Actor propagado em 15 storage helpers + 12 rotas de cockpit; `actor_id` = userId (real) ou `'legacy-secret'` (fallback). Ver `state/t6-cycle-6-actor-propagation.md`.
 
 ## Acceptance bar
 Each cycle: artifacts present + local verifier passes + state note written + evidence JSON in `state/evidence/T6-cycle-N/`. `npm run test` stays green. `COCKPIT_SECRET` fallback remains functional throughout.
@@ -60,6 +68,7 @@ Each cycle: artifacts present + local verifier passes + state note written + evi
 - `state/t6-cycle-3-audit-actor-id.md`
 - `state/t6-cycle-4-middleware-session.md`
 - `state/t6-cycle-5-login-logout.md`
+- `state/t6-cycle-6-actor-propagation.md`
 - `project.yaml`
 - `ROADMAP.md`
 - `T6_auth_rbac_prompt.md`

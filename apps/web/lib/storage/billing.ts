@@ -294,7 +294,7 @@ export function getLeadBillingReadiness(leadId: string): LeadBillingReadiness | 
   return { leadId: lead.leadId, ...evaluation };
 }
 
-export function createLeadLocalBillingRecord(params: { leadId: string; actor: string; note?: string }) {
+export function createLeadLocalBillingRecord(params: { leadId: string; actor: string; note?: string; actorId?: string | null }) {
   const db = getDatabase();
   const cleanActor = params.actor.trim();
   const cleanNote = params.note?.trim();
@@ -362,6 +362,7 @@ export function createLeadLocalBillingRecord(params: { leadId: string; actor: st
       entityId: billingRecordId,
       leadId: params.leadId,
       actorType: 'operator',
+      actorId: params.actorId ?? null,
       detail: {
         actor: cleanActor,
         note: cleanNote || null,
@@ -389,6 +390,7 @@ export function createLeadLocalBillingRecord(params: { leadId: string; actor: st
         entityId: billingRecordId,
         leadId: params.leadId,
         actorType: 'operator',
+        actorId: params.actorId ?? null,
         detail: {
           actor: cleanActor,
           activatedAt: now
@@ -411,7 +413,7 @@ export function createLeadLocalBillingRecord(params: { leadId: string; actor: st
   };
 }
 
-export function createLeadLocalBillingCharge(params: { leadId: string; actor: string; note?: string }) {
+export function createLeadLocalBillingCharge(params: { leadId: string; actor: string; note?: string; actorId?: string | null }) {
   const db = getDatabase();
   const cleanActor = params.actor.trim();
   const cleanNote = params.note?.trim();
@@ -476,6 +478,7 @@ export function createLeadLocalBillingCharge(params: { leadId: string; actor: st
       entityId: chargeId,
       leadId: params.leadId,
       actorType: 'operator',
+      actorId: params.actorId ?? null,
       detail: {
         actor: cleanActor,
         billingRecordId: billingRecord.billingRecordId,
@@ -494,7 +497,7 @@ export function createLeadLocalBillingCharge(params: { leadId: string; actor: st
   return { ok: true as const, lead, billingRecord: getLeadBillingRecord(params.leadId)!, charge: getLeadBillingCharge(params.leadId)!, chargeEvents: listLeadBillingChargeEvents(params.leadId, 20) };
 }
 
-export function createNextLeadLocalBillingCharge(params: { leadId: string; actor: string; note?: string }) {
+export function createNextLeadLocalBillingCharge(params: { leadId: string; actor: string; note?: string; actorId?: string | null }) {
   const db = getDatabase();
   const cleanActor = params.actor.trim();
   const cleanNote = params.note?.trim();
@@ -568,6 +571,7 @@ export function createNextLeadLocalBillingCharge(params: { leadId: string; actor
       entityId: chargeId,
       leadId: params.leadId,
       actorType: 'operator',
+      actorId: params.actorId ?? null,
       detail: {
         actor: cleanActor,
         billingRecordId: billingRecord.billingRecordId,
@@ -588,7 +592,7 @@ export function createNextLeadLocalBillingCharge(params: { leadId: string; actor
   return { ok: true as const, lead, billingRecord: getLeadBillingRecord(params.leadId)!, previousCharge: latestCharge, charge: getLeadBillingCharge(params.leadId)!, chargeEvents: listLeadBillingChargeEvents(params.leadId, 50) };
 }
 
-export function settleLeadLocalBillingChargeById(params: { leadId: string; chargeId: string; actor: string; note?: string }) {
+export function settleLeadLocalBillingChargeById(params: { leadId: string; chargeId: string; actor: string; note?: string; actorId?: string | null }) {
   const db = getDatabase();
   const cleanActor = params.actor.trim();
   const cleanChargeId = params.chargeId.trim();
@@ -680,6 +684,7 @@ export function settleLeadLocalBillingChargeById(params: { leadId: string; charg
       entityId: charge.chargeId,
       leadId: params.leadId,
       actorType: 'operator',
+      actorId: params.actorId ?? null,
       detail: {
         actor: cleanActor,
         settlementId,

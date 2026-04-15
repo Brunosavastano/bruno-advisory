@@ -1,4 +1,5 @@
 import { settleLeadLocalBillingChargeById } from '../../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../../lib/cockpit-session';
 
 type BillingSettlementPayload = {
   actor?: string;
@@ -34,13 +35,17 @@ function toReturnTo(value: string | undefined) {
 }
 
 export async function POST(request: Request, context: { params: Promise<{ leadId: string; chargeId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId, chargeId } = await context.params;
   const payload = await parsePayload(request);
   const result = settleLeadLocalBillingChargeById({
     leadId,
     chargeId,
     actor: toActor(payload.actor),
-    note: payload.note
+    note: payload.note,
+    actorId: check.context.actorId
   });
 
   const returnTo = toReturnTo(payload.returnTo);

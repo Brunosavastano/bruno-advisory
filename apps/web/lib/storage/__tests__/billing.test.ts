@@ -27,6 +27,17 @@ process.on('exit', () => {
   fs.rmSync(tempRoot, { recursive: true, force: true });
 });
 
+// T6 cycle 6: cockpit routes now call requireCockpitSession. Tests run via
+// loadUserland (bypassing middleware) but the handler still enforces auth.
+// Use the legacy COCKPIT_SECRET fallback so these tests don't need a real
+// seeded cockpit_users row.
+const TEST_COCKPIT_SECRET = 'billing-test-secret-cycle6';
+process.env.COCKPIT_SECRET = TEST_COCKPIT_SECRET;
+const cockpitCookie = `cockpit_token=${TEST_COCKPIT_SECRET}`;
+function cockpitHeaders(extra: Record<string, string> = {}) {
+  return { 'content-type': 'application/json', cookie: cockpitCookie, ...extra };
+}
+
 function loadUserland(modulePath: string) {
   return require(path.join(webDir, '.next', 'server', 'app', ...modulePath.split('/'), 'route.js')).routeModule.userland;
 }
@@ -50,7 +61,7 @@ async function createLead(label: string) {
     await intakeRoute.POST(
       new Request('http://localhost/api/intake', {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: cockpitHeaders(),
         body: JSON.stringify({
           fullName: `Billing Test ${label}`,
           email: `${label}-${randomUUID()}@example.com`,
@@ -76,7 +87,7 @@ async function createTask(leadId: string, title: string, status: 'todo' | 'in_pr
     await tasksRoute.POST(
       new Request(`http://localhost/api/cockpit/leads/${leadId}/tasks`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: cockpitHeaders(),
         body: JSON.stringify({ title, status, dueDate: '2026-05-01' })
       }),
       { params: Promise.resolve({ leadId }) }
@@ -92,7 +103,7 @@ async function markTaskDone(leadId: string, taskId: string) {
     await taskStatusRoute.POST(
       new Request(`http://localhost/api/cockpit/leads/${leadId}/tasks/${taskId}/status`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: cockpitHeaders(),
         body: JSON.stringify({ toStatus: 'done', changedBy: 'test_operator' })
       }),
       { params: Promise.resolve({ leadId, taskId }) }
@@ -108,7 +119,7 @@ async function setClientConverted(leadId: string) {
     await stageRoute.POST(
       new Request(`http://localhost/api/cockpit/leads/${leadId}/commercial-stage`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: cockpitHeaders(),
         body: JSON.stringify({ toStage: 'cliente_convertido', changedBy: 'test_operator' })
       }),
       { params: Promise.resolve({ leadId }) }
@@ -132,7 +143,7 @@ async function activateBilling(leadId: string) {
     await billingRecordRoute.POST(
       new Request(`http://localhost/api/cockpit/leads/${leadId}/billing-record`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: cockpitHeaders(),
         body: JSON.stringify({ actor: 'test_operator' })
       }),
       { params: Promise.resolve({ leadId }) }
@@ -145,7 +156,7 @@ async function createCharge(leadId: string) {
     await billingChargeRoute.POST(
       new Request(`http://localhost/api/cockpit/leads/${leadId}/billing-charges`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: cockpitHeaders(),
         body: JSON.stringify({ actor: 'test_operator' })
       }),
       { params: Promise.resolve({ leadId }) }
@@ -158,7 +169,7 @@ async function settleCharge(leadId: string, chargeId: string) {
     await targetedSettlementRoute.POST(
       new Request(`http://localhost/api/cockpit/leads/${leadId}/billing-settlements/${chargeId}`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: cockpitHeaders(),
         body: JSON.stringify({ actor: 'test_operator', note: 'route settle' })
       }),
       { params: Promise.resolve({ leadId, chargeId }) }
@@ -171,7 +182,7 @@ async function createNextCharge(leadId: string) {
     await nextBillingChargeRoute.POST(
       new Request(`http://localhost/api/cockpit/leads/${leadId}/billing-charges/next`, {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: cockpitHeaders(),
         body: JSON.stringify({ actor: 'test_operator' })
       }),
       { params: Promise.resolve({ leadId }) }

@@ -1,5 +1,6 @@
 import { researchWorkflowStatuses, type ResearchWorkflowStatus } from '@bruno-advisory/core';
 import { createWorkflow, deleteWorkflow, getStoredLeadById, listWorkflows, updateStatus } from '../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 
 type ResearchWorkflowPayload = {
   id?: string;
@@ -70,6 +71,9 @@ export async function POST(request: Request, context: { params: Promise<{ leadId
 }
 
 export async function PATCH(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   const payload = await parsePayload(request);
   const status = normalizeStatus(payload.status);
@@ -81,7 +85,8 @@ export async function PATCH(request: Request, context: { params: Promise<{ leadI
     id: payload.id.trim(),
     leadId,
     status,
-    rejectionReason: payload.rejectionReason?.trim() || null
+    rejectionReason: payload.rejectionReason?.trim() || null,
+    actorId: check.context.actorId
   });
   if (!workflow) {
     return Response.json({ ok: false, error: 'Workflow nao encontrado.' }, { status: 404 });

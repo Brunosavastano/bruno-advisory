@@ -1,4 +1,5 @@
 import { revokeInvite } from '../../../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../../../lib/cockpit-session';
 
 type RevokePayload = {
   returnTo?: string;
@@ -24,9 +25,12 @@ function toReturnTo(value: string | undefined) {
 }
 
 export async function POST(request: Request, context: { params: Promise<{ inviteId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { inviteId } = await context.params;
   const payload = await parsePayload(request);
-  const invite = revokeInvite(inviteId);
+  const invite = revokeInvite(inviteId, check.context.actorId);
 
   if (!invite) {
     return Response.json({ ok: false, error: 'Invite code não encontrado.' }, { status: 404 });

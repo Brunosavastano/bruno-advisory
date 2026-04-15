@@ -164,6 +164,7 @@ export function updateStatus(params: {
   leadId: string;
   status: string;
   rejectionReason?: string | null;
+  actorId?: string | null;
 }): ResearchWorkflowRecord | null {
   const normalizedStatus = normalizeStatus(params.status);
   if (!normalizedStatus) {
@@ -216,6 +217,7 @@ export function updateStatus(params: {
         entityId: params.id,
         leadId: params.leadId,
         actorType: 'operator',
+        actorId: params.actorId ?? null,
         detail: {
           status: normalizedStatus,
           rejectionReason: isReject ? normalizedReason : null

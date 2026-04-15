@@ -262,3 +262,17 @@
 - Regression: inner loop do test suite verde (13/13 lógicos; EPERM Windows permanece pré-existente).
 - Limitação assumida: login sem rate-limit. Brute-force offline-style custa ~50-100ms por tentativa via scrypt N=16384 (~1k tentativas = 1min). Para PF premium com senhas longas é aceitável; T7 revisita se surgirem credenciais fracas.
 - Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-15 — T6 Cycle 6 aceito: Actor propagation (19 callsites)
+
+- Entregue: `actorId` propagado em 15 helpers de storage (operator-path) em 8 módulos (billing, checklist, documents, leads, memos, portal, recommendations, research-workflows) e 12 route handlers de cockpit que agora chamam `requireCockpitSession(request)` no topo. Writes de audit passam a gravar `actor_id === context.actorId` — que é o `userId` real em sessões reais e `'legacy-secret'` no fallback `COCKPIT_SECRET`.
+- Decisão de design: helpers recebem `actorId?: string | null` de forma aditiva (default `null`). Zero callsite externo precisa mudar se não quiser propagar actor. Preserva compat com chamadas internas (ex: onboarding.ts -> completeChecklistItem).
+- Decisão de design: writes não-operator (client portal redeem/logout, system auto-expiry, document client upload) permanecem sem `actorId`. São 4 callsites — sua assinatura canonicamente NÃO aceita actorId, prevenindo propagação errada. Preservados via source-text audit.
+- Decisão de design: checklist's `completeChecklistItem` tem signature que aceita actorId mas força `null` quando `completedBy === 'client'`. Defesa extra contra mau uso — mesmo que alguém passe actorId no caminho cliente, a auditoria fica coerente.
+- Fix colateral: `recommendations/[recommendationId]/route.ts` POST delegava para PATCH/DELETE sem forwardar cookies, quebrando form submissions autenticadas. Patch: preservar `cookie` header na Request delegada.
+- Fix colateral: `billing.test.ts` atualizado para injetar `process.env.COCKPIT_SECRET` + cookie legacy em todo request. Os 13 tests lógicos existentes passam a exercitar o caminho fallback, garantindo continuidade do comportamento legacy durante T6.
+- Verificação: `infra/scripts/verify-t6-cycle-6-local.sh` com verifier TS em `infra/scripts/verifiers/t6-cycle-6.ts`. 7 módulos × 2 cenários (real session + legacy fallback) = 14 gravações validadas + 1 cenário no-auth 401 + 3 checks de client/system writes (sem actorId) + source audit (14/14 operator callsites detectados com actorId por regex literal; o 15º — checklist ternário — passa via regex shorthand check). Evidência `state/evidence/T6-cycle-6/summary-local.json` com `ok: true`.
+- Regression: inner test suite verde (13/13 lógicos; EPERM Windows permanece pré-existente).
+- Limitação assumida: tasks/notes/flags/pending-flags/review-queue não foram tocados — eles não escrevem audit ou estão fora do caminho T6. Permanecem gated APENAS pelo middleware Edge, que os testes bypassam via loadUserland. Risco aceitável para T6; T7/T8 podem endurecer.
+- Limitação assumida: Cycle 3 verifier tinha contract-guard `callsitesWithActorId === 0` que agora está propositalmente quebrado. Se alguém rodar o verifier do Cycle 3 isoladamente, vai falhar. Cycle 8 closure deve reconciliar.
+- Dono: Vulcanus. Aceito por Zeus.

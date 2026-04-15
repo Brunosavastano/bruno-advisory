@@ -1,4 +1,5 @@
 import { deleteRecommendation, publishRecommendation } from '../../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../../lib/cockpit-session';
 
 type RecommendationActionPayload = {
   returnTo?: string;
@@ -24,8 +25,11 @@ export async function PATCH(
   request: Request,
   context: { params: Promise<{ leadId: string; recommendationId: string }> }
 ) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId, recommendationId } = await context.params;
-  const recommendation = publishRecommendation(recommendationId, leadId);
+  const recommendation = publishRecommendation(recommendationId, leadId, check.context.actorId);
 
   if (!recommendation) {
     return Response.json({ ok: false, error: 'Recomendacao nao encontrada.' }, { status: 404 });
@@ -46,8 +50,11 @@ export async function DELETE(
   request: Request,
   context: { params: Promise<{ leadId: string; recommendationId: string }> }
 ) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId, recommendationId } = await context.params;
-  const deleted = deleteRecommendation(recommendationId, leadId);
+  const deleted = deleteRecommendation(recommendationId, leadId, check.context.actorId);
 
   if (!deleted) {
     return Response.json({ ok: false, error: 'Recomendacao nao encontrada.' }, { status: 404 });
@@ -76,9 +83,14 @@ export async function POST(
     body.set('returnTo', returnTo);
   }
 
+  const delegatedHeaders: Record<string, string> = {
+    'content-type': 'application/x-www-form-urlencoded'
+  };
+  const forwardCookie = request.headers.get('cookie');
+  if (forwardCookie) delegatedHeaders.cookie = forwardCookie;
   const delegatedRequest = new Request(request.url, {
     method: intent === 'publish' ? 'PATCH' : 'DELETE',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    headers: delegatedHeaders,
     body: body.toString()
   });
 

@@ -1,5 +1,6 @@
 import { memoStatuses, type MemoStatus } from '@bruno-advisory/core';
 import { createMemo, deleteMemo, getStoredLeadById, listMemos, updateMemoBody, updateMemoStatus } from '../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 
 type MemoPayload = {
   id?: string;
@@ -75,6 +76,9 @@ export async function POST(request: Request, context: { params: Promise<{ leadId
 }
 
 export async function PATCH(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   const payload = await parsePayload(request);
   const id = payload.id?.trim();
@@ -104,7 +108,8 @@ export async function PATCH(request: Request, context: { params: Promise<{ leadI
       id,
       leadId,
       status: normalizedStatus,
-      rejectionReason: payload.rejectionReason?.trim() || null
+      rejectionReason: payload.rejectionReason?.trim() || null,
+      actorId: check.context.actorId
     });
     if (!memo) {
       return Response.json({ ok: false, error: 'Memo nao encontrado.' }, { status: 404 });
