@@ -64,6 +64,7 @@ export function writeAuditLog(params: {
   entityId: string;
   leadId?: string | null;
   actorType: AuditActorType;
+  actorId?: string | null;
   detail?: Record<string, unknown> | null;
 }) {
   const action = params.action.trim();
@@ -77,8 +78,8 @@ export function writeAuditLog(params: {
   const db = getDatabase();
   const createdAt = new Date().toISOString();
   db.prepare(`
-    INSERT INTO ${auditLogTable} (id, action, entity_type, entity_id, lead_id, actor_type, detail, created_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    INSERT INTO ${auditLogTable} (id, action, entity_type, entity_id, lead_id, actor_type, actor_id, detail, created_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
   `).run(
     randomUUID(),
     action,
@@ -86,6 +87,7 @@ export function writeAuditLog(params: {
     entityId,
     normalizeLeadId(params.leadId),
     params.actorType,
+    normalizeActorId(params.actorId),
     params.detail ? JSON.stringify(params.detail) : null,
     createdAt
   );

@@ -15,26 +15,28 @@ Replace the single-secret cockpit auth model with per-user accounts, roles (admi
 |---|------|--------|
 | 1 | Schema & scrypt foundation | ✅ accepted |
 | 2 | Bootstrap admin CLI | ✅ accepted |
-| 3 | Audit log actor_id signature | 🔴 open |
-| 4 | Middleware + requireCockpitSession | ⏳ pending |
+| 3 | Audit log actor_id signature | ✅ accepted |
+| 4 | Middleware + requireCockpitSession | 🔴 open |
 | 5 | Login / logout API + page | ⏳ pending |
 | 6 | Actor propagation (28 callsites) | ⏳ pending |
 | 7 | Users admin UI | ⏳ pending |
 | 8 | Regression + closure | ⏳ pending |
 
 ## Current cycle
-**Cycle 3 — Audit log actor_id signature**
+**Cycle 4 — Middleware + requireCockpitSession**
 
 ### Deliverables
-- Parâmetro aditivo `actorId?: string | null` na assinatura de `writeAuditLog` (default `null`) sem alterar nenhum callsite existente.
-- Testes cobrindo: gravação com `actorId` explícito (string), gravação sem `actorId` (fica `null`), gravação com `actorId: null` explícito, round-trip pelo read-path (`listAuditLog` devolve o mesmo valor).
-- `infra/scripts/verify-t6-cycle-3-local.sh` + `infra/scripts/verifiers/t6-cycle-3.ts` — typecheck + build + assertions de contrato.
-- `state/evidence/T6-cycle-3/summary-local.json` com `{ok, checkedAt, actorIdDefaultNull, actorIdStringRoundTrip, actorIdNullExplicitRoundTrip, callsitesUnchanged}`.
-- State note: `state/t6-cycle-3-audit-actor-id.md`.
+- Helper `requireCockpitSession(request)` em `apps/web/lib/cockpit-auth-server.ts` (ou similar) que roda DENTRO de route handlers (Node runtime), lê o cookie de sessão, valida via `findCockpitSessionByToken` + `isCockpitSessionValid`, devolve `{ userId, role }` ou 401/410. Jamais é chamado em `middleware.ts` (Edge runtime não pode tocar SQLite).
+- Middleware Edge mantém apenas checagem barata: presença de cookie OU `COCKPIT_SECRET`. Se nenhum, redireciona/401. Se tem cookie, passa adiante — route handler valida de verdade.
+- Fallback `COCKPIT_SECRET`: quando o middleware aceita via secret (sem cookie de sessão), o route handler detecta essa condição e passa `actorId: 'legacy-secret'` às chamadas de `writeAuditLog`. Primeira rota a receber esse tratamento fica a critério do ciclo (provavelmente uma rota de cockpit leve).
+- `infra/scripts/verify-t6-cycle-4-local.sh` + `infra/scripts/verifiers/t6-cycle-4.ts` — assert: (a) `requireCockpitSession` retorna contexto válido com cookie de sessão real; (b) retorna 401 sem cookie e sem secret; (c) com secret mas sem cookie, retorna contexto com `role: 'operator'` (fallback) e o caller que escrever audit_log grava `actor_id: 'legacy-secret'`; (d) sessão expirada é rejeitada (401); (e) sessão de usuário desativado é rejeitada.
+- `state/evidence/T6-cycle-4/summary-local.json`.
+- State note: `state/t6-cycle-4-middleware-session.md`.
 
 ### Histórico dos Ciclos anteriores
-- **Ciclo 1.** Entregue. Ver `state/evidence/T6-cycle-1/summary-local.json` e `state/t6-cycle-1-schema-scrypt.md`. Schema (`cockpit_users`, `cockpit_sessions`, coluna `audit_log.actor_id`), hashing canônico com scrypt no modelo do core, types públicos e read-path do audit já com `actorId`.
-- **Ciclo 2.** Entregue. Ver `state/evidence/T6-cycle-2/summary-local.json` e `state/t6-cycle-2-bootstrap-admin.md`. CLI `scripts/bootstrap-admin.ts` + rota self-locking `apps/web/app/api/cockpit/bootstrap-admin/route.ts`. Idempotência provada por snapshot diff (userId, passwordHash, createdAt inalterados entre runs); lockout provado por 409 `already_bootstrapped` no POST direto após o primeiro run.
+- **Ciclo 1.** Entregue. Schema (`cockpit_users`, `cockpit_sessions`, coluna `audit_log.actor_id`), hashing canônico com scrypt no modelo do core, types públicos e read-path do audit já com `actorId`. Ver `state/t6-cycle-1-schema-scrypt.md`.
+- **Ciclo 2.** Entregue. CLI `scripts/bootstrap-admin.ts` + rota self-locking `apps/web/app/api/cockpit/bootstrap-admin/route.ts`. Idempotência via snapshot diff; lockout via 409 `already_bootstrapped`. Ver `state/t6-cycle-2-bootstrap-admin.md`.
+- **Ciclo 3.** Entregue. Assinatura aditiva `actorId?: string | null` em `writeAuditLog`, INSERT atualizado, 19 callsites intactos. Read-path já entrega `actorId`; verifier cobre source+runtime+round-trip. Ver `state/t6-cycle-3-audit-actor-id.md`.
 
 ## Acceptance bar
 Each cycle: artifacts present + local verifier passes + state note written + evidence JSON in `state/evidence/T6-cycle-N/`. `npm run test` stays green. `COCKPIT_SECRET` fallback remains functional throughout.
@@ -52,6 +54,7 @@ Each cycle: artifacts present + local verifier passes + state note written + evi
 - `state/t6-prompt.md`
 - `state/t6-cycle-1-schema-scrypt.md`
 - `state/t6-cycle-2-bootstrap-admin.md`
+- `state/t6-cycle-3-audit-actor-id.md`
 - `project.yaml`
 - `ROADMAP.md`
 - `T6_auth_rbac_prompt.md`

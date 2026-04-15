@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-15T16:28:09.404Z",
+  "dbPath": "C:\\Users\\bruno\\AppData\\Local\\Temp\\ba-t6-cycle3-7vZ2ST\\data\\dev\\bruno-advisory-dev.sqlite3",
+  "checks": {
+    "signatureHasActorId": true,
+    "insertIncludesActorIdColumn": true,
+    "insertPassesNormalizedActorId": true,
+    "callsiteCount": 19,
+    "callsitesWithActorId": 0,
+    "callsiteFiles": [
+      "apps\\web\\lib\\storage\\billing.ts",
+      "apps\\web\\lib\\storage\\checklist.ts",
+      "apps\\web\\lib\\storage\\documents.ts",
+      "apps\\web\\lib\\storage\\leads.ts",
+      "apps\\web\\lib\\storage\\memos.ts",
+      "apps\\web\\lib\\storage\\portal.ts",
+      "apps\\web\\lib\\storage\\recommendations.ts",
+      "apps\\web\\lib\\storage\\research-workflows.ts"
+    ],
+    "probeLeadId": "0aa6b82c-ef38-47da-9e79-a32ef2dcc829",
+    "existingCallerAuditRowCount": 1,
+    "existingCallerActorIdAllNull": true,
+    "existingCallerActions": [
+      "commercial_stage_changed"
+    ],
+    "readPathHasActorIdField": true,
+    "readPathAllNullForExistingCallers": true,
+    "probeRowActorIdRoundTrip": true,
+    "probeRowAction": "cycle3_probe_action",
+    "explicitNullRoundTrip": true
+  },
+  "note": "T6 cycle 3: writeAuditLog signature now accepts actorId?: string | null additively. Source-text audits confirm (a) signature, (b) INSERT updated, (c) zero existing callsites pass actorId. Runtime audits confirm (a) existing callers write NULL, (b) read-path returns actorId field, (c) column round-trips both string and explicit NULL."
+}

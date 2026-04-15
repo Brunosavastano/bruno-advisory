@@ -226,3 +226,14 @@
 - Verificação: `infra/scripts/verify-t6-cycle-2-local.sh` com verifier TS que roda o CLI 2× contra um `tempRoot` isolado e faz snapshot diff (userId, passwordHash, createdAt inalterados) + chamada direta ao GET e POST da rota para confirmar `needsBootstrap: false` e `directPostAfterLockoutStatus: 409` / `code: "already_bootstrapped"`. Evidência `state/evidence/T6-cycle-2/summary-local.json` com `ok: true`.
 - Limitação assumida: CLI ainda depende do `COCKPIT_SECRET` do middleware atual para autorizar o POST. Ciclo 4 precisa resolver o caminho autorizado do bootstrap quando o middleware for substituído (provavelmente abrindo a rota enquanto `adminCount === 0`).
 - Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-15 — T6 Cycle 3 aceito: Audit log actor_id signature
+
+- Entregue: parâmetro aditivo `actorId?: string | null` em `writeAuditLog({ ... })` (default `null`), INSERT agora inclui `actor_id` com `normalizeActorId(params.actorId)`. Zero callsites alterados (19 callers em 8 arquivos — billing, checklist, documents, leads, memos, portal, recommendations, research-workflows — continuam idênticos).
+- Decisão de design: `normalizeActorId` (helper já existente no read-path desde Cycle 1) é reaproveitado no write-path. Isso garante que `""`/whitespace viram NULL, simétrico ao que o read-path espera. Trade-off explícito: lenient write consistente com o resto do storage.
+- Decisão de verificação: prova híbrida source+runtime. (a) Source-text regex valida signature, INSERT e ausência de `actorId:` em callers. (b) Schema probe via rota `commercial-stage` compilada confirma caller existente grava `actor_id NULL`. (c) Read-path GET da rota `audit-log` confirma resposta sempre inclui campo `actorId`. (d) `DatabaseSync` direto grava uma linha com `actor_id='probe-cycle3-actor'` e a rota GET round-trippa o valor exato; outra linha grava `NULL` explícito e também round-trippa. Nenhum route de probe foi adicionado à superfície produtiva.
+- Guard de contrato: verifier falha explicitamente ("Cycle 3 contract violated") se qualquer callsite passar `actorId:` antes do Ciclo 6. Previne propagação prematura.
+- Verificação: `infra/scripts/verify-t6-cycle-3-local.sh` com verifier TS dedicado em `infra/scripts/verifiers/t6-cycle-3.ts`. Evidência `state/evidence/T6-cycle-3/summary-local.json` com `ok: true` e 10 checks verdes (signature, INSERT, normalização, 19 callsites, 0 callsites-with-actorId, existing-caller-NULL, read-path-has-field, read-path-all-null, string round-trip, null round-trip).
+- Regression: inner loop do test suite verde (13/13 lógicos; ruído Windows EPERM no shutdown da tempdir é pré-existente, não bloqueia).
+- Limitação assumida: nenhum caller real exercita `actorId: string` ainda. O primeiro será o fallback `legacy-secret` em Ciclo 4 (middleware), seguido pelos 19 callsites em Ciclo 6.
+- Dono: Vulcanus. Aceito por Zeus.
