@@ -12,6 +12,6 @@ coverage
 .DS_Store
 infra/backups/*.tar.gz
 infra/backups/*.sha256
-data/dev/*.sqlite3
+data/dev/*.sqlite3*
 state/backups/*.tgz
 .DS_Store
