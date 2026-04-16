@@ -1,7 +1,7 @@
 import { PageIntro } from '../site-shell';
 
 export const metadata = {
-  title: 'Como funciona | Bruno Advisory'
+  title: 'Como funciona | Savastano Advisory'
 };
 
 const steps = [

@@ -2,7 +2,7 @@ import {
   documentUploadAllowedMimeTypes,
   documentUploadMaxSizeBytes,
   portalInviteModel
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import { getSession, listDocuments, saveDocument } from '../../../../lib/intake-storage';
 
 function getPortalSessionCookie(request: Request) {

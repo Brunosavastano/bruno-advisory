@@ -1,7 +1,7 @@
 import { PageIntro } from '../site-shell';
 
 export const metadata = {
-  title: 'Política de Privacidade | Bruno Advisory'
+  title: 'Política de Privacidade | Savastano Advisory'
 };
 
 const pendingItems = [

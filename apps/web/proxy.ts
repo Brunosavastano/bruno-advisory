@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { cockpitAuthModel, portalInviteModel } from '@bruno-advisory/core';
+import { cockpitAuthModel, portalInviteModel } from '@savastano-advisory/core';
 
 const COCKPIT_TOKEN_COOKIE = 'cockpit_token';
 const COCKPIT_SESSION_COOKIE = cockpitAuthModel.cookie.name;

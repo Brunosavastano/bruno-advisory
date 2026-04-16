@@ -1,7 +1,7 @@
 import { PageIntro } from '../site-shell';
 
 export const metadata = {
-  title: 'Para quem é | Bruno Advisory'
+  title: 'Para quem é | Savastano Advisory'
 };
 
 export default function ParaQuemEPage() {
@@ -9,8 +9,8 @@ export default function ParaQuemEPage() {
     <main>
       <PageIntro
         badge="Para quem é"
-        title="Para quem Bruno Advisory foi desenhado"
-        description="Bruno Advisory foi desenhado para PF premium com patrimônio financeiro relevante e necessidade real de coordenação."
+        title="Para quem Savastano Advisory foi desenhado"
+        description="Savastano Advisory foi desenhado para PF premium com patrimônio financeiro relevante e necessidade real de coordenação."
         actions={
           <>
             <a className="btn" href="/go/intake?sourceLabel=site_home_primary_cta">

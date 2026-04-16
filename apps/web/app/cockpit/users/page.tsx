@@ -1,4 +1,4 @@
-import { cockpitAuthModel, cockpitRoles, isCockpitRole } from '@bruno-advisory/core';
+import { cockpitAuthModel, cockpitRoles, isCockpitRole } from '@savastano-advisory/core';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import {

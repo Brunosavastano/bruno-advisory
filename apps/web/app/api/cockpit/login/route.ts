@@ -2,7 +2,7 @@
 // Verifies credentials, creates a session row, sets the httpOnly cookie.
 // First issuer of the cockpit_session cookie — Cycle 5 of T6.
 
-import { cockpitAuthModel } from '@bruno-advisory/core';
+import { cockpitAuthModel } from '@savastano-advisory/core';
 import {
   findCockpitUserByEmail,
   verifyPassword,

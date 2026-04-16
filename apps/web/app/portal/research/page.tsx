@@ -1,4 +1,4 @@
-import { portalInviteModel, researchWorkflowModel } from '@bruno-advisory/core';
+import { portalInviteModel, researchWorkflowModel } from '@savastano-advisory/core';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getSession, listWorkflows } from '../../../lib/intake-storage';

@@ -4,7 +4,7 @@ import {
   researchWorkflowStatuses,
   type ResearchWorkflowRecord,
   type ResearchWorkflowStatus
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import { writeAuditLog } from './audit-log';
 import { getDatabase, leadsTable, researchWorkflowEventsTable, researchWorkflowsTable } from './db';
 

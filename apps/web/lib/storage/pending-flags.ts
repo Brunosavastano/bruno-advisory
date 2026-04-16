@@ -1,4 +1,4 @@
-import { pendingFlagTypes, type PendingFlagType } from '@bruno-advisory/core';
+import { pendingFlagTypes, type PendingFlagType } from '@savastano-advisory/core';
 import { clearFlag, listActiveFlags, listAllLeadsWithActiveFlags, setFlag } from './flags';
 
 function toFlagType(value: string): PendingFlagType | null {

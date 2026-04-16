@@ -1,4 +1,4 @@
-import { documentUploadStatuses } from '@bruno-advisory/core';
+import { documentUploadStatuses } from '@savastano-advisory/core';
 import { reviewDocument } from '../../../../../../../lib/intake-storage';
 import { requireCockpitSession } from '../../../../../../../lib/cockpit-session';
 

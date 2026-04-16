@@ -1,4 +1,4 @@
-import { sourceChannelValues, validatePublicIntakePayload } from '@bruno-advisory/core/intake-contract';
+import { sourceChannelValues, validatePublicIntakePayload } from '@savastano-advisory/core/intake-contract';
 import { persistLeadFromIntake, recordIntakeEvent } from '../../../lib/intake-storage';
 
 type IntakeRequestPayload = {

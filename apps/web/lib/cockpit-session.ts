@@ -13,7 +13,7 @@
 //      actorId='legacy-secret'. Removed in T7 once every caller has moved to
 //      session-based auth.
 
-import { cockpitAuthModel, type CockpitRole } from '@bruno-advisory/core';
+import { cockpitAuthModel, type CockpitRole } from '@savastano-advisory/core';
 import {
   findCockpitSessionByToken,
   isCockpitSessionValid,

@@ -1,4 +1,4 @@
-# Bruno Advisory — Clean Bootstrap
+# Savastano Advisory
 
 Este pacote substitui a proposta anterior e assume as novas regras fundacionais:
 

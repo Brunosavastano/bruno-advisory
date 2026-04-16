@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { memoModel, memoStatuses, type MemoRecord, type MemoStatus } from '@bruno-advisory/core';
+import { memoModel, memoStatuses, type MemoRecord, type MemoStatus } from '@savastano-advisory/core';
 import { writeAuditLog } from './audit-log';
 import { getDatabase, leadsTable, memoEventsTable, memosTable, researchWorkflowsTable } from './db';
 

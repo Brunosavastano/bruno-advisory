@@ -6,7 +6,7 @@ import {
   type PortalInviteStatus,
   type PortalSessionLookup,
   type PortalSessionRecord
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import { writeAuditLog } from './audit-log';
 import { getDatabase, leadsTable, portalInvitesTable, portalSessionsTable } from './db';
 import { getStoredLeadById } from './leads';

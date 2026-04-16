@@ -1,6 +1,6 @@
 'use client';
 
-import { investableAssetsBandValues, type PublicIntakeValidationError } from '@bruno-advisory/core/intake-contract';
+import { investableAssetsBandValues, type PublicIntakeValidationError } from '@savastano-advisory/core/intake-contract';
 import { useMemo, useState } from 'react';
 
 type IntakeFormProps = {

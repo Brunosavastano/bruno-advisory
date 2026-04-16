@@ -5,7 +5,7 @@ import {
   isCockpitRole,
   verifyCockpitPassword,
   type CockpitRole
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import { cockpitSessionsTable, cockpitUsersTable, getDatabase } from './db';
 import type {
   CockpitSession,

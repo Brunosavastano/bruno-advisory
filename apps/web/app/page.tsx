@@ -13,10 +13,10 @@ export default function HomePage() {
     <main>
       <div className="header">
         <div>
-          <div className="badge">Bruno Advisory</div>
+          <div className="badge">Savastano Advisory</div>
           <h1>Organização e acompanhamento de investimentos para PF premium.</h1>
           <p>
-            Bruno Advisory foi desenhado para quem já tem patrimônio relevante e quer trocar fragmentação,
+            Savastano Advisory foi desenhado para quem já tem patrimônio relevante e quer trocar fragmentação,
             improviso e excesso de produto por um processo mais claro, pessoal e documentado.
           </p>
         </div>
@@ -84,10 +84,10 @@ export default function HomePage() {
       </section>
 
       <section className="card" style={{ marginTop: 16 }}>
-        <div className="kicker">Relação com Bruno</div>
+        <div className="kicker">Relação direta</div>
         <p>
-          A relação é direta com Bruno. O objetivo do V1 não é escalar atendimento genérico. É atender poucos
-          clientes com clareza, processo e responsabilidade.
+          A relação é direta com Bruno Savastano. O objetivo do V1 não é escalar atendimento genérico. É atender
+          poucos clientes com clareza, processo e responsabilidade.
         </p>
       </section>
 

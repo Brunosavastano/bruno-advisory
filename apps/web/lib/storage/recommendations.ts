@@ -5,7 +5,7 @@ import {
   type RecommendationCategory,
   type RecommendationRecord,
   type RecommendationVisibility
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import { writeAuditLog } from './audit-log';
 import { getDatabase, leadRecommendationsTable, leadsTable } from './db';
 

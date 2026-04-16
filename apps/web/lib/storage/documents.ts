@@ -7,7 +7,7 @@ import {
   documentUploadStatuses,
   type DocumentUploadRecord,
   type DocumentUploadStatus
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import { writeAuditLog } from './audit-log';
 import { getDatabase, leadDocumentsTable, leadsTable } from './db';
 

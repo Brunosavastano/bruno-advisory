@@ -1,4 +1,4 @@
-import { memoStatuses, type MemoStatus } from '@bruno-advisory/core';
+import { memoStatuses, type MemoStatus } from '@savastano-advisory/core';
 import { createMemo, deleteMemo, getStoredLeadById, listMemos, updateMemoBody, updateMemoStatus } from '../../../../../../lib/intake-storage';
 import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 

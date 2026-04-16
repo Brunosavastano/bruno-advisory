@@ -20,7 +20,7 @@ import {
   type LocalBillingRecordStatus,
   type LocalBillingSettlementEventType,
   type LocalBillingSettlementStatus
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import { writeAuditLog } from './audit-log';
 import {
   billingChargeEventsTable,

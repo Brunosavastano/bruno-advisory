@@ -1,4 +1,4 @@
-import { recommendationCategories, type RecommendationCategory } from '@bruno-advisory/core';
+import { recommendationCategories, type RecommendationCategory } from '@savastano-advisory/core';
 import { createRecommendation, listRecommendations } from '../../../../../../lib/intake-storage';
 
 type RecommendationPayload = {

@@ -1,5 +1,5 @@
 {
-  "name": "bruno-advisory",
+  "name": "savastano-advisory",
   "private": true,
   "version": "0.1.0",
   "workspaces": [
@@ -8,11 +8,11 @@
   ],
   "scripts": {
     "install:all": "npm install",
-    "dev": "npm run dev -w @bruno-advisory/web",
-    "build": "npm run build -w @bruno-advisory/web",
-    "start": "npm run start -w @bruno-advisory/web",
-    "typecheck": "npm run typecheck -w @bruno-advisory/web",
-    "test": "bash -lc 'rm -rf apps/web/.next apps/web/.next.partial.* 2>/dev/null || true; npm run build -w @bruno-advisory/web >/dev/null; node --experimental-strip-types --test apps/web/lib/storage/__tests__/*.test.ts'",
+    "dev": "npm run dev -w @savastano-advisory/web",
+    "build": "npm run build -w @savastano-advisory/web",
+    "start": "npm run start -w @savastano-advisory/web",
+    "typecheck": "npm run typecheck -w @savastano-advisory/web",
+    "test": "bash -lc 'rm -rf apps/web/.next apps/web/.next.partial.* 2>/dev/null || true; npm run build -w @savastano-advisory/web >/dev/null; node --experimental-strip-types --test apps/web/lib/storage/__tests__/*.test.ts'",
     "verify:t2": "bash infra/scripts/verify-t2.sh",
     "inspect:t2:db": "bash infra/scripts/inspect-t2-db.sh",
     "verify:t3:cycle1": "bash infra/scripts/verify-t3-cycle-1.sh",

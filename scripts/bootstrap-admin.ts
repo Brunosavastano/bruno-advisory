@@ -117,7 +117,7 @@ async function main() {
 
   if (!fs.existsSync(routePath)) {
     process.stdout.write('[bootstrap-admin] Building Next.js app so the compiled route is available...\n');
-    execSync('npm run build -w @bruno-advisory/web', { cwd: repoRoot, stdio: 'inherit' });
+    execSync('npm run build -w @savastano-advisory/web', { cwd: repoRoot, stdio: 'inherit' });
   }
 
   const requireFromRoot = createRequire(path.join(repoRoot, 'package.json'));

@@ -1,4 +1,4 @@
-import { commercialStageModel, portalInviteModel } from '@bruno-advisory/core';
+import { commercialStageModel, portalInviteModel } from '@savastano-advisory/core';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getSession, getStoredLeadById, listChecklistItems } from '../../../lib/intake-storage';

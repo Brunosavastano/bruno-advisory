@@ -1,6 +1,9 @@
 project:
-  name: Bruno Advisory
+  name: Savastano Advisory
   public_identity: Bruno Savastano
+  brand: Savastano Advisory
+  domain: savastanoadvisory.com.br
+  cvm_code: '004503-0'
   language: pt-BR
   independence_mode: hard
   legacy_dependency_allowed: false
@@ -11,9 +14,9 @@ agents:
   additional_openclaws_allowed_before_t3: false
 
 state:
-  active_tranche: T6
-  tranche_status: done
-  stage_gate: auth_hardening_done
+  active_tranche: T7
+  tranche_status: active
+  stage_gate: rebrand_compliance
   release_mode: shadow
   prod_ready: true
 

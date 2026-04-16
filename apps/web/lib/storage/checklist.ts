@@ -4,7 +4,7 @@ import {
   type OnboardingChecklistCompletionActor,
   type OnboardingChecklistItem,
   type OnboardingChecklistStatus
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import { writeAuditLog } from './audit-log';
 import { getDatabase, leadsTable, onboardingChecklistItemsTable } from './db';
 

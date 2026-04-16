@@ -1,4 +1,4 @@
-import { commercialStageModel, localBillingOverviewModel } from '@bruno-advisory/core';
+import { commercialStageModel, localBillingOverviewModel } from '@savastano-advisory/core';
 import {
   getIntakeStoragePaths,
   listLeadBillingOverviewRows

@@ -1,4 +1,4 @@
-import { billingEntryModel, commercialStageModel, documentUploadModel, localBillingChargeModel, localBillingChargeProgressionModel, localBillingModel, localBillingSettlementModel, localBillingSettlementTargetingModel, memoModel, memoStatuses, recommendationCategories, recommendationModel, researchWorkflowModel, researchWorkflowStatuses } from '@bruno-advisory/core';
+import { billingEntryModel, commercialStageModel, documentUploadModel, localBillingChargeModel, localBillingChargeProgressionModel, localBillingModel, localBillingSettlementModel, localBillingSettlementTargetingModel, memoModel, memoStatuses, recommendationCategories, recommendationModel, researchWorkflowModel, researchWorkflowStatuses } from '@savastano-advisory/core';
 import { notFound } from 'next/navigation';
 import { Fragment } from 'react';
 import { LeadFlagsPanel } from './lead-flags-panel';

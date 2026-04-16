@@ -1,7 +1,7 @@
 import {
   isOperatorCommercialStage,
   type OperatorCommercialStage
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import { updateLeadCommercialStage } from '../../../../../../lib/intake-storage';
 import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 

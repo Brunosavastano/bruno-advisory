@@ -13,7 +13,7 @@ export function SiteHeader() {
       <div className="site-shell">
         <div className="site-header-row">
           <a className="site-brand" href="/">
-            Bruno Advisory
+            Savastano Advisory
           </a>
           <nav className="site-nav" aria-label="Navegação principal">
             <a href="/para-quem-e">Para quem é</a>
@@ -35,10 +35,11 @@ export function SiteFooter() {
         <div>
           <p className="footer-title">Disclaimer regulatório</p>
           <p className="hint">
-            Consultoria de valores mobiliários prestada por Bruno Savastano, em nome próprio, observada a
-            regulamentação aplicável. Conteúdo meramente institucional e informativo. Nada aqui constitui
-            recomendação personalizada, promessa de rentabilidade ou garantia de resultado. A decisão final de
-            investimento e a implementação das operações cabem exclusivamente ao cliente.
+            Savastano Advisory é nome fantasia de Bruno Savastano, consultor de valores mobiliários autorizado pela
+            CVM (código 004503-0), atuando em nome próprio, observada a regulamentação aplicável. Conteúdo
+            meramente institucional e informativo. Nada aqui constitui recomendação personalizada, promessa de
+            rentabilidade ou garantia de resultado. A decisão final de investimento e a implementação das operações
+            cabem exclusivamente ao cliente.
           </p>
         </div>
         <div>

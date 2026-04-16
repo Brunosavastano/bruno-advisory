@@ -1,7 +1,7 @@
 import { PageIntro } from '../site-shell';
 
 export const metadata = {
-  title: 'Termos de Uso | Bruno Advisory'
+  title: 'Termos de Uso | Savastano Advisory'
 };
 
 const pendingItems = ['identificação pública CVM', 'e-mail público', 'endereço profissional', 'foro/cidade aplicável'];

@@ -1,6 +1,6 @@
 'use client';
 
-import type { MemoRecord, MemoStatus, ResearchWorkflowRecord } from '@bruno-advisory/core';
+import type { MemoRecord, MemoStatus, ResearchWorkflowRecord } from '@savastano-advisory/core';
 import { useState } from 'react';
 
 export function MemosPanel(props: {

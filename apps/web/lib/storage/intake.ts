@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
-import { intakeAnalyticsEvents } from '@bruno-advisory/core/intake-contract';
+import { intakeAnalyticsEvents } from '@savastano-advisory/core/intake-contract';
 import { eventsTable, getDatabase, parseMetadata, serializeMetadata } from './db';
-import type { IntakeAnalyticsEvent } from '@bruno-advisory/core/intake-contract';
+import type { IntakeAnalyticsEvent } from '@savastano-advisory/core/intake-contract';
 import type { IntakeEventRecord } from './types';
 
 export function recordIntakeEvent(record: IntakeEventRecord) {

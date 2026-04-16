@@ -2,7 +2,7 @@
 // Revokes the active session (if any) and expires the cookie.
 // Idempotent: calling without a cookie still returns 200.
 
-import { cockpitAuthModel } from '@bruno-advisory/core';
+import { cockpitAuthModel } from '@savastano-advisory/core';
 import { deleteCockpitSessionByToken } from '../../../../lib/intake-storage';
 import { COCKPIT_SESSION_COOKIE } from '../../../../lib/cockpit-session';
 

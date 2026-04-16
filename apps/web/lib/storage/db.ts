@@ -6,13 +6,13 @@ import {
   commercialStageModel,
   isOperatorCommercialStage,
   type OperatorCommercialStage
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import {
   type IntakeAnalyticsEvent,
   type LeadStatus,
   type PublicIntakePayload,
   type SourceChannel
-} from '@bruno-advisory/core/intake-contract';
+} from '@savastano-advisory/core/intake-contract';
 import type {
   IntakeEventRecord,
   LeadBillingCharge,
@@ -42,7 +42,7 @@ function findRepoRoot(startDir: string) {
 
     const parentDir = path.dirname(currentDir);
     if (parentDir === currentDir) {
-      throw new Error(`Could not locate Bruno Advisory repo root from ${startDir}`);
+      throw new Error(`Could not locate Savastano Advisory repo root from ${startDir}`);
     }
 
     currentDir = parentDir;
@@ -51,7 +51,7 @@ function findRepoRoot(startDir: string) {
 
 const repoRoot = findRepoRoot(process.cwd());
 const dataDir = path.join(repoRoot, 'data', 'dev');
-export const databasePath = path.join(dataDir, 'bruno-advisory-dev.sqlite3');
+export const databasePath = path.join(dataDir, 'savastano-advisory-dev.sqlite3');
 const legacyLeadsJsonlPath = path.join(dataDir, 'intake-leads.jsonl');
 const legacyEventsJsonlPath = path.join(dataDir, 'intake-events.jsonl');
 export const leadsTable = 'intake_leads';

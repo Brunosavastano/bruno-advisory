@@ -1,6 +1,6 @@
 'use client';
 
-import { pendingFlagTypes, type PendingFlagRecord, type PendingFlagType } from '@bruno-advisory/core';
+import { pendingFlagTypes, type PendingFlagRecord, type PendingFlagType } from '@savastano-advisory/core';
 import { useState } from 'react';
 
 export function LeadFlagsPanel(props: { leadId: string; initialFlags: PendingFlagRecord[] }) {

@@ -1,4 +1,4 @@
-import { portalInviteModel, recommendationModel } from '@bruno-advisory/core';
+import { portalInviteModel, recommendationModel } from '@savastano-advisory/core';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getSession, listRecommendations } from '../../../lib/intake-storage';

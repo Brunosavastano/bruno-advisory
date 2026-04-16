@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import { commercialStageModel, isOperatorCommercialStage, type OperatorCommercialStage } from '@bruno-advisory/core';
-import { intakeContract, type PublicIntakePayload, type SourceChannel } from '@bruno-advisory/core/intake-contract';
+import { commercialStageModel, isOperatorCommercialStage, type OperatorCommercialStage } from '@savastano-advisory/core';
+import { intakeContract, type PublicIntakePayload, type SourceChannel } from '@savastano-advisory/core/intake-contract';
 import {
   getDatabase,
   leadsTable,

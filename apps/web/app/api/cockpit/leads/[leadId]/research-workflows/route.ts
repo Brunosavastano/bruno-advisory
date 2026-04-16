@@ -1,4 +1,4 @@
-import { researchWorkflowStatuses, type ResearchWorkflowStatus } from '@bruno-advisory/core';
+import { researchWorkflowStatuses, type ResearchWorkflowStatus } from '@savastano-advisory/core';
 import { createWorkflow, deleteWorkflow, getStoredLeadById, listWorkflows, updateStatus } from '../../../../../../lib/intake-storage';
 import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 

@@ -2,7 +2,7 @@
 // password. Deactivating via isActive=false atomically drops the target's open
 // sessions (see updateCockpitUser in cockpit-auth storage). Admin only.
 
-import { isCockpitRole } from '@bruno-advisory/core';
+import { isCockpitRole } from '@savastano-advisory/core';
 import {
   updateCockpitUser,
   findCockpitUserById,

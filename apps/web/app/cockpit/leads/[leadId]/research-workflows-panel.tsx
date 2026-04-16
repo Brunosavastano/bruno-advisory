@@ -1,6 +1,6 @@
 'use client';
 
-import type { ResearchWorkflowRecord, ResearchWorkflowStatus } from '@bruno-advisory/core';
+import type { ResearchWorkflowRecord, ResearchWorkflowStatus } from '@savastano-advisory/core';
 import { useState } from 'react';
 
 export function ResearchWorkflowsPanel(props: {

@@ -1,4 +1,4 @@
-import { portalInviteModel } from '@bruno-advisory/core';
+import { portalInviteModel } from '@savastano-advisory/core';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { redeemInvite } from '../../../lib/intake-storage';
@@ -42,7 +42,7 @@ export default async function PortalLoginPage({
         <div>
           <div className="badge">Portal do cliente</div>
           <h1>Acesso por código de convite</h1>
-          <p>Use o código enviado pelo Bruno Advisory para abrir sua área privada.</p>
+          <p>Use o código enviado pelo Savastano Advisory para abrir sua área privada.</p>
         </div>
       </div>
 

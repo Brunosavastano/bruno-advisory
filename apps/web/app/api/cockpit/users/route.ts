@@ -1,7 +1,7 @@
 // GET /api/cockpit/users — list all cockpit users (admin only)
 // POST /api/cockpit/users — create a new cockpit user (admin only)
 
-import { cockpitRoles, isCockpitRole } from '@bruno-advisory/core';
+import { cockpitRoles, isCockpitRole } from '@savastano-advisory/core';
 import { listCockpitUsers, createCockpitUser } from '../../../../lib/intake-storage';
 import { requireCockpitAdmin } from '../../../../lib/cockpit-session';
 

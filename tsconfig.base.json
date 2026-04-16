@@ -15,8 +15,8 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@bruno-advisory/core/*": ["packages/core/src/*"],
-      "@bruno-advisory/ui/*": ["packages/ui/src/*"]
+      "@savastano-advisory/core/*": ["packages/core/src/*"],
+      "@savastano-advisory/ui/*": ["packages/ui/src/*"]
     }
   }
 }

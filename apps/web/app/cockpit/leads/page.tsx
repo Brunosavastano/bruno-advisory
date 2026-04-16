@@ -1,4 +1,4 @@
-import { minimumCockpitColumns } from '@bruno-advisory/core/intake-contract';
+import { minimumCockpitColumns } from '@savastano-advisory/core/intake-contract';
 import { getIntakeStoragePaths, listStoredLeads } from '../../../lib/intake-storage';
 
 export const dynamic = 'force-dynamic';

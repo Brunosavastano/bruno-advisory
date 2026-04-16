@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { pendingFlagTypes, type PendingFlagRecord, type PendingFlagType } from '@bruno-advisory/core';
+import { pendingFlagTypes, type PendingFlagRecord, type PendingFlagType } from '@savastano-advisory/core';
 import { getDatabase, leadPendingFlagsTable, leadsTable } from './db';
 
 function isPendingFlagType(value: string): value is PendingFlagType {

@@ -1,4 +1,4 @@
-import { pendingFlagTypes, type PendingFlagType } from '@bruno-advisory/core';
+import { pendingFlagTypes, type PendingFlagType } from '@savastano-advisory/core';
 import { clearFlag } from '../../../../../../../lib/intake-storage';
 
 function isPendingFlagType(value: string): value is PendingFlagType {

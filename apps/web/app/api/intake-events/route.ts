@@ -1,4 +1,4 @@
-import { type IntakeAnalyticsEvent } from '@bruno-advisory/core/intake-contract';
+import { type IntakeAnalyticsEvent } from '@savastano-advisory/core/intake-contract';
 import { recordIntakeEvent } from '../../../lib/intake-storage';
 
 type EventPayload = {

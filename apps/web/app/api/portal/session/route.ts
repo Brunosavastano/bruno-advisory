@@ -1,4 +1,4 @@
-import { portalInviteModel } from '@bruno-advisory/core';
+import { portalInviteModel } from '@savastano-advisory/core';
 import { redeemInvite } from '../../../../lib/intake-storage';
 
 function loginErrorUrl(request: Request, message: string) {

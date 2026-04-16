@@ -1,4 +1,4 @@
-import { portalInviteModel } from '@bruno-advisory/core';
+import { portalInviteModel } from '@savastano-advisory/core';
 import { getSession, listMemos } from '../../../../lib/intake-storage';
 
 function getPortalSessionCookie(request: Request) {

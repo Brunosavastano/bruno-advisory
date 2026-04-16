@@ -12,13 +12,13 @@ import {
   type LocalBillingSettlementStatus,
   type OperatorCommercialStage,
   type RecommendationRecord
-} from '@bruno-advisory/core';
+} from '@savastano-advisory/core';
 import {
   type IntakeAnalyticsEvent,
   type LeadStatus,
   type PublicIntakePayload,
   type SourceChannel
-} from '@bruno-advisory/core/intake-contract';
+} from '@savastano-advisory/core/intake-contract';
 
 export type LeadFitLevel = 'alto' | 'medio' | 'baixo';
 
