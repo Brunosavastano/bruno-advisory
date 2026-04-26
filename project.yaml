@@ -15,8 +15,8 @@ agents:
 
 state:
   active_tranche: T7
-  tranche_status: active
-  stage_gate: rebrand_compliance
+  tranche_status: done
+  stage_gate: rebrand_compliance_done
   release_mode: shadow
   prod_ready: true
 
