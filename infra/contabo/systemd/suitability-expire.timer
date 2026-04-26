@@ -1,0 +1,14 @@
+[Unit]
+Description=Aciona a varredura diária de suitability expirados (Savastano Advisory)
+Documentation=file:///root/savastano-advisory/state/ai-3-cycle-1.5-closure.md
+
+[Timer]
+# Roda diariamente às 03:00 BRT (06:00 UTC). Persistent=true garante execução
+# após reboot quando o horário foi pulado.
+OnCalendar=*-*-* 06:00:00 UTC
+Persistent=true
+RandomizedDelaySec=120
+Unit=suitability-expire.service
+
+[Install]
+WantedBy=timers.target

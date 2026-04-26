@@ -1,8 +1,17 @@
-import { deleteRecommendation, publishRecommendation } from '../../../../../../../lib/intake-storage';
+import {
+  deleteRecommendation,
+  evaluateBasicSuitabilityGateForLead,
+  publishRecommendation
+} from '../../../../../../../lib/intake-storage';
+import { writeAuditLog } from '../../../../../../../lib/storage/audit-log';
 import { requireCockpitSession } from '../../../../../../../lib/cockpit-session';
 
 type RecommendationActionPayload = {
   returnTo?: string;
+  // Override consciente do gate de suitability. Quando true, exige overrideReason
+  // e o evento é registrado em audit_log com motivos do bloqueio + razão do override.
+  overrideSuitabilityGate?: boolean;
+  overrideReason?: string;
 };
 
 async function parsePayload(request: Request): Promise<RecommendationActionPayload> {
@@ -12,8 +21,11 @@ async function parsePayload(request: Request): Promise<RecommendationActionPaylo
   }
 
   const formData = await request.formData();
+  const overrideRaw = formData.get('overrideSuitabilityGate');
   return {
-    returnTo: String(formData.get('returnTo') ?? '')
+    returnTo: String(formData.get('returnTo') ?? ''),
+    overrideSuitabilityGate: overrideRaw === '1' || overrideRaw === 'true',
+    overrideReason: formData.get('overrideReason') ? String(formData.get('overrideReason')) : undefined
   };
 }
 
@@ -29,13 +41,61 @@ export async function PATCH(
   if (!check.ok) return Response.json(check.body, { status: check.status });
 
   const { leadId, recommendationId } = await context.params;
+
+  const payload = await parsePayload(request).catch(() => ({ returnTo: '' } as RecommendationActionPayload));
+
+  // AI-3 Cycle 1: gate de suitability obrigatório antes de publicar recomendação
+  // (Resolução CVM 30/2021, Art. 6º). Sem perfil ativo a publicação é bloqueada;
+  // operador pode override conscientemente passando overrideSuitabilityGate=true
+  // + overrideReason — caso em que o evento é gravado no audit_log para
+  // rastreabilidade regulatória.
+  const gate = evaluateBasicSuitabilityGateForLead(leadId);
+  if (!gate.ok) {
+    const overrideRequested = Boolean(payload.overrideSuitabilityGate);
+    const overrideReason = payload.overrideReason?.trim() ?? '';
+
+    if (!overrideRequested) {
+      return Response.json(
+        {
+          ok: false,
+          error: 'suitability_gate_blocked',
+          decision: gate.decision,
+          reasons: gate.reasons,
+          cvmReferences: gate.cvmReferences
+        },
+        { status: 422 }
+      );
+    }
+
+    if (!overrideReason) {
+      return Response.json(
+        { ok: false, error: 'override_requires_reason' },
+        { status: 422 }
+      );
+    }
+
+    writeAuditLog({
+      action: 'recommendation.suitability_gate_overridden',
+      entityType: 'recommendation',
+      entityId: recommendationId,
+      leadId,
+      actorType: 'operator',
+      actorId: check.context.actorId,
+      detail: {
+        decision: gate.decision,
+        reasons: [...gate.reasons],
+        cvmReferences: [...gate.cvmReferences],
+        overrideReason
+      }
+    });
+  }
+
   const recommendation = publishRecommendation(recommendationId, leadId, check.context.actorId);
 
   if (!recommendation) {
     return Response.json({ ok: false, error: 'Recomendacao nao encontrada.' }, { status: 404 });
   }
 
-  const payload = await parsePayload(request).catch(() => ({ returnTo: '' }));
   const returnTo = toReturnTo(payload.returnTo);
   if (returnTo) {
     const url = new URL(returnTo, request.url);
@@ -43,7 +103,11 @@ export async function PATCH(
     return Response.redirect(url, 303);
   }
 
-  return Response.json({ ok: true, recommendation });
+  return Response.json({
+    ok: true,
+    recommendation,
+    suitabilityGate: { decision: gate.decision, ok: gate.ok }
+  });
 }
 
 export async function DELETE(
