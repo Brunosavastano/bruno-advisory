@@ -645,41 +645,41 @@ A conversa inicial deve seguir roteiro compatível com o que foi prometido na p�
 
 ### 7.1 Checklist jurídico-regulatório
 
-- [ ] nome completo do consultor confirmado
-- [ ] identificação CVM confirmada
-- [ ] canais de contato confirmados
-- [ ] endereço profissional confirmado
-- [ ] texto do disclaimer coerente com a oferta real
-- [ ] nenhuma promessa de retorno no site
-- [ ] nenhuma sugestão de ausência de risco
-- [ ] contrato escrito previsto antes da consultoria personalizada
-- [ ] suitability previsto antes de recomendação
-- [ ] registro e retenção previstos internamente
-- [ ] política de privacidade coerente com o stack real
-- [ ] base de retenção coerente com CVM 19 / CVM 50
-- [ ] política de cookie consistente com o que o site realmente usa
+- [x] nome completo do consultor confirmado — Bruno Barreto Mesiano Savastano (T7 cycle 4, commit 92d8745)
+- [x] identificação CVM confirmada — código 004503-0 (T7 cycle 4)
+- [x] canais de contato confirmados — brunobmsavastano@gmail.com (T7 cycle 4)
+- [x] endereço profissional confirmado — SQN 216, bloco F, apto 103, Asa Norte, Brasília-DF (T7 cycle 4)
+- [x] texto do disclaimer coerente com a oferta real — footer + página /disclaimer com CVM code (T7 cycle 2, commit 748ad00)
+- [x] nenhuma promessa de retorno no site — landing diz "Não vendemos atalho, giro de produto ou promessa de retorno" (verificado em page.tsx)
+- [x] nenhuma sugestão de ausência de risco — nenhuma menção a "sem risco", "seguro", "garantido" nas páginas públicas
+- [x] contrato escrito previsto antes da consultoria personalizada — seção 1.3 regra de fronteira exige contrato + suitability + coleta antes de consultoria
+- [x] suitability previsto antes de recomendação — seção 1.3, item 3: "coleta de informações necessárias para adequação do serviço ao perfil do cliente"
+- [x] registro e retenção previstos internamente — seção 9 com prazos LGPD+CVM+CFA; seção 2.2 com definições operacionais (T7 cycle 5, commit 8f7c2f2)
+- [x] política de privacidade coerente com o stack real — provedores mapeados na seção 2.2 (Contabo, Plausible, Stripe, Gmail, Claude, OpenAI, Gemini)
+- [x] base de retenção coerente com CVM 19 / CVM 50 — seção 9: clientes 5 anos pós-contrato (CVM 19 art. 22), audit logs 5 anos
+- [x] política de cookie consistente com o que o site realmente usa — Plausible self-hosted sem cookies; sem banner necessário; cláusula de revisão se mudar para GA
 
 ### 7.2 Checklist de produto
 
-- [ ] formulário público só coleta dados mínimos
-- [ ] uploads livres desativados no MVP
-- [ ] banner/copy da conversa inicial instalados
-- [ ] disclaimer no rodapé
-- [ ] página de privacidade publicada
-- [ ] página de termos publicada
-- [ ] CTA não promete recomendação
-- [ ] mensagem de sucesso do form está correta
-- [ ] CRM registra timestamp e aceite
-- [ ] exclusão/anônimização de leads não convertidos está implementável
+- [x] formulário público só coleta dados mínimos — intake-form.tsx coleta: nome, email, telefone, cidade, estado, faixa patrimonial, desafio principal, consent checkboxes. Sem CPF, sem upload, sem dados sensíveis.
+- [x] uploads livres desativados no MVP — grep por "type.*file" no intake retorna zero; uploads existem apenas no portal do cliente (pós-contrato, área autenticada)
+- [x] banner/copy da conversa inicial instalados — page.tsx: "A conversa inicial é apenas de triagem e aderência. Ela não constitui recomendação personalizada."
+- [x] disclaimer no rodapé — site-shell.tsx footer com nome completo, CVM 004503-0, "nome fantasia" disclosure
+- [x] página de privacidade publicada — apps/web/app/privacidade/page.tsx existe e renderiza o texto canônico
+- [x] página de termos publicada — apps/web/app/termos/page.tsx existe e renderiza o texto canônico
+- [x] CTA não promete recomendação — CTA é "Solicitar conversa inicial" (não "Receber recomendação" ou similar)
+- [x] mensagem de sucesso do form está correta — intake-form.tsx mostra "Seu registro foi salvo com sucesso" com ID. Nota: mensagem pode ser refinada para incluir "não constitui relação de consultoria" (melhoria futura, não bloqueador)
+- [x] CRM registra timestamp e aceite — DB schema: `privacy_consent_accepted INTEGER NOT NULL CHECK(0,1)`, `terms_consent_accepted INTEGER NOT NULL CHECK(0,1)`, `created_at TEXT NOT NULL` no intake
+- [x] exclusão/anônimização de leads não convertidos está implementável — regra definida na seção 2.2 (2 anos); audit log suporta actor_id para rastreabilidade; DB permite DELETE por lead_id
 
 ### 7.3 Checklist de IA
 
-- [ ] nenhum agente responde como se fosse o consultor sem disclosure interno adequado
-- [ ] nenhum sistema automatizado emite recomendação final sem revisão humana
-- [ ] prompts do intake e CRM não pedem dados excessivos
-- [ ] provedores de IA relevantes estão mapeados
-- [ ] fluxo de logs e retenção está definido
-- [ ] se IA externa processar dados pessoais, isso está refletido na política
+- [x] nenhum agente responde como se fosse o consultor sem disclosure interno adequado — V1 usa IA apenas internamente (research workflows, memos, drafts); não há chatbot público ou IA client-facing. Disclaimer na seção 6/11: "ferramentas não eliminam a responsabilidade profissional do consultor"
+- [x] nenhum sistema automatizado emite recomendação final sem revisão humana — T5 review-queue implementa fila de revisão humana para memos e research workflows; status `pending_review` → `approved`/`rejected` por operador
+- [x] prompts do intake e CRM não pedem dados excessivos — formulário público limitado a dados mínimos (nome, email, telefone, cidade/UF, faixa patrimonial, desafio). Sem CPF, sem upload, sem extrato. Seção 5.4 documenta campos proibidos.
+- [x] provedores de IA relevantes estão mapeados — seção 2.2 item 3: Anthropic/Claude, OpenAI/ChatGPT, Google/Gemini com categorias e usos (T7 cycle 5, commit 8f7c2f2)
+- [x] fluxo de logs e retenção está definido — audit_log com actor_id individualizado (T6), retention 5 anos para registros de cliente (seção 9), 2 anos para leads
+- [x] se IA externa processar dados pessoais, isso está refletido na política — seção 6 (uso de IA), seção 7 (compartilhamento com provedores), seção 8 (transferência internacional), seção 2.2 item 3 (tabela de provedores IA)
 
 ---
 
