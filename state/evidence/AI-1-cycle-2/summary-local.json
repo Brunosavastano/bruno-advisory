@@ -1,0 +1,63 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-26T16:35:56.502Z",
+  "leadId": "6abcbbd5-41a4-48ae-9cbf-3b5edef3ae5d",
+  "probe": {
+    "bootstrapSeeds": {
+      "modelVersionRows": 1,
+      "promptTemplateRows": 1
+    },
+    "authNoCookie": {
+      "status": 401
+    },
+    "happyPath": {
+      "jobId": "72b4feae-5b92-4379-8751-53b27632aba1",
+      "artifactId": "468e2199-0cea-4ee4-b1df-8abeb046f2f4",
+      "costCents": 1,
+      "latencyMs": 1
+    },
+    "happyDbCheck": {
+      "jobStatus": "succeeded",
+      "artifactStatus": "pending_review",
+      "artifactBodyLength": 171
+    },
+    "budgetBlock": {
+      "httpStatus": 402,
+      "jobStatus": "blocked_budget",
+      "capId": "094383ab-35c9-4019-8b71-19b4d450269b"
+    },
+    "adminListGet": {
+      "versionsCount": 1,
+      "seededSonnetFound": true
+    },
+    "adminPostLegacyForbidden": {
+      "status": 403
+    },
+    "adminPostAdminOk": {
+      "versionId": "bb9fa792-36a7-4ec7-8dcd-376b156b7067",
+      "status": "candidate"
+    }
+  },
+  "sourceShape": {
+    "types.ts": true,
+    "costs.ts": true,
+    "budgets.ts": true,
+    "mock.ts": true,
+    "anthropic.ts": true,
+    "provider.ts": true,
+    "run-job.ts": true
+  },
+  "envChecks": {
+    "hasAiEnabled": true,
+    "hasAiProvider": true,
+    "hasAiModel": true,
+    "hasAnthropicKey": true,
+    "hasMonthlyBudget": true
+  },
+  "prodEnvChecks": {
+    "hasAiEnabledFalse": true,
+    "hasAiUseMockZero": true,
+    "hasDevHarnessZero": true
+  },
+  "note": "AI-1 Cycle 2: bootstrap seeds Sonnet 4.6 + memo template; mock provider exercised via /api/cockpit/leads/.../ai/memo-draft; cost_cents and output_hash recorded on succeeded job; pending_review artifact created; tight budget cap (1 cent) blocks the next call with HTTP 402 and ai_jobs.status=blocked_budget; admin model-versions GET returns seeded Sonnet 4.6, POST requires admin role (legacy fallback receives 403). Anthropic SDK wired but not invoked; verifier never spends real money."
+}

@@ -975,9 +975,88 @@ export function getDatabase() {
   ensureCockpitAuthColumns(db);
   db.exec(`CREATE INDEX IF NOT EXISTS idx_intake_leads_commercial_stage ON ${leadsTable}(commercial_stage);`);
   migrateLegacyJsonlData(db);
+  ensureAiBootstrapSeeds(db);
 
   database = db;
   return db;
+}
+
+// AI-1 Cycle 2 bootstrap: seeds the canonical pinned Sonnet 4.6 model_version (status=active) and
+// the memo_internal_draft prompt template (v0.1.0) on first DB init. Idempotent — uses INSERT OR
+// IGNORE on the deterministic primary keys. Pricing is hard-coded from public Anthropic prices as
+// of 2026-04 (cents per million tokens). Update via /api/cockpit/ai/model-versions PATCH if prices
+// change. The bootstrap deliberately writes directly via this `db` handle (instead of going through
+// the storage helpers) because those helpers call writeAuditLog → getDatabase, which would recurse
+// if invoked while getDatabase is still running.
+function ensureAiBootstrapSeeds(db: DatabaseSync) {
+  const now = new Date().toISOString();
+
+  // Seed Sonnet 4.6 as active model_version (pinned default for AI-1 Cycle 2).
+  db.prepare(`
+    INSERT OR IGNORE INTO ${aiModelVersionsTable} (
+      model_version_id, provider, model_id, display_name, status,
+      input_price_json, output_price_json, pinned_at, deprecated_at, blocked_at, notes,
+      created_at, updated_at
+    ) VALUES (
+      'seed-anthropic-claude-sonnet-4-6',
+      'anthropic',
+      'claude-sonnet-4-6',
+      'Claude Sonnet 4.6',
+      'active',
+      '{"centsPerMillion":300,"cachedCentsPerMillion":30}',
+      '{"centsPerMillion":1500}',
+      ?, NULL, NULL,
+      'Pinned by AI-1 Cycle 2 bootstrap. Update pricing or transition to deprecated via /api/cockpit/ai/model-versions.',
+      ?, ?
+    )
+  `).run(now, now, now);
+
+  // Seed canonical memo_internal_draft prompt template v0.1.0.
+  // Body intentionally compact; refined in subsequent cycles or via cockpit UI.
+  const memoPromptBody = [
+    'Você é um assistente interno de um consultor de valores mobiliários registrado na CVM.',
+    'Sua tarefa é gerar um RASCUNHO INTERNO de memo para revisão humana — o consultor irá editar, aprovar ou rejeitar.',
+    '',
+    'Restrições obrigatórias:',
+    '- NÃO emita recomendação final.',
+    '- NÃO prometa retorno.',
+    '- NÃO minimize risco.',
+    '- Use APENAS os dados fornecidos no contexto.',
+    '- Quando faltar informação, liste em "open_questions" em vez de inferir.',
+    '',
+    'Retorne JSON válido com as chaves:',
+    '- title (string, curto)',
+    '- executive_summary (string)',
+    '- known_facts (array de strings)',
+    '- open_questions (array de strings)',
+    '- risk_points (array de strings)',
+    '- suggested_next_steps (array de strings)',
+    '- compliance_notes (string)',
+    '',
+    'Idioma: português do Brasil. Tom: técnico, conciso, sem jargão de IA.'
+  ].join('\n');
+
+  db.prepare(`
+    INSERT OR IGNORE INTO ${aiPromptTemplatesTable} (
+      template_id, name, version, purpose, body, output_schema, requires_grounding,
+      model_compatibility_min, model_compatibility_max, allowed_surfaces, active,
+      created_at, deactivated_at
+    ) VALUES (
+      'seed-memo-internal-draft-v0-1-0',
+      'memo_internal_draft',
+      '0.1.0',
+      'Internal memo draft for cockpit operator review',
+      ?,
+      '{"type":"object","required":["title","executive_summary","known_facts","open_questions","risk_points","suggested_next_steps","compliance_notes"]}',
+      0,
+      'claude-sonnet-4-6',
+      NULL,
+      '["cockpit_copilot"]',
+      1,
+      ?,
+      NULL
+    )
+  `).run(memoPromptBody, now);
 }
 
 export function normalizeLeadBillingRecord(row: Record<string, unknown>): LeadBillingRecord | null {

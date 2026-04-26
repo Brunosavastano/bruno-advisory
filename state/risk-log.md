@@ -30,3 +30,10 @@
 ## Mitigações de AI-1 Cycle 1 (2026-04-26)
 
 - Risco "IA produzir material não auditável (logs pobres, drafts sem revisão)" — alta — **parcialmente mitigado**: schema de auditabilidade (ai_jobs, ai_artifacts, ai_messages, ai_prompt_templates, ai_guardrail_results, ai_budget_caps, ai_model_versions, ai_eval_cases, ai_eval_runs) ergueu antes da primeira chamada de provider. Toda mutação grava ação canônica em `audit_log`. Gate de aprovação humana (artifact status pending_review→approved) é exigido por design — sem rota que publique sem revisão. Mitigação completa exige Cycle 3 (guardrails ativos: bloqueio de promessa de retorno, recomendação sem suitability, etc.) + AI-5 (recommendation ledger v2 com compliance gate).
+
+## Mitigações + riscos novos de AI-1 Cycle 2 (2026-04-26)
+
+- Risco "IA produzir material não auditável" — alta — **mais mitigado**: gateway grava cada chamada com tokens, custo real, latência, hashes de input/output, model version e prompt template version. Mock provider permite verifier sem custo real. Falta Cycle 3 (guardrails) pra mitigação completa.
+- Risco "Custo descontrolado em IA" — alta → **mitigado**: budget caps com escopo (global/surface/job_type/lead) × período (day/month) e ação (warn/block) funcionam — verifier prova HTTP 402 em cap exceeded. Default seed value de 5000 cents/mês documentado em env.example. Você precisa setar o cap real via SQL/admin antes do primeiro memo em produção.
+- Risco novo "API key vazamento" — média — **a mitigar**: `ANTHROPIC_API_KEY` fica só na `/home/savastano-advisory/.env` do servidor (fora do git, fora das imagens Docker). Acesso ao servidor = acesso à chave. Pendência: documentar processo de rotação em runbook futuro.
+- Risco novo "Modelo upgrade quebra prompts em produção" — média — **mitigado por design**: pin explícito de `claude-sonnet-4-6` via env + `ai_model_versions` com status lifecycle. Auto-update intencionalmente NÃO implementado. Promoção candidate→active exige PATCH admin + golden eval (Cycle 4 automatiza).
