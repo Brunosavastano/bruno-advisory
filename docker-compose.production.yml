@@ -15,6 +15,13 @@ services:
       - APP_BASE_URL=https://savastanoadvisory.com.br
       - COCKPIT_SECRET=${COCKPIT_SECRET}
       - DATABASE_PROVIDER=sqlite
+      # AI gateway (AI-1 Cycle 2). Values come from /home/savastano-advisory/.env on the host.
+      - AI_ENABLED=${AI_ENABLED:-false}
+      - AI_PROVIDER=${AI_PROVIDER:-anthropic}
+      - AI_MODEL=${AI_MODEL:-claude-sonnet-4-6}
+      - AI_USE_MOCK=${AI_USE_MOCK:-0}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - AI_DEV_HARNESS_ENABLED=${AI_DEV_HARNESS_ENABLED:-0}
     volumes:
       - app-data:/data
     networks:
