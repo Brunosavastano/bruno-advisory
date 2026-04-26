@@ -1,0 +1,49 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-26T18:29:01.476Z",
+  "sourceShape": {
+    "app/cockpit/leads/[leadId]/ai-copilot-panel.tsx": true,
+    "app/cockpit/leads/[leadId]/ai-history/page.tsx": true,
+    "app/cockpit/ai-artifacts/[artifactId]/page.tsx": true,
+    "app/cockpit/ai-artifacts/[artifactId]/artifact-review-actions.tsx": true
+  },
+  "copilotChecks": {
+    "hasUseClient": true,
+    "has5Surfaces": true,
+    "hasFocusHintInput": true,
+    "hasErrorHandling": true,
+    "linksToArtifactView": true
+  },
+  "leadPageChecks": {
+    "importsCopilot": true,
+    "rendersCopilot": true,
+    "hasAiHistoryLink": true
+  },
+  "artifactChecks": {
+    "showsBody": true,
+    "showsJobMetadata": true,
+    "showsGuardrails": true,
+    "showsRedaction": true,
+    "conditionalActionsForPending": true
+  },
+  "artifactActionsChecks": {
+    "hasRejectionTextarea": true,
+    "validatesRejectionReason": true,
+    "patchesArtifactRoute": true
+  },
+  "queueChecks": {
+    "hasFilterTabs": true,
+    "hasCardsLayout": true,
+    "hasRejectModal": true,
+    "noWindowPrompt": true,
+    "iaBadgeVisual": true,
+    "artifactDeepLink": true
+  },
+  "historyChecks": {
+    "listsJobs": true,
+    "joinsArtifacts": true,
+    "showsTotalCost": true,
+    "linksToArtifact": true
+  },
+  "note": "AI-2 Cycle 2: AiCopilotPanel exposes 5 surfaces with focus hint + error handling + artifact deep links. Lead page wires the panel and links to ai-history. Artifact viewer shows full body + job metadata + guardrails + redaction + conditional review actions. Rejection modal replaces window.prompt and validates non-empty reason. Review queue redesigned with filter tabs + responsive cards + modal. AI history page lists jobs with totals and per-job artifact links. All wiring verified by source-shape audits; build/typecheck verified by the wrapper script."
+}

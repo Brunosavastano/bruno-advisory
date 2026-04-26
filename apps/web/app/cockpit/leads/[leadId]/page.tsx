@@ -1,6 +1,7 @@
 import { billingEntryModel, commercialStageModel, documentUploadModel, localBillingChargeModel, localBillingChargeProgressionModel, localBillingModel, localBillingSettlementModel, localBillingSettlementTargetingModel, memoModel, memoStatuses, recommendationCategories, recommendationModel, researchWorkflowModel, researchWorkflowStatuses } from '@savastano-advisory/core';
 import { notFound } from 'next/navigation';
 import { Fragment } from 'react';
+import { AiCopilotPanel } from './ai-copilot-panel';
 import { LeadFlagsPanel } from './lead-flags-panel';
 import { ResearchWorkflowsPanel } from './research-workflows-panel';
 import { MemosPanel } from './memos-panel';
@@ -109,6 +110,9 @@ export default async function LeadDetailPage({
           <a className="btn btn-secondary" href="/cockpit/review-queue">
             Review queue
           </a>
+          <a className="btn btn-secondary" href={`/cockpit/leads/${lead.leadId}/ai-history`}>
+            Histórico IA
+          </a>
           <a className="btn btn-secondary" href="/cockpit/flags">
             Flags overview
           </a>
@@ -123,6 +127,8 @@ export default async function LeadDetailPage({
           </a>
         </div>
       </div>
+
+      <AiCopilotPanel leadId={lead.leadId} />
 
       <section className="card">
         <div className="kicker">Comercial T3</div>
