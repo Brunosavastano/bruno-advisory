@@ -75,18 +75,18 @@ A consultoria personalizada começa apenas quando houver, cumulativamente:
 
 # Política de Privacidade
 
-Última atualização: [DATA]
+Última atualização: 24 de abril de 2026
 
-Esta Política de Privacidade explica como **[NOME COMPLETO DO CONSULTOR]**, consultor de valores mobiliários atuando em nome próprio, trata dados pessoais no contexto deste site, do contato inicial, da apresentação de proposta, do onboarding e da prestação de serviços.
+Esta Política de Privacidade explica como **Bruno Barreto Mesiano Savastano**, consultor de valores mobiliários atuando em nome próprio, trata dados pessoais no contexto deste site, do contato inicial, da apresentação de proposta, do onboarding e da prestação de serviços.
 
 ## 1. Quem controla os dados pessoais
 
 O controlador dos dados pessoais tratados neste ambiente é:
 
-**[NOME COMPLETO]**  
-Consultor de valores mobiliários autorizado pela CVM: [NÚMERO / IDENTIFICAÇÃO APLICÁVEL]  
-E-mail para privacidade e exercício de direitos: [EMAIL]  
-Endereço profissional: [ENDEREÇO PROFISSIONAL]  
+**Bruno Barreto Mesiano Savastano**  
+Consultor de valores mobiliários autorizado pela CVM: 004503-0  
+E-mail para privacidade e exercício de direitos: brunobmsavastano@gmail.com  
+Endereço profissional: SQN 216, bloco F, apto 103, Asa Norte, Brasília-DF, CEP 70785-060  
 
 Quando este site utilizar fornecedores de hospedagem, autenticação, comunicação, armazenamento, analytics, cobrança recorrente, assinatura eletrônica ou ferramentas de produtividade e IA, tais terceiros atuarão, conforme o caso, como operadores ou fornecedores contratados, observadas instruções, salvaguardas contratuais e medidas razoáveis de segurança.
 
@@ -204,7 +204,7 @@ Nos termos da legislação aplicável, o titular pode solicitar, entre outros di
 - oposição a tratamento irregular;
 - revisão de decisões tomadas unicamente com base em tratamento automatizado, quando cabível.
 
-As solicitações podem ser enviadas para: **[EMAIL DE PRIVACIDADE]**.
+As solicitações podem ser enviadas para: **brunobmsavastano@gmail.com**.
 
 Poderemos solicitar informações adicionais razoáveis para confirmar a identidade do solicitante e proteger os dados contra acesso indevido.
 
@@ -224,7 +224,7 @@ Esta Política poderá ser atualizada para refletir mudanças na operação, nos
 
 ## 14. Contato
 
-Em caso de dúvidas sobre esta Política de Privacidade, tratamento de dados pessoais ou exercício de direitos, entre em contato pelo e-mail: **[EMAIL DE PRIVACIDADE]**.
+Em caso de dúvidas sobre esta Política de Privacidade, tratamento de dados pessoais ou exercício de direitos, entre em contato pelo e-mail: **brunobmsavastano@gmail.com**.
 
 ### 2.2 Regras internas de implementação desta Política
 
@@ -252,19 +252,19 @@ Em caso de dúvidas sobre esta Política de Privacidade, tratamento de dados pes
 
 # Termos de Uso e Condições Gerais do Serviço
 
-Última atualização: [DATA]
+Última atualização: 24 de abril de 2026
 
 Ao acessar este site, solicitar contato ou utilizar seus formulários e canais, você declara que leu e concorda com estes Termos de Uso e Condições Gerais, bem como com a Política de Privacidade aplicável.
 
 ## 1. Identificação
 
-Este site é mantido por **[NOME COMPLETO]**, consultor de valores mobiliários atuando em nome próprio, com foco em consultoria independente para pessoas físicas.
+Este site é mantido por **Bruno Barreto Mesiano Savastano**, consultor de valores mobiliários atuando em nome próprio, com foco em consultoria independente para pessoas físicas.
 
 Dados profissionais e de contato:
-- Nome: [NOME COMPLETO]
-- Identificação CVM: [NÚMERO / DADO APLICÁVEL]
-- E-mail: [EMAIL]
-- Endereço profissional: [ENDEREÇO]
+- Nome: Bruno Barreto Mesiano Savastano
+- Identificação CVM: 004503-0
+- E-mail: brunobmsavastano@gmail.com
+- Endereço profissional: SQN 216, bloco F, apto 103, Asa Norte, Brasília-DF, CEP 70785-060
 
 ## 2. Natureza do site
 
@@ -357,7 +357,7 @@ Esse uso não afasta a responsabilidade pessoal do consultor pelos serviços pre
 
 ## 12. Propriedade intelectual
 
-Salvo indicação em contrário, os textos, materiais, estrutura, marca nominativa, organização do site e demais conteúdos protegíveis são de titularidade de **[NOME COMPLETO]** ou utilizados legitimamente.
+Salvo indicação em contrário, os textos, materiais, estrutura, marca nominativa, organização do site e demais conteúdos protegíveis são de titularidade de **Bruno Barreto Mesiano Savastano** ou utilizados legitimamente.
 
 Não é permitido reproduzir, redistribuir, comercializar, treinar modelos, republicar ou explorar economicamente conteúdos do site ou materiais entregues ao cliente sem autorização, exceto nas hipóteses legais.
 
@@ -382,7 +382,7 @@ Em caso de divergência entre estes Termos e contrato específico assinado entre
 
 Aplica-se a legislação brasileira.
 
-Fica eleito o foro da comarca de **[CIDADE/UF]**, com ressalva de qualquer foro obrigatório ou mais favorável que decorra da legislação aplicável.
+Fica eleito o foro da comarca de **Brasília/DF**, com ressalva de qualquer foro obrigatório ou mais favorável que decorra da legislação aplicável.
 
 ### 3.2 Regras internas de implementação destes Termos
 
@@ -404,7 +404,7 @@ Fica eleito o foro da comarca de **[CIDADE/UF]**, com ressalva de qualquer foro 
 
 # Disclaimer regulatório
 
-**[NOME COMPLETO]** atua como consultor de valores mobiliários autorizado pela CVM, em nome próprio, observada a regulamentação aplicável.
+**Bruno Barreto Mesiano Savastano** atua como consultor de valores mobiliários autorizado pela CVM, em nome próprio, observada a regulamentação aplicável.
 
 O conteúdo deste site possui caráter institucional e informativo e **não constitui**, por si só:
 - oferta pública de valores mobiliários;
@@ -430,7 +430,7 @@ Conflitos de interesses relevantes, quando existentes e aplicáveis, devem ser i
 
 ### 4.2 Versão curta para rodapé
 
-> Consultoria de valores mobiliários prestada por [NOME COMPLETO], em nome próprio, observada a regulamentação aplicável. Conteúdo meramente institucional e informativo. Nada aqui constitui recomendação personalizada, promessa de rentabilidade ou garantia de resultado. A decisão final de investimento e a implementação das operações cabem exclusivamente ao cliente.
+> Consultoria de valores mobiliários prestada por Bruno Barreto Mesiano Savastano, em nome próprio, observada a regulamentação aplicável. Conteúdo meramente institucional e informativo. Nada aqui constitui recomendação personalizada, promessa de rentabilidade ou garantia de resultado. A decisão final de investimento e a implementação das operações cabem exclusivamente ao cliente.
 
 ### 4.3 Versão curta para formulário / agenda
 
