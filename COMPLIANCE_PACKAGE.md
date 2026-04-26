@@ -180,12 +180,14 @@ Determinados provedores tecnológicos podem armazenar ou processar dados fora do
 
 ## 9. Por quanto tempo os dados são mantidos
 
-Os prazos de retenção variam conforme a finalidade e a obrigação aplicável. Em linhas gerais:
+Os prazos de retenção observam a LGPD (Lei 13.709/2018), a regulamentação da CVM (Resolução CVM 19/2021, art. 22) e, quando aplicável, os padrões do CFA Institute (Standard V(C) — Record Retention). Em linhas gerais:
 
 - **logs técnicos e registros de acesso**: pelo prazo mínimo necessário à segurança do ambiente e ao cumprimento das obrigações legais aplicáveis;
-- **contatos não convertidos em clientes**: em regra, por até 12 meses da última interação, salvo necessidade legítima de retenção por prazo maior;
+- **leads não convertidos em clientes**: até **2 (dois) anos** da última interação, após os quais os dados são anonimizados ou excluídos, salvo necessidade legítima de retenção por prazo maior (LGPD art. 15 — dado perde necessidade);
 - **propostas, negociações pré-contratuais e registros relacionados**: pelo tempo necessário para avaliação, defesa de direitos e cumprimento de obrigações aplicáveis;
-- **documentos e registros de clientes, suitability, comunicações relevantes, recomendações e fundamentos**: pelo prazo mínimo exigido pela regulamentação aplicável e, quando cabível, por prazo adicional para defesa de direitos;
+- **documentos e registros de clientes ativos** (suitability, comunicações relevantes, recomendações, memos e fundamentos): **enquanto durar o contrato** e, após o encerramento, por no mínimo **5 (cinco) anos**, conforme Resolução CVM 19/2021 art. 22 e LGPD art. 16, II (cumprimento de obrigação legal/regulatória);
+- **registros de auditoria interna** (audit log, registros de operação do sistema): **5 (cinco) anos**, para exercício regular de direitos e conformidade regulatória;
+- **dados financeiros e de cobrança**: **5 (cinco) anos** após a última cobrança, conforme Código Tributário Nacional (arts. 173-174) e regulamentação CVM;
 - **documentação de cadastro, diligências e obrigações relacionadas à prevenção à lavagem de dinheiro**: pelo prazo regulatório aplicável.
 
 Quando a retenção deixar de ser necessária, os dados serão eliminados, anonimizados ou terão o acesso restringido, ressalvadas hipóteses legais de conservação.
@@ -228,18 +230,32 @@ Em caso de dúvidas sobre esta Política de Privacidade, tratamento de dados pes
 
 ### 2.2 Regras internas de implementação desta Política
 
-1. No MVP, usar apenas cookies estritamente necessários e logs de segurança.  
-2. Não ativar analytics não essencial sem banner, gestão de preferências e revisão deste documento.  
-3. Não pedir CPF, RG, extrato completo, declaração de IR, dados bancários completos ou documentos de KYC no formulário público.  
-4. Se o site usar IA externa, mapear provedores relevantes e incluir suas categorias na revisão do documento.  
-5. Definir e documentar:
-   - e-mail de privacidade;
-   - processo interno para resposta a titulares;
-   - regra de exclusão/anônimização de leads não convertidos;
-   - regra de retenção de clientes e recomendações.  
-6. Para bases de “legítimo interesse”, manter registro interno mínimo da finalidade, necessidade, expectativa do titular e salvaguardas.  
-7. Não tratar dados sensíveis em automações de triagem pública.  
-8. Se o projeto passar a usar biometria, enriquecimento de dados, perfilamento automatizado decisório ou mídia paga com audiência personalizada, revisar este pacote antes do go-live.
+1. No V1, o site utiliza apenas cookies estritamente necessários e logs de segurança. **Analytics: Plausible self-hosted** (sem cookies, sem rastreamento individual, dados armazenados no servidor próprio Contabo). Banner de cookies não é necessário porque Plausible não utiliza cookies. Se analytics for substituído por Google Analytics ou similar, revisar este documento e adicionar banner de consentimento.  
+2. Não pedir CPF, RG, extrato completo, declaração de IR, dados bancários completos ou documentos de KYC no formulário público.  
+3. **Provedores de IA mapeados para o V1:**  
+   | Provedor | Uso | Categoria |
+   |----------|-----|-----------|
+   | Anthropic (Claude) | Workflows de pesquisa, geração de memos/drafts, análise de contexto patrimonial, fila de revisão | Operador — apoio operacional e analítico |
+   | OpenAI (ChatGPT / Codex) | Apoio operacional, desenvolvimento de ferramentas internas | Operador — apoio operacional |
+   | Google (Gemini) | Marketing e comunicação (copy institucional, conteúdo) | Operador — apoio operacional |
+   Todos atuam como operadores de dados sob instrução do consultor. Nenhum toma decisões de investimento autonomamente. A responsabilidade profissional pelas recomendações permanece do consultor. Se novos provedores de IA forem adicionados, atualizar esta tabela antes do deploy.  
+4. **Definições operacionais fechadas para o V1:**  
+   - **E-mail de privacidade:** brunobmsavastano@gmail.com (definido na seção 14 da Política de Privacidade).  
+   - **Processo interno para resposta a titulares:** solicitações recebidas no e-mail de privacidade são avaliadas e respondidas em até 15 dias úteis (LGPD art. 18, §5º). O consultor pode solicitar verificação de identidade antes de processar a solicitação.  
+   - **Regra de exclusão/anonimização de leads não convertidos:** leads sem interação por 2 (dois) anos são anonimizados ou excluídos do sistema (conforme seção 9 da Política de Privacidade).  
+   - **Regra de retenção de clientes e recomendações:** documentos, recomendações, memos e registros de relacionamento de clientes são mantidos por no mínimo 5 (cinco) anos após o encerramento do contrato (Resolução CVM 19/2021, art. 22; CFA Standard V(C)).  
+5. Para bases de “legítimo interesse”, manter registro interno mínimo da finalidade, necessidade, expectativa do titular e salvaguardas.  
+6. Não tratar dados sensíveis em automações de triagem pública.  
+7. Se o projeto passar a usar biometria, enriquecimento de dados, perfilamento automatizado decisório ou mídia paga com audiência personalizada, revisar este pacote antes do go-live.  
+8. **Provedores de infraestrutura e serviços mapeados para o V1:**  
+   | Provedor | Serviço | Categoria |
+   |----------|---------|-----------|
+   | Contabo | Hospedagem (VPS) | Operador — infraestrutura |
+   | Plausible (self-hosted) | Analytics | Não transfere dados — roda no servidor próprio |
+   | Stripe | Cobrança recorrente | Operador — serviços financeiros |
+   | Gmail (Google) | E-mail do consultor | Processador — comunicação |
+   | Registro.br | Domínio (.com.br) | Registrador — infraestrutura |
+   Se novos provedores forem adicionados (CDN, e-mail transacional, assinatura eletrônica, etc.), atualizar esta tabela antes do deploy.
 
 ---
 
