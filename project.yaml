@@ -14,9 +14,9 @@ agents:
   additional_openclaws_allowed_before_t3: false
 
 state:
-  active_tranche: T7
+  active_tranche: T8
   tranche_status: done
-  stage_gate: rebrand_compliance_done
+  stage_gate: deploy_done
   release_mode: shadow
   prod_ready: true
 
