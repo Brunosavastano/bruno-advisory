@@ -298,3 +298,17 @@
 - Deferrals explícitos documentados em `state/t6-closure.md`: T7 remove `COCKPIT_SECRET` + sentinel; T7+ adiciona audit trail de users admin, rate-limit no login, CSRF explícito, password reset self-service, 2FA, SSO.
 - Abertura de T7 depende de autorização explícita de Bruno.
 - Dono: Vulcanus. Aceito por Zeus.
+
+## 2026-04-24 — T7 fechada + T8 (PostgreSQL) deferida para V2
+
+- T7 (Savastano Advisory Rebrand + Compliance) fechada em `b545f0c`. COMPLIANCE_PACKAGE.md com dados reais, 29/29 checklist items, zero placeholders.
+- T8 original (PostgreSQL adapter, 5-6 ciclos) foi DEFERIDA por decisão de Bruno. Razão: SQLite atende o V1 (1 operador, <10 clientes, 1 processo, 1 servidor Contabo). PG só se justifica com escala.
+- **Triggers para reabrir a migração PG** (documentados em `project.yaml` seção `deferred.postgres_migration`):
+  1. Segundo operador adicionado ao cockpit.
+  2. Contagem de clientes ultrapassar 20.
+  3. Necessidade de escala horizontal (múltiplas instâncias).
+  4. Erros de concurrent write observados em produção.
+- Plano técnico preservado intacto em `docs/postgres-migration.md` (9 passos, 24 tabelas).
+- Stack de produção atualizado: `database_prod: SQLite_v1_then_PostgreSQL`.
+- Próxima tranche passa a ser **T8 (renumerada): Deploy Pipeline** (Docker + Contabo + HTTPS + DNS).
+- Dono: Vulcanus. Decisão: Bruno.

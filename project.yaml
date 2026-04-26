@@ -20,12 +20,23 @@ state:
   release_mode: shadow
   prod_ready: true
 
+deferred:
+  postgres_migration:
+    status: deferred_to_v2
+    reason: SQLite handles V1 scale (1 operator, <10 clients, 1 process). PG needed when any of these triggers fire.
+    triggers:
+      - second_operator_added
+      - client_count_exceeds_20
+      - horizontal_scaling_needed
+      - concurrent_write_errors_observed
+    plan: docs/postgres-migration.md
+
 stack:
   frontend: Next.js
   ui: React
   language: TypeScript
-  database_dev: SQLite_optional
-  database_prod: PostgreSQL
+  database_dev: SQLite
+  database_prod: SQLite_v1_then_PostgreSQL
   jobs: Node_and_bash
   deploy: independent
   hosting: isolated
