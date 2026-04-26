@@ -13,7 +13,7 @@ export default function HomePage() {
     <>
       <section className="hero">
         <img
-          src="/brasao-savastano.png"
+          src="/brasao-lg.webp"
           alt="Brasão da família Savastano"
           className="hero-crest"
           width={200}

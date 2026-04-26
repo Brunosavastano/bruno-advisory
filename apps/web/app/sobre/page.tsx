@@ -9,7 +9,7 @@ export default function SobrePage() {
     <main>
       <div className="about-hero">
         <img
-          src="/bruno-foto.jpg"
+          src="/bruno-foto-opt.webp"
           alt="Bruno Savastano"
           className="about-photo"
           width={280}

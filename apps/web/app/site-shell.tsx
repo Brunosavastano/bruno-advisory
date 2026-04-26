@@ -7,7 +7,7 @@ export function SiteHeader() {
         <div className="site-header-row">
           <a className="site-brand" href="/">
             <img
-              src="/brasao-savastano.png"
+              src="/brasao-sm.webp"
               alt="Brasão Savastano"
               className="site-brand-crest"
               width={42}
