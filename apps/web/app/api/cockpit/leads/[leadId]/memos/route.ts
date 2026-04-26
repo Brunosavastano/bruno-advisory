@@ -42,12 +42,18 @@ function normalizeStatus(value: string | undefined): MemoStatus | null {
   return memoStatuses.includes(value as MemoStatus) ? (value as MemoStatus) : null;
 }
 
-export async function GET(_request: Request, context: { params: Promise<{ leadId: string }> }) {
+export async function GET(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   return Response.json({ ok: true, memos: listMemos(leadId) });
 }
 
 export async function POST(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   const payload = await parsePayload(request);
   const memo = createMemo({
@@ -131,6 +137,9 @@ export async function PATCH(request: Request, context: { params: Promise<{ leadI
 }
 
 export async function DELETE(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   const payload = await parsePayload(request);
   const id = payload.id?.trim();

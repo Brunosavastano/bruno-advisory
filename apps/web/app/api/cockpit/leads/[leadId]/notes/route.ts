@@ -1,4 +1,5 @@
 import { createLeadInternalNote } from '../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 
 type NotePayload = {
   content?: string;
@@ -34,6 +35,9 @@ function toReturnTo(value: string | undefined) {
 }
 
 export async function POST(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   const payload = await parsePayload(request);
 

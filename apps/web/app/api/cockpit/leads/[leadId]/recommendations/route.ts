@@ -1,5 +1,6 @@
 import { recommendationCategories, type RecommendationCategory } from '@savastano-advisory/core';
 import { createRecommendation, listRecommendations } from '../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 
 type RecommendationPayload = {
   title?: string;
@@ -39,12 +40,18 @@ function normalizeCategory(value: string | null | undefined): RecommendationCate
     : null;
 }
 
-export async function GET(_request: Request, context: { params: Promise<{ leadId: string }> }) {
+export async function GET(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   return Response.json({ ok: true, recommendations: listRecommendations(leadId) });
 }
 
 export async function POST(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   const payload = await parsePayload(request);
   const recommendation = createRecommendation(

@@ -11,7 +11,7 @@ type SubmitState =
   | { status: 'idle' }
   | { status: 'submitting' }
   | { status: 'failed'; errors: PublicIntakeValidationError[] }
-  | { status: 'succeeded'; leadId: string };
+  | { status: 'succeeded' };
 
 function eventFireAndForget(eventName: string, metadata?: Record<string, string | number | boolean | null>) {
   void fetch('/api/intake-events', {
@@ -87,16 +87,19 @@ export function IntakeForm({ sourceLabel }: IntakeFormProps) {
       return;
     }
 
-    setSubmitState({ status: 'succeeded', leadId: result.leadId });
+    setSubmitState({ status: 'succeeded' });
   }
 
   if (submitState.status === 'succeeded') {
     return (
       <section className="card">
-        <h2>Intake recebido</h2>
-        <p>Seu registro foi salvo com sucesso. ID: {submitState.leadId}</p>
+        <h2>Solicitação recebida</h2>
         <p>
-          O lead já está disponível no <a href="/cockpit/leads">cockpit interno</a>.
+          Recebi sua solicitação. Vou analisar as informações enviadas e, se fizer sentido avançar, entrarei em
+          contato pelo canal indicado.
+        </p>
+        <p>
+          O envio deste formulário não cria, por si só, relação de consultoria ou recomendação personalizada.
         </p>
       </section>
     );

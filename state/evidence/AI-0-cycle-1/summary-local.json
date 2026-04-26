@@ -1,0 +1,72 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-26T13:43:05.634Z",
+  "leadId": "307e2846-5608-4946-8384-2b2e27ce9de4",
+  "probeResults": {
+    "review-queue GET": {
+      "status": 401
+    },
+    "recommendations GET": {
+      "status": 401
+    },
+    "recommendations POST": {
+      "status": 401
+    },
+    "memos GET": {
+      "status": 401
+    },
+    "memos POST": {
+      "status": 401
+    },
+    "memos DELETE": {
+      "status": 401
+    },
+    "notes POST": {
+      "status": 401
+    },
+    "tasks POST": {
+      "status": 401
+    },
+    "tasks status POST": {
+      "status": 401
+    },
+    "flags GET": {
+      "status": 401
+    },
+    "checklist GET": {
+      "status": 401
+    },
+    "documents GET": {
+      "status": 401
+    },
+    "audit-log GET": {
+      "status": 401
+    }
+  },
+  "recommendationPostAuthShape": {
+    "authIsFirstStatement": true,
+    "earlyReturnOnFail": true
+  },
+  "intakeChecks": {
+    "noLeadIdInSuccess": true,
+    "noCockpitLinkInSuccess": true,
+    "noIdLabelInSuccess": true
+  },
+  "proxyChecks": {
+    "failClosedInProd": true,
+    "cockpitSecretMissingReason": true
+  },
+  "sourceImports": {
+    "app/api/cockpit/review-queue/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/recommendations/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/memos/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/notes/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/tasks/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/tasks/[taskId]/status/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/flags/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/checklist/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/documents/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/audit-log/route.ts": true
+  },
+  "note": "AI-0 cycle 1: 10 residual cockpit routes return 401 with a fake cookie; recommendations POST runs requireCockpitSession before any storage call (verified by source shape); intake success no longer leaks leadId/cockpit link; proxy.ts fails closed (503) in production when COCKPIT_SECRET is absent."
+}

@@ -111,6 +111,14 @@ export function proxy(request: NextRequest) {
 
   const secret = process.env.COCKPIT_SECRET;
   if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      // Fail closed: in production, missing COCKPIT_SECRET must NOT pass cockpit/portal traffic through.
+      return NextResponse.json(
+        { ok: false, error: 'misconfigured', reason: 'cockpit_secret_missing' },
+        { status: 503 }
+      );
+    }
+    console.warn('[proxy] COCKPIT_SECRET not set — cockpit auth bypassed in non-production environment');
     return NextResponse.next();
   }
 

@@ -3,6 +3,7 @@ import {
   type LeadTaskStatus,
   updateLeadInternalTaskStatus
 } from '../../../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../../../lib/cockpit-session';
 
 type TaskStatusPayload = {
   toStatus?: string;
@@ -41,6 +42,9 @@ export async function POST(
   request: Request,
   context: { params: Promise<{ leadId: string; taskId: string }> }
 ) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId, taskId } = await context.params;
   const payload = await parsePayload(request);
 

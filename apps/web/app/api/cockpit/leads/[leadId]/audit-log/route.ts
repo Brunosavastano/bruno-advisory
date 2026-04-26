@@ -1,4 +1,5 @@
 import { listAuditLog } from '../../../../../../lib/intake-storage';
+import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 
 function parsePositiveInt(value: string | null, fallback: number) {
   if (!value) {
@@ -14,6 +15,9 @@ function parsePositiveInt(value: string | null, fallback: number) {
 }
 
 export async function GET(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   const url = new URL(request.url);
   const limit = parsePositiveInt(url.searchParams.get('limit'), 20);
