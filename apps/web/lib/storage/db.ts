@@ -49,9 +49,10 @@ function findRepoRoot(startDir: string) {
   }
 }
 
-const repoRoot = findRepoRoot(process.cwd());
-const dataDir = path.join(repoRoot, 'data', 'dev');
-export const databasePath = path.join(dataDir, 'savastano-advisory-dev.sqlite3');
+const dataDir = process.env.DATA_DIR
+  ? path.resolve(process.env.DATA_DIR)
+  : path.join(findRepoRoot(process.cwd()), 'data', 'dev');
+export const databasePath = path.join(dataDir, 'savastano-advisory.sqlite3');
 const legacyLeadsJsonlPath = path.join(dataDir, 'intake-leads.jsonl');
 const legacyEventsJsonlPath = path.join(dataDir, 'intake-events.jsonl');
 export const leadsTable = 'intake_leads';

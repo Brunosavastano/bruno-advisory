@@ -11,7 +11,9 @@ import {
 import { writeAuditLog } from './audit-log';
 import { getDatabase, leadDocumentsTable, leadsTable } from './db';
 
-const uploadsRoot = path.join(process.cwd(), 'data', 'dev', 'uploads');
+const uploadsRoot = process.env.DATA_DIR
+  ? path.join(path.resolve(process.env.DATA_DIR), 'uploads')
+  : path.join(process.cwd(), 'data', 'dev', 'uploads');
 
 function sanitizeFilename(filename: string) {
   const trimmed = filename.trim() || 'upload';

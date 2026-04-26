@@ -1,0 +1,50 @@
+# Savastano Advisory — production stack
+# Usage: docker compose -f docker-compose.production.yml up -d
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: savastano-advisory-app
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATA_DIR=/data
+      - APP_BASE_URL=https://savastanoadvisory.com.br
+      - COCKPIT_SECRET=${COCKPIT_SECRET}
+      - DATABASE_PROVIDER=sqlite
+    volumes:
+      - app-data:/data
+    networks:
+      - web
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: savastano-advisory-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - web
+    depends_on:
+      - app
+
+volumes:
+  app-data:
+    name: savastano-advisory-data
+  caddy-data:
+    name: savastano-advisory-caddy-data
+  caddy-config:
+    name: savastano-advisory-caddy-config
+
+networks:
+  web:
+    name: savastano-advisory-web
