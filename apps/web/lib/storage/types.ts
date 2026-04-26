@@ -285,7 +285,9 @@ export type LeadPendingFlagOverviewRow = {
 };
 
 export type ReviewQueueItem = {
-  type: 'memo' | 'research_workflow';
+  type: 'memo' | 'research_workflow' | 'ai_artifact';
+  /** For ai_artifact, this is the artifactType (memo_draft, research_summary, etc.). Undefined for manual items. */
+  subtype?: string;
   id: string;
   leadId: string;
   leadName: string;

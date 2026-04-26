@@ -1,0 +1,70 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-26T18:03:53.608Z",
+  "leadId": "9ae8ee0e-3f68-4ac0-b5b0-739fa133c538",
+  "probe": {
+    "activeTemplates": [
+      "follow_up_draft",
+      "memo_internal_draft",
+      "pending_checklist",
+      "pre_call_brief",
+      "research_summary"
+    ],
+    "surfaceResults": {
+      "memo_draft": {
+        "jobId": "b1803b60-cc59-41cd-aa24-919c7677604c",
+        "artifactId": "b947fb69-5ddf-4f31-b4a8-04bfd00dacd9",
+        "costCents": 1
+      },
+      "research_summary": {
+        "jobId": "9db76a33-9281-4611-94e1-534fb2b509d4",
+        "artifactId": "452c6d03-c517-4513-8701-6d5fbba06e3d",
+        "costCents": 1
+      },
+      "pre_call_brief": {
+        "jobId": "4ae3d6e4-b0e0-4cdd-8a8c-e7b67217d41a",
+        "artifactId": "436984cb-34ee-4f17-8d27-9844618daddf",
+        "costCents": 1
+      },
+      "follow_up_draft": {
+        "jobId": "f4c08d0d-674b-4e95-9eb8-49b2b854ead9",
+        "artifactId": "f4a2ef85-0b73-4163-86c2-6cdc09dca2f0",
+        "costCents": 1
+      },
+      "pending_checklist": {
+        "jobId": "88df0ac3-f62a-42bc-a73f-cabc94a5ce12",
+        "artifactId": "55a65d82-23ce-4c41-bdf1-db7040fb4ce6",
+        "costCents": 1
+      }
+    },
+    "reviewQueueAiCount": 5,
+    "artifactApprove": {
+      "artifactId": "b947fb69-5ddf-4f31-b4a8-04bfd00dacd9",
+      "reviewedBy": "627cc0d2-4ad9-4011-820b-0408656aa3e9"
+    },
+    "jobsList": {
+      "count": 5,
+      "types": [
+        "follow_up_draft",
+        "memo_draft",
+        "pending_checklist",
+        "pre_call_brief",
+        "research_summary"
+      ]
+    },
+    "panelChecks": {
+      "hasIaBadge": true,
+      "handlesAiArtifactPatch": true
+    }
+  },
+  "sourceShape": {
+    "lib/ai/lead-surface.ts": true,
+    "app/api/cockpit/leads/[leadId]/ai/research-summary/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/ai/pre-call-brief/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/ai/follow-up-draft/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/ai/pending-checklist/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/ai/jobs/route.ts": true,
+    "app/api/cockpit/leads/[leadId]/ai/artifacts/[artifactId]/route.ts": true
+  },
+  "note": "AI-2 Cycle 1: 4 new prompt templates seeded (research_summary, pre_call_brief, follow_up_draft, pending_checklist) plus existing memo_internal_draft; 5 cockpit AI surfaces share the same lead-surface helper and create artifacts in pending_review; review queue lists ai_artifacts alongside memos with subtype label; artifact PATCH approves transitions correctly with audit row; GET ai/jobs returns 5 succeeded jobs with costCents > 0."
+}

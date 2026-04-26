@@ -1057,6 +1057,103 @@ function ensureAiBootstrapSeeds(db: DatabaseSync) {
       NULL
     )
   `).run(memoPromptBody, now);
+
+  ensureAiCycle2Cycle1Surfaces(db, now);
+}
+
+// AI-2 Cycle 1 surfaces: research summary, pre-call brief, follow-up draft, pending checklist.
+// All marked as cockpit_copilot internal — outputs land in pending_review.
+function ensureAiCycle2Cycle1Surfaces(db: DatabaseSync, now: string) {
+  const stmt = db.prepare(`
+    INSERT OR IGNORE INTO ${aiPromptTemplatesTable} (
+      template_id, name, version, purpose, body, output_schema, requires_grounding,
+      model_compatibility_min, model_compatibility_max, allowed_surfaces, active,
+      created_at, deactivated_at
+    ) VALUES (?, ?, '0.1.0', ?, ?, NULL, 0, 'claude-sonnet-4-6', NULL, '["cockpit_copilot"]', 1, ?, NULL)
+  `);
+
+  const researchSummaryBody = [
+    'Você é um assistente interno de um consultor de valores mobiliários registrado na CVM.',
+    'Tarefa: resumir documentos aceitos e research workflows aprovados de UM lead específico, para que o consultor revise antes de uma reunião ou tomada de decisão.',
+    '',
+    'Restrições:',
+    '- NÃO emita recomendação final.',
+    '- NÃO prometa retorno.',
+    '- NÃO minimize risco.',
+    '- Use APENAS dados fornecidos no contexto.',
+    '- Quando faltar informação, liste em "open_questions" em vez de inferir.',
+    '',
+    'Estrutura: título curto, resumo executivo (3 parágrafos), pontos-chave de cada documento citado, perguntas em aberto, próximos passos sugeridos.',
+    'Idioma: português do Brasil. Tom: técnico, conciso.'
+  ].join('\n');
+  stmt.run(
+    'seed-research-summary-v0-1-0',
+    'research_summary',
+    'Resumir documentos aceitos e research workflows entregues para um lead.',
+    researchSummaryBody,
+    now
+  );
+
+  const preCallBriefBody = [
+    'Você é um assistente interno de um consultor de valores mobiliários registrado na CVM.',
+    'Tarefa: gerar um BRIEFING PRÉ-CALL para o consultor revisar antes de uma reunião com o cliente.',
+    '',
+    'Restrições:',
+    '- NÃO sugira recomendação específica de ativo.',
+    '- NÃO prometa retorno.',
+    '- Identifique pendências reais; não invente fatos.',
+    '',
+    'Estrutura: contexto resumido (2 parágrafos), pontos a validar com o cliente (lista), perguntas sugeridas para a reunião (5–8 perguntas), riscos a abordar, pendências documentais.',
+    'Idioma: português do Brasil. Tom: direto, objetivo.'
+  ].join('\n');
+  stmt.run(
+    'seed-pre-call-brief-v0-1-0',
+    'pre_call_brief',
+    'Briefing pré-reunião com pontos a validar e perguntas sugeridas.',
+    preCallBriefBody,
+    now
+  );
+
+  const followUpDraftBody = [
+    'Você é um assistente interno de um consultor de valores mobiliários registrado na CVM.',
+    'Tarefa: gerar um RASCUNHO de mensagem de follow-up pós-reunião para o consultor revisar e enviar ao cliente.',
+    '',
+    'Restrições:',
+    '- NÃO inclua recomendação final.',
+    '- NÃO prometa retorno.',
+    '- NÃO minimize risco.',
+    '- Use linguagem profissional, calorosa, sem jargão.',
+    '',
+    'Estrutura: agradecimento breve, recapitulação dos 3 pontos mais importantes da conversa, próximos passos com prazos sugeridos, abertura para dúvidas.',
+    'Idioma: português do Brasil. Tom: profissional acessível.'
+  ].join('\n');
+  stmt.run(
+    'seed-follow-up-draft-v0-1-0',
+    'follow_up_draft',
+    'Rascunho de mensagem/email de follow-up pós-call.',
+    followUpDraftBody,
+    now
+  );
+
+  const pendingChecklistBody = [
+    'Você é um assistente interno de um consultor de valores mobiliários registrado na CVM.',
+    'Tarefa: gerar uma CHECKLIST de pendências para um lead específico, baseada no contexto disponível.',
+    '',
+    'Restrições:',
+    '- Liste apenas pendências que tem evidência no contexto.',
+    '- Não invente itens.',
+    '- Para cada pendência, indique categoria (documento / informação / decisão / agenda) e prioridade (alta / média / baixa).',
+    '',
+    'Estrutura: título curto + lista numerada. Cada item: descrição, categoria, prioridade, justificativa (1 linha).',
+    'Idioma: português do Brasil. Tom: operacional.'
+  ].join('\n');
+  stmt.run(
+    'seed-pending-checklist-v0-1-0',
+    'pending_checklist',
+    'Checklist de pendências para o lead, com categoria e prioridade.',
+    pendingChecklistBody,
+    now
+  );
 }
 
 export function normalizeLeadBillingRecord(row: Record<string, unknown>): LeadBillingRecord | null {

@@ -1,4 +1,4 @@
-import { getDatabase, leadsTable, memosTable, researchWorkflowsTable } from './db';
+import { aiArtifactsTable, getDatabase, leadsTable, memosTable, researchWorkflowsTable } from './db';
 import type { ReviewQueueItem } from './types';
 
 export function listReviewQueueItems(): ReviewQueueItem[] {
@@ -33,16 +33,39 @@ export function listReviewQueueItems(): ReviewQueueItem[] {
     WHERE w.status = 'review'
   `).all() as Record<string, unknown>[];
 
-  return [...memoRows, ...workflowRows]
-    .map((row): ReviewQueueItem => ({
-      type: row.type === 'memo' ? 'memo' : 'research_workflow',
-      id: String(row.id),
-      leadId: String(row.leadId),
-      leadName: String(row.leadName),
-      title: String(row.title),
-      status: String(row.status),
-      createdAt: String(row.createdAt),
-      updatedAt: String(row.updatedAt)
-    }))
+  const aiArtifactRows = db.prepare(`
+    SELECT
+      'ai_artifact' AS type,
+      a.artifact_type AS subtype,
+      a.artifact_id AS id,
+      a.lead_id AS leadId,
+      l.full_name AS leadName,
+      a.title AS title,
+      a.status AS status,
+      a.created_at AS createdAt,
+      a.created_at AS updatedAt
+    FROM ${aiArtifactsTable} a
+    INNER JOIN ${leadsTable} l ON l.lead_id = a.lead_id
+    WHERE a.status = 'pending_review'
+  `).all() as Record<string, unknown>[];
+
+  return [...memoRows, ...workflowRows, ...aiArtifactRows]
+    .map((row): ReviewQueueItem => {
+      const type = row.type === 'memo' ? 'memo' : row.type === 'ai_artifact' ? 'ai_artifact' : 'research_workflow';
+      const item: ReviewQueueItem = {
+        type,
+        id: String(row.id),
+        leadId: String(row.leadId),
+        leadName: String(row.leadName),
+        title: String(row.title),
+        status: String(row.status),
+        createdAt: String(row.createdAt),
+        updatedAt: String(row.updatedAt)
+      };
+      if (type === 'ai_artifact' && row.subtype) {
+        item.subtype = String(row.subtype);
+      }
+      return item;
+    })
     .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt) || b.id.localeCompare(a.id));
 }
