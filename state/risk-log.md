@@ -26,3 +26,7 @@
 ## Riscos resolvidos em AI-0 Cycle 2 (2026-04-26)
 
 - `flags POST` e `checklist POST` sem `requireCockpitSession` — média → **resolvido** — ambos chamam `requireCockpitSession` como primeira instrução. Verifier `infra/scripts/verify-ai-0-cycle-2-local.sh` prova 401 com cookie falso.
+
+## Mitigações de AI-1 Cycle 1 (2026-04-26)
+
+- Risco "IA produzir material não auditável (logs pobres, drafts sem revisão)" — alta — **parcialmente mitigado**: schema de auditabilidade (ai_jobs, ai_artifacts, ai_messages, ai_prompt_templates, ai_guardrail_results, ai_budget_caps, ai_model_versions, ai_eval_cases, ai_eval_runs) ergueu antes da primeira chamada de provider. Toda mutação grava ação canônica em `audit_log`. Gate de aprovação humana (artifact status pending_review→approved) é exigido por design — sem rota que publique sem revisão. Mitigação completa exige Cycle 3 (guardrails ativos: bloqueio de promessa de retorno, recomendação sem suitability, etc.) + AI-5 (recommendation ledger v2 com compliance gate).

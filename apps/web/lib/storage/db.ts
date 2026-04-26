@@ -80,6 +80,15 @@ export const leadPendingFlagsTable = 'lead_pending_flags';
 export const auditLogTable = 'audit_log';
 export const cockpitUsersTable = 'cockpit_users';
 export const cockpitSessionsTable = 'cockpit_sessions';
+export const aiJobsTable = 'ai_jobs';
+export const aiArtifactsTable = 'ai_artifacts';
+export const aiMessagesTable = 'ai_messages';
+export const aiPromptTemplatesTable = 'ai_prompt_templates';
+export const aiGuardrailResultsTable = 'ai_guardrail_results';
+export const aiBudgetCapsTable = 'ai_budget_caps';
+export const aiModelVersionsTable = 'ai_model_versions';
+export const aiEvalCasesTable = 'ai_eval_cases';
+export const aiEvalRunsTable = 'ai_eval_runs';
 
 let database: DatabaseSync | undefined;
 
@@ -763,6 +772,174 @@ export function getDatabase() {
     CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON ${auditLogTable}(created_at DESC, id DESC);
     CREATE INDEX IF NOT EXISTS idx_audit_log_lead ON ${auditLogTable}(lead_id, created_at DESC, id DESC);
     CREATE INDEX IF NOT EXISTS idx_audit_log_action ON ${auditLogTable}(action, created_at DESC, id DESC);
+
+    CREATE TABLE IF NOT EXISTS ${aiJobsTable} (
+      job_id TEXT PRIMARY KEY,
+      lead_id TEXT,
+      job_type TEXT NOT NULL,
+      surface TEXT NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('queued', 'running', 'succeeded', 'failed', 'cancelled', 'blocked_budget', 'blocked_guardrail')),
+      provider TEXT NOT NULL,
+      model TEXT NOT NULL,
+      model_version_id TEXT,
+      prompt_template_id TEXT NOT NULL,
+      prompt_template_version TEXT NOT NULL,
+      input_hash TEXT NOT NULL,
+      input_redaction_level TEXT NOT NULL,
+      output_hash TEXT,
+      input_tokens INTEGER NOT NULL DEFAULT 0,
+      output_tokens INTEGER NOT NULL DEFAULT 0,
+      cached_input_tokens INTEGER NOT NULL DEFAULT 0,
+      cost_cents INTEGER NOT NULL DEFAULT 0,
+      latency_ms INTEGER,
+      budget_key TEXT,
+      cost_breakdown_json TEXT,
+      created_by TEXT NOT NULL,
+      created_at TEXT NOT NULL,
+      started_at TEXT,
+      completed_at TEXT,
+      cancelled_at TEXT,
+      cancel_reason TEXT,
+      error_message TEXT,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_ai_jobs_created_at ON ${aiJobsTable}(created_at DESC, job_id DESC);
+    CREATE INDEX IF NOT EXISTS idx_ai_jobs_lead ON ${aiJobsTable}(lead_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_ai_jobs_status ON ${aiJobsTable}(status, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${aiArtifactsTable} (
+      artifact_id TEXT PRIMARY KEY,
+      job_id TEXT NOT NULL,
+      lead_id TEXT,
+      artifact_type TEXT NOT NULL,
+      title TEXT NOT NULL,
+      body TEXT NOT NULL,
+      json_payload TEXT,
+      requires_grounding INTEGER NOT NULL DEFAULT 0 CHECK (requires_grounding IN (0, 1)),
+      status TEXT NOT NULL CHECK (status IN ('draft', 'pending_review', 'approved', 'rejected', 'archived')),
+      created_at TEXT NOT NULL,
+      reviewed_by TEXT,
+      reviewed_at TEXT,
+      rejection_reason TEXT,
+      archived_at TEXT,
+      FOREIGN KEY (job_id) REFERENCES ${aiJobsTable}(job_id),
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_ai_artifacts_job ON ${aiArtifactsTable}(job_id);
+    CREATE INDEX IF NOT EXISTS idx_ai_artifacts_status ON ${aiArtifactsTable}(status, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_ai_artifacts_lead ON ${aiArtifactsTable}(lead_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${aiMessagesTable} (
+      message_id TEXT PRIMARY KEY,
+      lead_id TEXT,
+      surface TEXT NOT NULL CHECK (surface IN ('public_chat', 'portal_copilot', 'cockpit_copilot', 'email_inbound', 'email_outbound', 'email_auto_draft', 'whatsapp_inbound', 'whatsapp_outbound', 'marketing_copilot')),
+      role TEXT NOT NULL CHECK (role IN ('user', 'assistant', 'system', 'tool')),
+      content TEXT NOT NULL,
+      classification TEXT,
+      ai_job_id TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id),
+      FOREIGN KEY (ai_job_id) REFERENCES ${aiJobsTable}(job_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_ai_messages_lead_surface ON ${aiMessagesTable}(lead_id, surface, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_ai_messages_job ON ${aiMessagesTable}(ai_job_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${aiPromptTemplatesTable} (
+      template_id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      version TEXT NOT NULL,
+      purpose TEXT NOT NULL,
+      body TEXT NOT NULL,
+      output_schema TEXT,
+      requires_grounding INTEGER NOT NULL DEFAULT 0 CHECK (requires_grounding IN (0, 1)),
+      model_compatibility_min TEXT,
+      model_compatibility_max TEXT,
+      allowed_surfaces TEXT,
+      active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
+      created_at TEXT NOT NULL,
+      deactivated_at TEXT
+    );
+
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_prompt_templates_name_version ON ${aiPromptTemplatesTable}(name, version);
+
+    CREATE TABLE IF NOT EXISTS ${aiGuardrailResultsTable} (
+      result_id TEXT PRIMARY KEY,
+      job_id TEXT NOT NULL,
+      rule_name TEXT NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('pass', 'warn', 'block')),
+      detail TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (job_id) REFERENCES ${aiJobsTable}(job_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_ai_guardrail_results_job ON ${aiGuardrailResultsTable}(job_id, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${aiBudgetCapsTable} (
+      cap_id TEXT PRIMARY KEY,
+      scope_type TEXT NOT NULL CHECK (scope_type IN ('global', 'surface', 'job_type', 'lead')),
+      scope_value TEXT NOT NULL,
+      period TEXT NOT NULL CHECK (period IN ('day', 'month')),
+      cap_cents INTEGER NOT NULL,
+      action_on_exceed TEXT NOT NULL CHECK (action_on_exceed IN ('warn', 'block')),
+      active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      deactivated_at TEXT
+    );
+
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_budget_caps_scope ON ${aiBudgetCapsTable}(scope_type, scope_value, period);
+
+    CREATE TABLE IF NOT EXISTS ${aiModelVersionsTable} (
+      model_version_id TEXT PRIMARY KEY,
+      provider TEXT NOT NULL,
+      model_id TEXT NOT NULL,
+      display_name TEXT NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('candidate', 'active', 'deprecated', 'blocked')),
+      input_price_json TEXT,
+      output_price_json TEXT,
+      pinned_at TEXT,
+      deprecated_at TEXT,
+      blocked_at TEXT,
+      notes TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_ai_model_versions_provider_model ON ${aiModelVersionsTable}(provider, model_id, status) WHERE status = 'active';
+    CREATE INDEX IF NOT EXISTS idx_ai_model_versions_status ON ${aiModelVersionsTable}(status, created_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${aiEvalCasesTable} (
+      case_id TEXT PRIMARY KEY,
+      surface TEXT NOT NULL,
+      name TEXT NOT NULL,
+      input_json TEXT NOT NULL,
+      expected_constraints_json TEXT NOT NULL,
+      active INTEGER NOT NULL DEFAULT 1 CHECK (active IN (0, 1)),
+      created_at TEXT NOT NULL,
+      deactivated_at TEXT
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_ai_eval_cases_surface_active ON ${aiEvalCasesTable}(surface, active);
+
+    CREATE TABLE IF NOT EXISTS ${aiEvalRunsTable} (
+      run_id TEXT PRIMARY KEY,
+      model_version_id TEXT NOT NULL,
+      prompt_template_id TEXT NOT NULL,
+      case_id TEXT NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('pass', 'warn', 'fail')),
+      metrics_json TEXT,
+      output_json TEXT,
+      created_at TEXT NOT NULL,
+      FOREIGN KEY (model_version_id) REFERENCES ${aiModelVersionsTable}(model_version_id),
+      FOREIGN KEY (prompt_template_id) REFERENCES ${aiPromptTemplatesTable}(template_id),
+      FOREIGN KEY (case_id) REFERENCES ${aiEvalCasesTable}(case_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_ai_eval_runs_case ON ${aiEvalRunsTable}(case_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_ai_eval_runs_model_version ON ${aiEvalRunsTable}(model_version_id, created_at DESC);
 
     CREATE TABLE IF NOT EXISTS ${cockpitUsersTable} (
       user_id TEXT PRIMARY KEY,

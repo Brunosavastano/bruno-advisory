@@ -1,0 +1,134 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-26T15:59:27.538Z",
+  "leadId": "e277fa53-d9db-44e0-84ca-73e15261b7cc",
+  "tablesFound": [
+    "ai_artifacts",
+    "ai_budget_caps",
+    "ai_eval_cases",
+    "ai_eval_runs",
+    "ai_guardrail_results",
+    "ai_jobs",
+    "ai_messages",
+    "ai_model_versions",
+    "ai_prompt_templates"
+  ],
+  "exerciseProbe": {
+    "promptTemplate": {
+      "templateId": "6c36f341-6808-4286-92db-ccd9a29a660b",
+      "active": true
+    },
+    "modelVersion": {
+      "modelVersionId": "e4a2f658-83f1-4cf7-9868-968e0effa79e",
+      "status": "active"
+    },
+    "job": {
+      "jobId": "595bdf80-80bf-4f48-af66-2c0d1305b4e8",
+      "finalStatus": "succeeded"
+    },
+    "artifact": {
+      "artifactId": "094b5973-1aa6-4877-a478-25e1d9309293",
+      "finalStatus": "archived",
+      "approvedBy": "verifier-operator"
+    },
+    "message": {
+      "messageId": "2133bf32-e15f-40c9-aab4-00ae92afb310"
+    },
+    "guardrail": {
+      "resultId": "69978bb2-3ef4-4235-86fd-7a18a67f7fc5",
+      "summary": {
+        "passed": 1,
+        "warned": 0,
+        "blocked": 0
+      }
+    },
+    "budgetCap": {
+      "capId": "c22f7058-4816-40e6-81a9-edb4828cf481",
+      "finalActive": false
+    },
+    "evalRun": {
+      "runId": "d897c3d3-fa67-4a58-96fd-4950125ffd97",
+      "status": "pass"
+    },
+    "transitions": {
+      "queuedToSucceededRejected": true,
+      "cancelOnSucceededRejected": true,
+      "deprecatedToActiveRejected": true
+    }
+  },
+  "auditCounts": {
+    "ai_prompt_template_created": 1,
+    "ai_model_version_registered": 2,
+    "ai_model_version_transitioned": 3,
+    "ai_job_created": 2,
+    "ai_job_status_changed": 2,
+    "ai_artifact_created": 1,
+    "ai_artifact_approved": 1,
+    "ai_artifact_archived": 1,
+    "ai_message_appended": 1,
+    "ai_guardrail_pass": 1,
+    "ai_budget_cap_set": 1,
+    "ai_budget_cap_deactivated": 1,
+    "ai_eval_case_created": 1,
+    "ai_eval_run_pass": 1
+  },
+  "modelChecks": {
+    "ai-job-model.ts": {
+      "hasModelObject": true,
+      "hasRecordType": true,
+      "hasCanonicalArtifact": true,
+      "hasStatusArray": true
+    },
+    "ai-artifact-model.ts": {
+      "hasModelObject": true,
+      "hasRecordType": true,
+      "hasCanonicalArtifact": true,
+      "hasStatusArray": true
+    },
+    "ai-message-model.ts": {
+      "hasModelObject": true,
+      "hasRecordType": true,
+      "hasCanonicalArtifact": true,
+      "hasStatusArray": true
+    },
+    "ai-prompt-template-model.ts": {
+      "hasModelObject": true,
+      "hasRecordType": true,
+      "hasCanonicalArtifact": true
+    },
+    "ai-guardrail-result-model.ts": {
+      "hasModelObject": true,
+      "hasRecordType": true,
+      "hasCanonicalArtifact": true,
+      "hasStatusArray": true
+    },
+    "ai-budget-cap-model.ts": {
+      "hasModelObject": true,
+      "hasRecordType": true,
+      "hasCanonicalArtifact": true,
+      "hasStatusArray": true
+    },
+    "ai-model-version-model.ts": {
+      "hasModelObject": true,
+      "hasRecordType": true,
+      "hasCanonicalArtifact": true,
+      "hasStatusArray": true
+    },
+    "ai-eval-case-model.ts": {
+      "hasModelObject": true,
+      "hasRecordType": true,
+      "hasCanonicalArtifact": true
+    },
+    "ai-eval-run-model.ts": {
+      "hasModelObject": true,
+      "hasRecordType": true,
+      "hasCanonicalArtifact": true,
+      "hasStatusArray": true
+    }
+  },
+  "exerciseGateChecks": {
+    "customEnvGate": true,
+    "returns404WhenDisabled": true
+  },
+  "note": "AI-1 Cycle 1: 9 AI tables created via getDatabase() init; CHECK + FK constraints reject bad data; runtime exercise of all 9 storage helpers via dev-only /api/_dev/ai-1-cycle-1/exercise (gated by NODE_ENV !== production); status transitions enforce queued→succeeded, cancel-on-succeeded, deprecated→active rejections; audit log received 14 expected ai_<entity>_<verb> actions; 9 core models export expected status arrays, model objects, and Record types."
+}
