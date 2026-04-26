@@ -16,6 +16,7 @@ export function SiteHeader() {
             Savastano Advisory
           </a>
           <nav className="site-nav" aria-label="Navegação principal">
+            <a href="/sobre">Sobre</a>
             <a href="/para-quem-e">Para quem é</a>
             <a href="/como-funciona">Como funciona</a>
             <a href="/privacidade">Privacidade</a>
@@ -46,6 +47,7 @@ export function SiteFooter() {
         <div>
           <p className="footer-title">Navegação</p>
           <ul className="footer-links">
+            <li><a href="/sobre">Sobre o consultor</a></li>
             <li><a href="/para-quem-e">Para quem é</a></li>
             <li><a href="/como-funciona">Como funciona</a></li>
             <li><a href="/privacidade">Política de Privacidade</a></li>
