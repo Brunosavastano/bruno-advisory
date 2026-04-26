@@ -23,6 +23,6 @@
 - Risk B — Middleware fail-open quando `COCKPIT_SECRET` ausente — alta → **resolvido** — `apps/web/proxy.ts` retorna 503 em produção; pass-through com warning apenas em dev.
 - Risk C — Intake público expõe `leadId` e link para `/cockpit/leads` na mensagem de sucesso — média → **resolvido** — texto da seção de sucesso reescrito alinhado a `COMPLIANCE_PACKAGE.md` §5.8.
 
-## Riscos novos identificados em AI-0 Cycle 1 (out-of-scope desta tranche)
+## Riscos resolvidos em AI-0 Cycle 2 (2026-04-26)
 
-- `flags POST` e `checklist POST` ainda não têm `requireCockpitSession` — média — escrita não autorizada de flags/checklist via cookie falso — abrir AI-0 Cycle 2 curto cobrindo só esses dois métodos.
+- `flags POST` e `checklist POST` sem `requireCockpitSession` — média → **resolvido** — ambos chamam `requireCockpitSession` como primeira instrução. Verifier `infra/scripts/verify-ai-0-cycle-2-local.sh` prova 401 com cookie falso.

@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-26T13:56:38.712Z",
+  "leadId": "a9b0b873-93d7-4ced-8718-9f4942dc7b63",
+  "probeResults": {
+    "flags POST": {
+      "status": 401
+    },
+    "checklist POST": {
+      "status": 401
+    }
+  },
+  "sourceShape": {
+    "flagsPost": {
+      "authIsFirstStatement": true,
+      "earlyReturnOnFail": true
+    },
+    "checklistPost": {
+      "authIsFirstStatement": true,
+      "earlyReturnOnFail": true
+    }
+  },
+  "note": "AI-0 cycle 2: flags POST and checklist POST return 401 with a fake cookie; auth runs as first statement in each handler (no storage call fires before the 401)."
+}

@@ -15,6 +15,9 @@ export async function GET(request: Request, context: { params: Promise<{ leadId:
 }
 
 export async function POST(request: Request, context: { params: Promise<{ leadId: string }> }) {
+  const check = await requireCockpitSession(request);
+  if (!check.ok) return Response.json(check.body, { status: check.status });
+
   const { leadId } = await context.params;
   const body = (await request.json()) as { flagType?: string; note?: string; setBy?: string };
 
