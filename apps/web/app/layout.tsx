@@ -5,7 +5,8 @@ import { SiteFooter, SiteHeader } from './site-shell';
 
 export const metadata: Metadata = {
   title: 'Savastano Advisory',
-  description: 'Consultoria independente de valores mobiliários para pessoas físicas.'
+  description: 'Consultoria independente de valores mobiliários para pessoas físicas.',
+  icons: { icon: '/brasao-savastano.png' }
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
