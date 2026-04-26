@@ -1,0 +1,68 @@
+{
+  "ok": true,
+  "checkedAt": "2026-04-26T17:46:06.565Z",
+  "leadId": "bec3eb54-1761-49ac-90ae-ecfdd4fad97b",
+  "probe": {
+    "happyPath": {
+      "jobId": "c42cd0e0-999c-4a2c-9c39-f29e16c7ef44",
+      "redactionCounts": {
+        "cpf": 1
+      },
+      "guardrails": [
+        {
+          "rule_name": "no_promised_returns",
+          "status": "pass"
+        },
+        {
+          "rule_name": "no_risk_minimization",
+          "status": "pass"
+        },
+        {
+          "rule_name": "no_specific_asset_advice",
+          "status": "pass"
+        },
+        {
+          "rule_name": "output_schema_valid",
+          "status": "warn"
+        }
+      ]
+    },
+    "guardrailSourceCheck": {
+      "detectsRentabilidadeGarantida": true
+    },
+    "retryChecks": {
+      "importsWithRetry": true,
+      "callsWithRetry": true,
+      "readsEnvMax": true,
+      "exponentialBackoff": true,
+      "retriesRateLimited": true,
+      "retriesProviderError": true,
+      "doesNotRetryAuth": true,
+      "cumulativeLatency": true
+    },
+    "groundingChecks": {
+      "validatesJsonParse": true,
+      "checksRequiredFields": true
+    },
+    "runJobChecks": {
+      "callsRunGuardrails": true,
+      "callsValidateOutput": true,
+      "callsRedact": true,
+      "blocksOnGuardrail": true,
+      "hashUsesRedacted": true,
+      "callUsesRedacted": true
+    },
+    "transitionTableUpdated": true
+  },
+  "sourceShape": {
+    "lib/ai/redaction.ts": true,
+    "lib/ai/retry.ts": true,
+    "lib/ai/grounding.ts": true,
+    "lib/ai/guardrails/index.ts": true,
+    "lib/ai/guardrails/types.ts": true,
+    "lib/ai/guardrails/no-promised-returns.ts": true,
+    "lib/ai/guardrails/no-risk-minimization.ts": true,
+    "lib/ai/guardrails/no-specific-asset-advice.ts": true
+  },
+  "note": "AI-1 Cycle 3: redaction strips CPF from user prompt before hashing/sending; happy-path job records redactionCounts and 3 pass guardrail rows; retry wrapper applied at provider factory with cumulative latency; grounding validator gates JSON output when template requires_grounding=1; run-job.ts wires all four. End-to-end block path covered by source audit (regex patterns + wiring); operator-supplied prompts in AI-2 will exercise full block route."
+}

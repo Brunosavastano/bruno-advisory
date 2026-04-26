@@ -14,9 +14,11 @@ export type AiJobInputRedactionLevel = (typeof aiJobInputRedactionLevels)[number
 
 // Allowed forward transitions for AI job lifecycle. Reverse transitions are not permitted.
 // Terminal states (succeeded, failed, cancelled, blocked_budget, blocked_guardrail) reject further changes.
+// blocked_guardrail can be reached from `running` (post-call output check) and `queued` (pre-call,
+// reserved for future input-side guardrails).
 export const aiJobStatusTransitions: Readonly<Record<AiJobStatus, readonly AiJobStatus[]>> = {
   queued: ['running', 'cancelled', 'blocked_budget', 'blocked_guardrail'],
-  running: ['succeeded', 'failed', 'cancelled'],
+  running: ['succeeded', 'failed', 'cancelled', 'blocked_guardrail'],
   succeeded: [],
   failed: [],
   cancelled: [],

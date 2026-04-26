@@ -1,33 +1,37 @@
 // runAiJob — the single orchestration point for every LLM call.
 //
-// Flow:
+// Flow (AI-1 Cycle 3):
 //   1. Resolve active model version + prompt template (via storage helpers).
-//   2. Estimate input tokens and projected cost. (Output assumed at maxOutputTokens for safety.)
-//   3. checkBudgetForJob → if blocked, create job with status=blocked_budget and return early.
-//   4. createAiJob (status=queued).
+//   2. Apply redaction to the user prompt (strip CPF/CNPJ/RG/card by default).
+//   3. Estimate cost from the redacted prompt; check budgets.
+//   4. createAiJob (status=queued) with the input_hash computed from the redacted prompt.
 //   5. updateAiJobStatus(running).
-//   6. provider.generate(...).
-//   7. On ok: compute real cost, updateAiJobStatus(succeeded) with tokens/cost/output_hash.
-//      On failure: updateAiJobStatus(failed) with error_message.
-//   8. Return job + content (or error) to caller; caller decides what artifact to create.
+//   6. provider.generate(...) — already wrapped with retry by getActiveProvider().
+//   7a. On provider failure: updateAiJobStatus(failed) with error_message.
+//   7b. On provider success: run output guardrails + (if applicable) JSON schema validation,
+//       persist each result to ai_guardrail_results, and decide:
+//         - any block → updateAiJobStatus(blocked_guardrail), no artifact
+//         - all pass/warn → compute real cost, updateAiJobStatus(succeeded), return content
 //
-// Caller responsibility: create ai_artifact from the returned content (artifact creation is
-// surface-specific so it stays out of run-job).
+// Caller responsibility: create ai_artifact from the returned content.
 
 import { createHash } from 'node:crypto';
 import { computeCostCents, estimateInputTokens, parsePricing } from './costs';
 import { checkBudgetForJob, type BudgetCheckResult } from './budgets';
+import { runGuardrails, type GuardrailNamedResult, type GuardrailRunResult } from './guardrails';
+import { validateOutputAgainstSchema } from './grounding';
 import { isAiEnabled } from './provider';
+import { redact } from './redaction';
 import type { AiProvider } from './types';
 import {
   cancelAiJob,
   createAiJob,
   type CreateAiJobParams,
-  type UpdateAiJobStatusParams,
   updateAiJobStatus
 } from '../storage/ai-jobs';
 import { getActiveModelVersion } from '../storage/ai-model-versions';
 import { getActiveTemplate } from '../storage/ai-prompt-templates';
+import { recordGuardrailResult } from '../storage/ai-guardrail-results';
 import { aiJobsTable, getDatabase } from '../storage/db';
 import type { AiJobInputRedactionLevel, AiJobRecord } from '@savastano-advisory/core';
 
@@ -40,7 +44,7 @@ export type RunAiJobParams = {
   userPrompt: string;
   maxOutputTokens: number;
   promptTemplateName: string;
-  promptTemplateVersion?: string; // if omitted, uses latest active
+  promptTemplateVersion?: string;
   inputRedactionLevel?: AiJobInputRedactionLevel;
   budgetKey?: string | null;
   createdBy: string;
@@ -51,14 +55,23 @@ export type RunAiJobOk = {
   ok: true;
   job: AiJobRecord;
   content: string;
+  guardrails: GuardrailRunResult;
 };
 
 export type RunAiJobFailure = {
   ok: false;
   job: AiJobRecord | null;
-  errorCode: 'ai_disabled' | 'no_active_template' | 'no_active_model' | 'blocked_budget' | 'provider_failure' | 'internal';
+  errorCode:
+    | 'ai_disabled'
+    | 'no_active_template'
+    | 'no_active_model'
+    | 'blocked_budget'
+    | 'blocked_guardrail'
+    | 'provider_failure'
+    | 'internal';
   errorMessage: string;
   budgetCheck?: BudgetCheckResult;
+  guardrails?: GuardrailRunResult;
 };
 
 export type RunAiJobResult = RunAiJobOk | RunAiJobFailure;
@@ -67,12 +80,24 @@ function hashInput(systemPrompt: string, userPrompt: string): string {
   return `sha256:${createHash('sha256').update(`${systemPrompt}\n---\n${userPrompt}`).digest('hex')}`;
 }
 
+function persistGuardrailResults(jobId: string, results: GuardrailNamedResult[], actorId: string | null) {
+  for (const r of results) {
+    recordGuardrailResult({
+      jobId,
+      ruleName: r.name,
+      status: r.status,
+      detail: r.detail ?? null,
+      actorId
+    });
+  }
+}
+
 export async function runAiJob(params: RunAiJobParams): Promise<RunAiJobResult> {
   if (!isAiEnabled()) {
     return { ok: false, job: null, errorCode: 'ai_disabled', errorMessage: 'AI_ENABLED is not set to true.' };
   }
 
-  // Resolve template
+  // 1. Resolve template
   const template = getActiveTemplate({ name: params.promptTemplateName, version: params.promptTemplateVersion });
   if (!template) {
     return {
@@ -83,9 +108,7 @@ export async function runAiJob(params: RunAiJobParams): Promise<RunAiJobResult> 
     };
   }
 
-  // Resolve model version. The model_version row reflects the upstream service
-  // (e.g., 'anthropic'), not the runtime adapter (which may be 'mock' during testing).
-  // Use AI_PROVIDER env to find the row; fall back to the adapter name only if no env var is set.
+  // 2. Resolve model version
   const upstreamProvider = (process.env.AI_PROVIDER ?? params.provider.name).toLowerCase();
   const modelId = process.env.AI_MODEL ?? 'claude-sonnet-4-6';
   const modelVersion = getActiveModelVersion({ provider: upstreamProvider, modelId });
@@ -98,16 +121,20 @@ export async function runAiJob(params: RunAiJobParams): Promise<RunAiJobResult> 
     };
   }
 
-  // Estimate cost
+  // 3. Redact user prompt before anything else touches it
+  const redactionLevel: AiJobInputRedactionLevel = params.inputRedactionLevel ?? 'strict';
+  const { redactedText: redactedUserPrompt, counts: redactionCounts } = redact(params.userPrompt, redactionLevel);
+
+  // 4. Cost estimate (uses redacted prompt — that's what's actually billed)
   const pricing = parsePricing(modelVersion.inputPriceJson, modelVersion.outputPriceJson, modelId);
-  const estimatedInputTokens = estimateInputTokens(params.systemPrompt, params.userPrompt);
+  const estimatedInputTokens = estimateInputTokens(params.systemPrompt, redactedUserPrompt);
   const estimatedCostCents = computeCostCents({
     inputTokens: estimatedInputTokens,
     outputTokens: params.maxOutputTokens,
     pricing
   });
 
-  // Budget check
+  // 5. Budget check
   const budgetCheck = checkBudgetForJob({
     surface: params.surface,
     jobType: params.jobType,
@@ -115,8 +142,7 @@ export async function runAiJob(params: RunAiJobParams): Promise<RunAiJobResult> 
     estimatedCostCents
   });
 
-  // Build job creation params. We record the upstream provider (anthropic), not the adapter
-  // name, so cost reports and audits reflect the real-world service even when mocked locally.
+  // 6. Create job (input_hash from REDACTED text — audit trail reflects what we actually sent)
   const jobCreate: CreateAiJobParams = {
     leadId: params.leadId,
     jobType: params.jobType,
@@ -126,15 +152,14 @@ export async function runAiJob(params: RunAiJobParams): Promise<RunAiJobResult> 
     modelVersionId: modelVersion.modelVersionId,
     promptTemplateId: template.templateId,
     promptTemplateVersion: template.version,
-    inputHash: hashInput(params.systemPrompt, params.userPrompt),
-    inputRedactionLevel: params.inputRedactionLevel ?? 'strict',
+    inputHash: hashInput(params.systemPrompt, redactedUserPrompt),
+    inputRedactionLevel: redactionLevel,
     budgetKey: params.budgetKey ?? null,
     createdBy: params.createdBy,
     actorId: params.actorId ?? null
   };
 
   if (!budgetCheck.ok) {
-    // Create the job, then mark it blocked_budget. Caller still gets a job record for telemetry.
     const job = createAiJob(jobCreate);
     const blocked = updateAiJobStatus({
       jobId: job.jobId,
@@ -153,18 +178,13 @@ export async function runAiJob(params: RunAiJobParams): Promise<RunAiJobResult> 
   }
 
   const job = createAiJob(jobCreate);
+  const running = updateAiJobStatus({ jobId: job.jobId, status: 'running', actorId: params.actorId ?? null });
 
-  const running = updateAiJobStatus({
-    jobId: job.jobId,
-    status: 'running',
-    actorId: params.actorId ?? null
-  });
-
-  // Provider call
+  // 7. Provider call (already retried by getActiveProvider wrapper)
   const callResult = await params.provider.generate({
     modelId,
     systemPrompt: params.systemPrompt,
-    userPrompt: params.userPrompt,
+    userPrompt: redactedUserPrompt,
     maxOutputTokens: params.maxOutputTokens
   });
 
@@ -185,6 +205,88 @@ export async function runAiJob(params: RunAiJobParams): Promise<RunAiJobResult> 
     };
   }
 
+  // 8. Guardrails on output
+  const guardrailContext = {
+    surface: params.surface,
+    jobType: params.jobType,
+    requiresGrounding: template.requiresGrounding
+  };
+  const guardrailRun = runGuardrails(callResult.content, guardrailContext);
+  persistGuardrailResults(job.jobId, guardrailRun.results, params.actorId ?? null);
+
+  // 9. Schema validation if template declares output_schema
+  let schemaErrors: string[] = [];
+  if (template.outputSchema) {
+    const validation = validateOutputAgainstSchema(callResult.content, template.outputSchema);
+    if (!validation.ok) {
+      schemaErrors = validation.errors;
+      const status = template.requiresGrounding ? 'block' : 'warn';
+      recordGuardrailResult({
+        jobId: job.jobId,
+        ruleName: 'output_schema_valid',
+        status,
+        detail: validation.errors.join('; '),
+        actorId: params.actorId ?? null
+      });
+    } else {
+      recordGuardrailResult({
+        jobId: job.jobId,
+        ruleName: 'output_schema_valid',
+        status: 'pass',
+        detail: null,
+        actorId: params.actorId ?? null
+      });
+    }
+  }
+
+  const schemaBlocked = template.outputSchema !== null && schemaErrors.length > 0 && template.requiresGrounding;
+
+  // 10. Decide: block on guardrail or schema?
+  if (guardrailRun.blocked || schemaBlocked) {
+    const blockingReason = guardrailRun.blocked
+      ? `guardrail '${guardrailRun.blockingRule}' blocked output`
+      : `output_schema validation failed: ${schemaErrors.join('; ')}`;
+
+    const realCostCents = computeCostCents({
+      inputTokens: callResult.inputTokens,
+      outputTokens: callResult.outputTokens,
+      cachedInputTokens: callResult.cachedInputTokens,
+      pricing
+    });
+
+    const outputHash = createHash('sha256').update(callResult.content).digest('hex');
+
+    const blocked = updateAiJobStatus({
+      jobId: job.jobId,
+      status: 'blocked_guardrail',
+      outputHash: `sha256:${outputHash}`,
+      inputTokens: callResult.inputTokens,
+      outputTokens: callResult.outputTokens,
+      cachedInputTokens: callResult.cachedInputTokens,
+      costCents: realCostCents,
+      latencyMs: callResult.latencyMs,
+      costBreakdownJson: JSON.stringify({
+        pricing,
+        redactionCounts,
+        guardrailResults: guardrailRun.results,
+        schemaErrors,
+        providerResponseHash: callResult.rawProviderResponseHash
+      }),
+      errorMessage: blockingReason,
+      actorId: params.actorId ?? null
+    });
+
+    return {
+      ok: false,
+      job: blocked ?? running ?? job,
+      errorCode: 'blocked_guardrail',
+      errorMessage: blockingReason,
+      budgetCheck,
+      guardrails: guardrailRun
+    };
+  }
+
+  // 11. Pass: record real cost and mark succeeded
   const realCostCents = computeCostCents({
     inputTokens: callResult.inputTokens,
     outputTokens: callResult.outputTokens,
@@ -205,6 +307,8 @@ export async function runAiJob(params: RunAiJobParams): Promise<RunAiJobResult> 
     latencyMs: callResult.latencyMs,
     costBreakdownJson: JSON.stringify({
       pricing,
+      redactionCounts,
+      guardrailResults: guardrailRun.results,
       providerResponseHash: callResult.rawProviderResponseHash,
       estimate: { inputTokens: estimatedInputTokens, costCents: estimatedCostCents }
     }),
@@ -215,16 +319,15 @@ export async function runAiJob(params: RunAiJobParams): Promise<RunAiJobResult> 
     return { ok: false, job: running ?? job, errorCode: 'internal', errorMessage: 'Failed to update job to succeeded' };
   }
 
-  return { ok: true, job: succeeded, content: callResult.content };
+  return { ok: true, job: succeeded, content: callResult.content, guardrails: guardrailRun };
 }
 
-// Utility for tests/admin: delete a partial run if needed (not exposed to routes).
 export function discardJob(jobId: string, reason: string) {
   cancelAiJob({ jobId, reason });
 }
 
 export function getJobsTable(): string {
-  return aiJobsTable; // re-exported so dev tooling doesn't have to know storage internals
+  return aiJobsTable;
 }
 
 export function _runJobDb() {

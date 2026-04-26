@@ -114,6 +114,7 @@ export async function POST(request: Request, context: { params: Promise<{ leadId
   if (!result.ok) {
     const status =
       result.errorCode === 'blocked_budget' ? 402 :
+      result.errorCode === 'blocked_guardrail' ? 422 :
       result.errorCode === 'ai_disabled' ? 503 :
       result.errorCode === 'no_active_template' || result.errorCode === 'no_active_model' ? 500 :
       result.errorCode === 'provider_failure' ? 502 :
@@ -125,7 +126,8 @@ export async function POST(request: Request, context: { params: Promise<{ leadId
         error: result.errorCode,
         reason: result.errorMessage,
         jobId: result.job?.jobId ?? null,
-        budgetCheck: result.budgetCheck ?? null
+        budgetCheck: result.budgetCheck ?? null,
+        guardrails: result.guardrails ?? null
       },
       { status }
     );

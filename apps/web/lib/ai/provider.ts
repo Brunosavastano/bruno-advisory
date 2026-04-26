@@ -7,6 +7,7 @@
 
 import { AnthropicAiProvider } from './anthropic';
 import { MockAiProvider } from './mock';
+import { readMaxAttemptsFromEnv, withRetry } from './retry';
 import type { AiProvider } from './types';
 
 export function isAiEnabled(): boolean {
@@ -17,7 +18,7 @@ export function isMockMode(): boolean {
   return process.env.AI_USE_MOCK === '1';
 }
 
-export function getActiveProvider(): AiProvider {
+function getBaseProvider(): AiProvider {
   if (isMockMode()) {
     return new MockAiProvider();
   }
@@ -33,4 +34,8 @@ export function getActiveProvider(): AiProvider {
   }
 
   throw new Error(`Unknown AI_PROVIDER=${providerName}. Supported: anthropic, or set AI_USE_MOCK=1.`);
+}
+
+export function getActiveProvider(): AiProvider {
+  return withRetry(getBaseProvider(), { maxAttempts: readMaxAttemptsFromEnv() });
 }
