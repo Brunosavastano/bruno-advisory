@@ -10,7 +10,7 @@ EnvironmentFile=/etc/savastano-advisory/cron.env
 ExecStart=/usr/bin/curl --silent --show-error --fail --max-time 30 \
     -X POST \
     -H "X-Internal-Cron-Token: ${INTERNAL_CRON_TOKEN}" \
-    http://127.0.0.1:3000/api/internal/cron/suitability-expire
+    https://savastanoadvisory.com.br/api/internal/cron/suitability-expire
 StandardOutput=journal
 StandardError=journal
 TimeoutStartSec=60
