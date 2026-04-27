@@ -1,4 +1,11 @@
-import { aiArtifactsTable, getDatabase, leadsTable, memosTable, researchWorkflowsTable } from './db';
+import {
+  aiArtifactsTable,
+  getDatabase,
+  leadsTable,
+  memosTable,
+  researchWorkflowsTable,
+  suitabilityAssessmentsTable
+} from './db';
 import type { ReviewQueueItem } from './types';
 
 export function listReviewQueueItems(): ReviewQueueItem[] {
@@ -49,9 +56,34 @@ export function listReviewQueueItems(): ReviewQueueItem[] {
     WHERE a.status = 'pending_review'
   `).all() as Record<string, unknown>[];
 
-  return [...memoRows, ...workflowRows, ...aiArtifactRows]
+  // AI-3 Cycle 2: assessments em submitted ou review_required entram na fila.
+  const suitabilityRows = db.prepare(`
+    SELECT
+      'suitability_assessment' AS type,
+      s.status AS subtype,
+      s.assessment_id AS id,
+      s.lead_id AS leadId,
+      l.full_name AS leadName,
+      ('Suitability ' || s.questionnaire_version) AS title,
+      s.status AS status,
+      s.created_at AS createdAt,
+      s.updated_at AS updatedAt
+    FROM ${suitabilityAssessmentsTable} s
+    INNER JOIN ${leadsTable} l ON l.lead_id = s.lead_id
+    WHERE s.status IN ('submitted', 'review_required', 'needs_clarification')
+  `).all() as Record<string, unknown>[];
+
+  return [...memoRows, ...workflowRows, ...aiArtifactRows, ...suitabilityRows]
     .map((row): ReviewQueueItem => {
-      const type = row.type === 'memo' ? 'memo' : row.type === 'ai_artifact' ? 'ai_artifact' : 'research_workflow';
+      const rawType = String(row.type);
+      const type: ReviewQueueItem['type'] =
+        rawType === 'memo'
+          ? 'memo'
+          : rawType === 'ai_artifact'
+          ? 'ai_artifact'
+          : rawType === 'suitability_assessment'
+          ? 'suitability_assessment'
+          : 'research_workflow';
       const item: ReviewQueueItem = {
         type,
         id: String(row.id),
@@ -62,7 +94,7 @@ export function listReviewQueueItems(): ReviewQueueItem[] {
         createdAt: String(row.createdAt),
         updatedAt: String(row.updatedAt)
       };
-      if (type === 'ai_artifact' && row.subtype) {
+      if ((type === 'ai_artifact' || type === 'suitability_assessment') && row.subtype) {
         item.subtype = String(row.subtype);
       }
       return item;

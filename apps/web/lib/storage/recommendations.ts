@@ -37,6 +37,7 @@ function normalizeRecommendationRow(row: Record<string, unknown>): Recommendatio
     title: String(row.title),
     body: String(row.body),
     category: normalizeCategory(row.category === null ? null : String(row.category)),
+    productCategoryId: row.productCategoryId === null || row.productCategoryId === undefined ? null : String(row.productCategoryId),
     visibility,
     createdAt: String(row.createdAt),
     publishedAt: row.publishedAt === null ? null : String(row.publishedAt),
@@ -55,7 +56,8 @@ export function createRecommendation(
   title: string,
   body: string,
   category: RecommendationCategory | null | undefined,
-  createdBy: string
+  createdBy: string,
+  productCategoryId: string | null = null
 ): RecommendationRecord | null {
   if (!getLeadExists(leadId)) {
     return null;
@@ -65,6 +67,7 @@ export function createRecommendation(
   const normalizedBody = body.trim();
   const normalizedCreatedBy = createdBy.trim();
   const normalizedCategory = normalizeCategory(category ?? null);
+  const normalizedProductCategoryId = productCategoryId ? productCategoryId.trim() || null : null;
 
   if (!normalizedTitle || !normalizedBody || !normalizedCreatedBy) {
     return null;
@@ -84,11 +87,12 @@ export function createRecommendation(
         body,
         recommendation_date,
         category,
+        product_category_id,
         visibility,
         created_at,
         published_at,
         created_by
-      ) VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, NULL, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, 'draft', ?, NULL, ?)
     `).run(
       recommendationId,
       leadId,
@@ -96,6 +100,7 @@ export function createRecommendation(
       normalizedBody,
       recommendationDate,
       normalizedCategory,
+      normalizedProductCategoryId,
       createdAt,
       normalizedCreatedBy
     );
@@ -107,12 +112,22 @@ export function createRecommendation(
         title,
         body,
         category,
+        product_category_id,
         visibility,
         created_at,
         published_at,
         created_by
-      ) VALUES (?, ?, ?, ?, ?, 'draft', ?, NULL, ?)
-    `).run(recommendationId, leadId, normalizedTitle, normalizedBody, normalizedCategory, createdAt, normalizedCreatedBy);
+      ) VALUES (?, ?, ?, ?, ?, ?, 'draft', ?, NULL, ?)
+    `).run(
+      recommendationId,
+      leadId,
+      normalizedTitle,
+      normalizedBody,
+      normalizedCategory,
+      normalizedProductCategoryId,
+      createdAt,
+      normalizedCreatedBy
+    );
   }
 
   return {
@@ -121,6 +136,7 @@ export function createRecommendation(
     title: normalizedTitle,
     body: normalizedBody,
     category: normalizedCategory,
+    productCategoryId: normalizedProductCategoryId,
     visibility: 'draft',
     createdAt,
     publishedAt: null,
@@ -128,7 +144,7 @@ export function createRecommendation(
   };
 }
 
-function getRecommendation(recommendationId: string, leadId: string): RecommendationRecord | null {
+export function getRecommendation(recommendationId: string, leadId: string): RecommendationRecord | null {
   const db = getDatabase();
   const row = db.prepare(`
     SELECT
@@ -137,6 +153,7 @@ function getRecommendation(recommendationId: string, leadId: string): Recommenda
       title,
       body,
       category,
+      product_category_id AS productCategoryId,
       visibility,
       created_at AS createdAt,
       published_at AS publishedAt,
@@ -216,6 +233,7 @@ export function publishRecommendation(recommendationId: string, leadId: string, 
       title,
       body,
       category,
+      product_category_id AS productCategoryId,
       visibility,
       created_at AS createdAt,
       published_at AS publishedAt,

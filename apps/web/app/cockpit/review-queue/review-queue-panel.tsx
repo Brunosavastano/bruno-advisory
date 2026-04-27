@@ -3,13 +3,14 @@
 import type { ReviewQueueItem } from '../../../lib/storage/types';
 import { useMemo, useState } from 'react';
 
-type Filter = 'all' | 'ai_artifact' | 'memo' | 'research_workflow';
+type Filter = 'all' | 'ai_artifact' | 'memo' | 'research_workflow' | 'suitability_assessment';
 
 const FILTER_OPTIONS: ReadonlyArray<{ key: Filter; label: string }> = [
   { key: 'all', label: 'Todos' },
   { key: 'ai_artifact', label: 'IA' },
   { key: 'memo', label: 'Memos' },
-  { key: 'research_workflow', label: 'Research' }
+  { key: 'research_workflow', label: 'Research' },
+  { key: 'suitability_assessment', label: 'Suitability' }
 ];
 
 type RejectModalState =
@@ -33,7 +34,8 @@ export function ReviewQueuePanel(props: { initialItems: ReviewQueueItem[] }) {
       all: items.length,
       ai_artifact: items.filter((i) => i.type === 'ai_artifact').length,
       memo: items.filter((i) => i.type === 'memo').length,
-      research_workflow: items.filter((i) => i.type === 'research_workflow').length
+      research_workflow: items.filter((i) => i.type === 'research_workflow').length,
+      suitability_assessment: items.filter((i) => i.type === 'suitability_assessment').length
     };
   }, [items]);
 
@@ -95,11 +97,13 @@ export function ReviewQueuePanel(props: { initialItems: ReviewQueueItem[] }) {
 
   function viewLink(item: ReviewQueueItem): string {
     if (item.type === 'ai_artifact') return `/cockpit/ai-artifacts/${item.id}`;
+    if (item.type === 'suitability_assessment') return `/cockpit/leads/${item.leadId}/suitability/${item.id}`;
     return `/cockpit/leads/${item.leadId}`;
   }
 
   function viewLabel(item: ReviewQueueItem): string {
     if (item.type === 'ai_artifact') return 'Abrir artifact';
+    if (item.type === 'suitability_assessment') return 'Abrir suitability';
     return 'Abrir lead';
   }
 
@@ -153,6 +157,7 @@ export function ReviewQueuePanel(props: { initialItems: ReviewQueueItem[] }) {
             {filteredItems.map((item) => {
               const busy = busyId === item.id;
               const isAi = item.type === 'ai_artifact';
+              const isSuitability = item.type === 'suitability_assessment';
               return (
                 <article
                   key={`${item.type}-${item.id}`}
@@ -179,6 +184,18 @@ export function ReviewQueuePanel(props: { initialItems: ReviewQueueItem[] }) {
                           {item.subtype ?? 'ai_artifact'}
                         </span>
                       </>
+                    ) : isSuitability ? (
+                      <>
+                        <span
+                          className="badge"
+                          style={{ background: '#1F4E79', color: '#F5F0E8', borderColor: '#1F4E79' }}
+                        >
+                          Suitability
+                        </span>
+                        <span className="badge" style={{ fontSize: 11 }}>
+                          {item.subtype ?? item.status}
+                        </span>
+                      </>
                     ) : (
                       <span className="badge">{item.type}</span>
                     )}
@@ -196,24 +213,28 @@ export function ReviewQueuePanel(props: { initialItems: ReviewQueueItem[] }) {
                     <a className="btn btn-secondary" href={viewLink(item)} style={{ fontSize: 13 }}>
                       {viewLabel(item)}
                     </a>
-                    <button
-                      type="button"
-                      className="btn"
-                      disabled={busy}
-                      onClick={() => applyAction(item, 'approved', null)}
-                      style={{ fontSize: 13 }}
-                    >
-                      Aprovar
-                    </button>
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      disabled={busy}
-                      onClick={() => openRejectModal(item)}
-                      style={{ fontSize: 13 }}
-                    >
-                      Rejeitar
-                    </button>
+                    {!isSuitability && (
+                      <>
+                        <button
+                          type="button"
+                          className="btn"
+                          disabled={busy}
+                          onClick={() => applyAction(item, 'approved', null)}
+                          style={{ fontSize: 13 }}
+                        >
+                          Aprovar
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-secondary"
+                          disabled={busy}
+                          onClick={() => openRejectModal(item)}
+                          style={{ fontSize: 13 }}
+                        >
+                          Rejeitar
+                        </button>
+                      </>
+                    )}
                   </div>
                 </article>
               );

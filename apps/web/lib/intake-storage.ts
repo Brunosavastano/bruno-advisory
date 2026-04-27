@@ -19,3 +19,6 @@ export * from './storage/pending-flags';
 
 export * from './storage/audit-log';
 export * from './storage/cockpit-auth';
+export * from './storage/suitability';
+export * from './storage/product-categories';
+export * from './storage/suitability-gate';

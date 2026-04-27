@@ -89,6 +89,9 @@ export const aiBudgetCapsTable = 'ai_budget_caps';
 export const aiModelVersionsTable = 'ai_model_versions';
 export const aiEvalCasesTable = 'ai_eval_cases';
 export const aiEvalRunsTable = 'ai_eval_runs';
+export const clientProfilesTable = 'client_profiles';
+export const suitabilityAssessmentsTable = 'suitability_assessments';
+export const productCategoriesTable = 'product_categories';
 
 let database: DatabaseSync | undefined;
 
@@ -381,6 +384,14 @@ function ensureCockpitAuthColumns(db: DatabaseSync) {
   // cockpit users. Legacy rows stay NULL (pre-RBAC) and bearer-secret
   // fallback sessions will write the sentinel 'legacy-secret' (see T7).
   addNullableColumnIfMissing(db, auditLogTable, 'actor_id');
+}
+
+function ensureRecommendationProductCategoryColumn(db: DatabaseSync) {
+  // AI-3 Cycle 2: link opcional entre lead_recommendations e product_categories.
+  // Quando preenchido, a publicação da recomendação aciona o gate completo
+  // (canRecommendProduct) com a categoria do produto. Quando nulo, a publicação
+  // cai no gate básico (apenas client_profile ativo).
+  addNullableColumnIfMissing(db, leadRecommendationsTable, 'product_category_id');
 }
 
 export function getDatabase() {
@@ -967,12 +978,116 @@ export function getDatabase() {
     CREATE INDEX IF NOT EXISTS idx_cockpit_sessions_token ON ${cockpitSessionsTable}(session_token);
     CREATE INDEX IF NOT EXISTS idx_cockpit_sessions_user ON ${cockpitSessionsTable}(user_id, created_at DESC);
     CREATE INDEX IF NOT EXISTS idx_cockpit_sessions_expires ON ${cockpitSessionsTable}(expires_at DESC);
+
+    CREATE TABLE IF NOT EXISTS ${suitabilityAssessmentsTable} (
+      assessment_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL,
+      questionnaire_version TEXT NOT NULL,
+      scoring_calibration_version TEXT,
+      status TEXT NOT NULL CHECK (status IN ('draft', 'submitted', 'needs_clarification', 'review_required', 'approved', 'expired', 'superseded')),
+      objectives_json TEXT NOT NULL,
+      financial_situation_json TEXT NOT NULL,
+      knowledge_experience_json TEXT NOT NULL,
+      liquidity_needs_json TEXT NOT NULL,
+      restrictions_json TEXT NOT NULL,
+      answers_hash TEXT,
+      score INTEGER,
+      computed_risk_profile TEXT CHECK (computed_risk_profile IS NULL OR computed_risk_profile IN ('conservador', 'moderado_conservador', 'moderado', 'moderado_arrojado', 'arrojado')),
+      capped_risk_profile TEXT CHECK (capped_risk_profile IS NULL OR capped_risk_profile IN ('conservador', 'moderado_conservador', 'moderado', 'moderado_arrojado', 'arrojado')),
+      approved_risk_profile TEXT CHECK (approved_risk_profile IS NULL OR approved_risk_profile IN ('conservador', 'moderado_conservador', 'moderado', 'moderado_arrojado', 'arrojado')),
+      breakdown_json TEXT,
+      constraints_json TEXT,
+      review_flags_json TEXT,
+      caps_applied_json TEXT,
+      ai_summary_artifact_id TEXT,
+      submitted_at TEXT,
+      submitted_by TEXT,
+      submitted_by_role TEXT CHECK (submitted_by_role IS NULL OR submitted_by_role IN ('client', 'consultant', 'system', 'admin')),
+      computed_at TEXT,
+      reviewed_at TEXT,
+      approved_at TEXT,
+      approved_by TEXT,
+      approval_notes TEXT,
+      override_reason TEXT,
+      clarification_requests_json TEXT,
+      expires_at TEXT,
+      superseded_by_assessment_id TEXT,
+      superseded_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id),
+      FOREIGN KEY (ai_summary_artifact_id) REFERENCES ${aiArtifactsTable}(artifact_id),
+      FOREIGN KEY (superseded_by_assessment_id) REFERENCES ${suitabilityAssessmentsTable}(assessment_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_suitability_lead ON ${suitabilityAssessmentsTable}(lead_id, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_suitability_status ON ${suitabilityAssessmentsTable}(status, created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_suitability_expires_at ON ${suitabilityAssessmentsTable}(expires_at);
+
+    CREATE TABLE IF NOT EXISTS ${clientProfilesTable} (
+      client_profile_id TEXT PRIMARY KEY,
+      lead_id TEXT NOT NULL UNIQUE,
+      client_type TEXT NOT NULL CHECK (client_type IN ('individual', 'legal_entity')),
+      investor_category TEXT NOT NULL CHECK (investor_category IN ('retail', 'qualified', 'professional')),
+      status TEXT NOT NULL CHECK (status IN ('none', 'active', 'expired', 'superseded')),
+      current_assessment_id TEXT,
+      computed_risk_profile TEXT CHECK (computed_risk_profile IS NULL OR computed_risk_profile IN ('conservador', 'moderado_conservador', 'moderado', 'moderado_arrojado', 'arrojado')),
+      approved_risk_profile TEXT CHECK (approved_risk_profile IS NULL OR approved_risk_profile IN ('conservador', 'moderado_conservador', 'moderado', 'moderado_arrojado', 'arrojado')),
+      risk_profile TEXT CHECK (risk_profile IS NULL OR risk_profile IN ('conservador', 'moderado_conservador', 'moderado', 'moderado_arrojado', 'arrojado')),
+      valid_from TEXT,
+      valid_until TEXT,
+      last_reviewed_at TEXT,
+      next_review_due_at TEXT,
+      profile_source TEXT NOT NULL CHECK (profile_source IN ('self_declared', 'algorithmic_scoring', 'consultant_approved', 'manual_override', 'imported')),
+      qualified_investor_attestation_artifact_id TEXT,
+      professional_investor_attestation_artifact_id TEXT,
+      override_reason TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (lead_id) REFERENCES ${leadsTable}(lead_id),
+      FOREIGN KEY (current_assessment_id) REFERENCES ${suitabilityAssessmentsTable}(assessment_id)
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_client_profiles_lead ON ${clientProfilesTable}(lead_id);
+    CREATE INDEX IF NOT EXISTS idx_client_profiles_valid_until ON ${clientProfilesTable}(valid_until);
+    CREATE INDEX IF NOT EXISTS idx_client_profiles_status ON ${clientProfilesTable}(status);
+
+    CREATE TABLE IF NOT EXISTS ${productCategoriesTable} (
+      product_category_id TEXT PRIMARY KEY,
+      category_key TEXT NOT NULL UNIQUE,
+      display_name TEXT NOT NULL,
+      status TEXT NOT NULL CHECK (status IN ('draft', 'active', 'retired')),
+      risk_level TEXT NOT NULL CHECK (risk_level IN ('very_low', 'low', 'medium', 'high', 'very_high')),
+      liquidity_risk TEXT NOT NULL CHECK (liquidity_risk IN ('daily', 'short', 'medium', 'long', 'illiquid')),
+      credit_risk TEXT NOT NULL CHECK (credit_risk IN ('none', 'low', 'medium', 'high', 'very_high')),
+      market_risk TEXT NOT NULL CHECK (market_risk IN ('very_low', 'low', 'medium', 'high', 'very_high')),
+      complexity_level TEXT NOT NULL CHECK (complexity_level IN ('simple', 'moderate', 'complex', 'very_complex')),
+      issuer_risk_profile TEXT,
+      has_guarantee INTEGER NOT NULL DEFAULT 0 CHECK (has_guarantee IN (0, 1)),
+      guarantee_description TEXT,
+      lockup_period_days INTEGER,
+      direct_cost_notes TEXT,
+      indirect_cost_notes TEXT,
+      allowed_risk_profiles_json TEXT NOT NULL,
+      required_investor_category TEXT CHECK (required_investor_category IS NULL OR required_investor_category IN ('retail', 'qualified', 'professional')),
+      requires_human_review INTEGER NOT NULL DEFAULT 0 CHECK (requires_human_review IN (0, 1)),
+      classification_rationale TEXT NOT NULL,
+      reviewed_at TEXT,
+      reviewed_by TEXT,
+      expires_at TEXT,
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_product_categories_status ON ${productCategoriesTable}(status);
+    CREATE INDEX IF NOT EXISTS idx_product_categories_expires_at ON ${productCategoriesTable}(expires_at);
   `);
 
   ensureCommercialStageColumn(db);
   ensureLeadCrmColumns(db);
   ensureReviewQueueColumns(db);
   ensureCockpitAuthColumns(db);
+  ensureRecommendationProductCategoryColumn(db);
   db.exec(`CREATE INDEX IF NOT EXISTS idx_intake_leads_commercial_stage ON ${leadsTable}(commercial_stage);`);
   migrateLegacyJsonlData(db);
   ensureAiBootstrapSeeds(db);
@@ -1059,6 +1174,7 @@ function ensureAiBootstrapSeeds(db: DatabaseSync) {
   `).run(memoPromptBody, now);
 
   ensureAiCycle2Cycle1Surfaces(db, now);
+  ensureAi3SuitabilitySummarySurface(db, now);
 }
 
 // AI-2 Cycle 1 surfaces: research summary, pre-call brief, follow-up draft, pending checklist.
@@ -1154,6 +1270,54 @@ function ensureAiCycle2Cycle1Surfaces(db: DatabaseSync, now: string) {
     pendingChecklistBody,
     now
   );
+}
+
+// AI-3 Cycle 3 — surface IA suitability_summary. Resume respostas, caps,
+// flags e constraints do assessment para apoio à decisão do consultor.
+// Não emite perfil; não recomenda produto. Apenas narra o que está no
+// contexto fornecido.
+function ensureAi3SuitabilitySummarySurface(db: DatabaseSync, now: string) {
+  const body = [
+    'Você é um assistente interno de um consultor de valores mobiliários registrado na CVM.',
+    'Tarefa: resumir um suitability assessment para apoiar a decisão do consultor sobre aprovar, pedir esclarecimento ou reclassificar o perfil de risco do cliente.',
+    '',
+    'Regras absolutas:',
+    '- NÃO emita o perfil de risco final. O scoring é determinístico e o consultor decide.',
+    '- NÃO recomende produto, alocação ou estratégia.',
+    '- NÃO prometa retorno; NÃO minimize risco.',
+    '- Use APENAS o contexto fornecido (respostas, caps, flags, constraints).',
+    '- Quando faltar informação, liste em "clarification_suggestions" em vez de inferir.',
+    '',
+    'Retorne JSON válido com as chaves:',
+    '- summary (string, 2 a 4 parágrafos em português do Brasil resumindo o que o cliente respondeu, sem mencionar o computed/capped profile)',
+    '- inconsistencies (array de strings — apontamentos onde respostas em seções diferentes parecem desalinhadas, ex.: tolerância alta a perda mas reserva de emergência inexistente)',
+    '- risk_observations (array de strings — observações sobre risco DECLARADAS pelo cliente que merecem atenção do consultor, sem julgar o perfil)',
+    '- clarification_suggestions (array de strings — perguntas concretas que o consultor poderia fazer para reduzir ambiguidade, focadas em pontos do questionário)',
+    '',
+    'Tom: técnico, conciso, em português do Brasil.'
+  ].join('\n');
+
+  db.prepare(`
+    INSERT OR IGNORE INTO ${aiPromptTemplatesTable} (
+      template_id, name, version, purpose, body, output_schema, requires_grounding,
+      model_compatibility_min, model_compatibility_max, allowed_surfaces, active,
+      created_at, deactivated_at
+    ) VALUES (
+      'seed-suitability-summary-v0-1-0',
+      'suitability_summary',
+      '0.1.0',
+      'Resumir respostas + caps + flags do suitability assessment para apoio à decisão do consultor.',
+      ?,
+      '{"type":"object","required":["summary","inconsistencies","risk_observations","clarification_suggestions"]}',
+      0,
+      'claude-sonnet-4-6',
+      NULL,
+      '["cockpit_copilot"]',
+      1,
+      ?,
+      NULL
+    )
+  `).run(body, now);
 }
 
 export function normalizeLeadBillingRecord(row: Record<string, unknown>): LeadBillingRecord | null {
