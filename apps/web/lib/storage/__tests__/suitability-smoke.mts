@@ -583,4 +583,151 @@ assert.ok(allActions.includes('suitability.expired.cron'));
 console.log(`[smoke 1.5] audit actions verificadas: ${[...new Set(allActions)].join(', ')}`);
 sqliteDb2.close();
 
-console.log('[smoke] OK — AI-3 Cycles 1 + 1.5 end-to-end via rotas HTTP.');
+// ----------------------------------------------------------------------------
+// Cycle 2 — portal cliente preenchendo + gate completo (com product_category)
+// ----------------------------------------------------------------------------
+
+console.log('[smoke] --- Cycle 2 scenarios ---');
+
+const portalRoute = loadUserland('api/portal/suitability');
+const portalClarifyRoute = loadUserland('api/portal/suitability/[assessmentId]/clarify');
+
+// Helper: gerar portal_session_token redimindo um invite criado para o lead.
+async function createAndRedeemInviteFor(leadId: string): Promise<string> {
+  const inviteCodeRoute = loadUserland('api/cockpit/leads/[leadId]/portal-invite-codes');
+  const inviteRes = await inviteCodeRoute.POST(
+    new Request(`http://localhost/api/cockpit/leads/${leadId}/portal-invite-codes`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({})
+    }),
+    { params: Promise.resolve({ leadId }) }
+  );
+  const inviteJson = await jsonOf(inviteRes);
+  if (inviteJson.status !== 200 && inviteJson.status !== 201) throw new Error(`invite create fail ${inviteJson.status}: ${JSON.stringify(inviteJson.body)}`);
+  const code = inviteJson.body.invite?.code ?? inviteJson.body.code;
+  if (!code) throw new Error(`no code in invite response: ${JSON.stringify(inviteJson.body)}`);
+
+  // Resgata via /api/portal/session — espera form-urlencoded
+  const sessionRoute = loadUserland('api/portal/session');
+  const formBody = new URLSearchParams();
+  formBody.set('code', code);
+  const sessionRes = await sessionRoute.POST(new Request('http://localhost/api/portal/session', {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: formBody.toString()
+  }));
+  const setCookie = sessionRes.headers.get('set-cookie') ?? '';
+  const match = setCookie.match(/portal_session=([^;]+)/);
+  if (!match) throw new Error(`no portal_session cookie in Set-Cookie: ${setCookie}`);
+  return match[1];
+}
+
+const leadIdPortal = await createIntakeLead('Lead Portal Suitability');
+const portalToken = await createAndRedeemInviteFor(leadIdPortal);
+const portalCookie = `portal_session=${portalToken}`;
+
+// Cliente posta o questionário via JSON (mais simples que multipart no smoke)
+const portalSubmitRes = await portalRoute.POST(new Request('http://localhost/api/portal/suitability', {
+  method: 'POST',
+  headers: { 'content-type': 'application/json', cookie: portalCookie },
+  body: JSON.stringify({ questionnaireVersion: 'v1.2026-04', answers: BALANCED_ANSWERS })
+}));
+const portalSubmitJson = await jsonOf(portalSubmitRes);
+assert.equal(portalSubmitJson.status, 201, `portal submit 201, got ${portalSubmitJson.status}: ${JSON.stringify(portalSubmitJson.body)}`);
+assert.equal(portalSubmitJson.body.assessment.submittedByRole, 'client');
+assert.ok(['submitted', 'review_required'].includes(portalSubmitJson.body.assessment.status));
+console.log(`[smoke 2] cliente preencheu via portal — status=${portalSubmitJson.body.assessment.status} role=client`);
+const portalAssessmentId = portalSubmitJson.body.assessment.assessmentId;
+
+// Operador aprova
+const portalApproveRes = await assessmentRoute.PATCH(
+  new Request(`http://localhost/api/cockpit/leads/${leadIdPortal}/suitability/assessments/${portalAssessmentId}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({
+      action: 'approve',
+      approvedRiskProfile: portalSubmitJson.body.assessment.cappedRiskProfile,
+      validUntil: '2027-04-26'
+    })
+  }),
+  { params: Promise.resolve({ leadId: leadIdPortal, assessmentId: portalAssessmentId }) }
+);
+assert.equal(portalApproveRes.status, 200);
+console.log(`[smoke 2] operador aprovou suitability vinda do portal`);
+
+// Recomendação com productCategoryKey → gate completo aprova
+const recWithCatRes = await recommendationsRoute.POST(
+  new Request(`http://localhost/api/cockpit/leads/${leadIdPortal}/recommendations`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      title: 'Sugestão CDB 1',
+      body: 'Alocar 30% em CDB',
+      category: 'asset_allocation',
+      createdBy: 'smoke-tester',
+      productCategoryKey: 'rf_cdb_simples'
+    })
+  }),
+  { params: Promise.resolve({ leadId: leadIdPortal }) }
+);
+const recWithCatJson = await jsonOf(recWithCatRes);
+assert.equal(recWithCatJson.status, 201);
+assert.equal(recWithCatJson.body.recommendation.productCategoryId, catJson.body.productCategory.productCategoryId);
+const recWithCatId = recWithCatJson.body.recommendation.recommendationId;
+
+const publishCompleteGateRes = await recommendationActionRoute.PATCH(
+  new Request(`http://localhost/api/cockpit/leads/${leadIdPortal}/recommendations/${recWithCatId}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({})
+  }),
+  { params: Promise.resolve({ leadId: leadIdPortal, recommendationId: recWithCatId }) }
+);
+const publishCompleteGateJson = await jsonOf(publishCompleteGateRes);
+assert.equal(publishCompleteGateJson.status, 200, `gate completo allowed, got ${publishCompleteGateJson.status}: ${JSON.stringify(publishCompleteGateJson.body)}`);
+assert.equal(publishCompleteGateJson.body.suitabilityGate.decision, 'allowed');
+console.log(`[smoke 2] gate completo (com product_category) APROVOU recomendação`);
+
+// Lead novo sem perfil + recomendação com productCategoryKey → gate completo BLOQUEIA
+const leadNoSuitNoSuitId = await createIntakeLead('Lead Sem Suit Cycle 2');
+const recBlockedRes = await recommendationsRoute.POST(
+  new Request(`http://localhost/api/cockpit/leads/${leadNoSuitNoSuitId}/recommendations`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      title: 'Bloqueio esperado pelo gate completo',
+      body: 'corpo',
+      category: 'general',
+      createdBy: 'smoke-tester',
+      productCategoryKey: 'rf_cdb_simples'
+    })
+  }),
+  { params: Promise.resolve({ leadId: leadNoSuitNoSuitId }) }
+);
+const recBlockedJson = await jsonOf(recBlockedRes);
+const recBlockedId = recBlockedJson.body.recommendation.recommendationId;
+
+const publishBlockedRes = await recommendationActionRoute.PATCH(
+  new Request(`http://localhost/api/cockpit/leads/${leadNoSuitNoSuitId}/recommendations/${recBlockedId}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({})
+  }),
+  { params: Promise.resolve({ leadId: leadNoSuitNoSuitId, recommendationId: recBlockedId }) }
+);
+const publishBlockedJson = await jsonOf(publishBlockedRes);
+assert.equal(publishBlockedJson.status, 422);
+assert.equal(publishBlockedJson.body.error, 'suitability_gate_blocked');
+assert.equal(publishBlockedJson.body.decision, 'blocked_missing_profile');
+console.log(`[smoke 2] gate completo BLOQUEOU recomendação sem perfil: ${publishBlockedJson.body.decision}`);
+
+// Confirma item de suitability na review queue
+const reviewQueueRoute = loadUserland('api/cockpit/review-queue');
+const queueRes = await reviewQueueRoute.GET(new Request('http://localhost/api/cockpit/review-queue', { headers }));
+const queueJson = await jsonOf(queueRes);
+const suitabilityItems = (queueJson.body.items ?? []).filter((it: { type: string }) => it.type === 'suitability_assessment');
+console.log(`[smoke 2] review queue tem ${suitabilityItems.length} item(s) suitability`);
+
+console.log('[smoke] OK — AI-3 Cycles 1 + 1.5 + 2 end-to-end via rotas HTTP.');
+void portalClarifyRoute;

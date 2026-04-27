@@ -1,5 +1,9 @@
 import { recommendationCategories, type RecommendationCategory } from '@savastano-advisory/core';
-import { createRecommendation, listRecommendations } from '../../../../../../lib/intake-storage';
+import {
+  createRecommendation,
+  getProductCategoryByKey,
+  listRecommendations
+} from '../../../../../../lib/intake-storage';
 import { requireCockpitSession } from '../../../../../../lib/cockpit-session';
 
 type RecommendationPayload = {
@@ -8,6 +12,11 @@ type RecommendationPayload = {
   category?: string | null;
   createdBy?: string;
   returnTo?: string;
+  // AI-3 Cycle 2: ao informar a categoria de produto (chave canônica), a
+  // publicação subsequente da recomendação aciona o gate completo
+  // (canRecommendProduct) com a classificação da categoria. Sem ela, a
+  // publicação cai no gate básico (apenas client_profile ativo).
+  productCategoryKey?: string | null;
 };
 
 async function parsePayload(request: Request): Promise<RecommendationPayload> {
@@ -22,7 +31,8 @@ async function parsePayload(request: Request): Promise<RecommendationPayload> {
     body: String(formData.get('body') ?? ''),
     category: String(formData.get('category') ?? ''),
     createdBy: String(formData.get('createdBy') ?? ''),
-    returnTo: String(formData.get('returnTo') ?? '')
+    returnTo: String(formData.get('returnTo') ?? ''),
+    productCategoryKey: formData.get('productCategoryKey') ? String(formData.get('productCategoryKey')) : null
   };
 }
 
@@ -54,12 +64,24 @@ export async function POST(request: Request, context: { params: Promise<{ leadId
 
   const { leadId } = await context.params;
   const payload = await parsePayload(request);
+
+  let productCategoryId: string | null = null;
+  const productCategoryKey = payload.productCategoryKey?.trim();
+  if (productCategoryKey) {
+    const productCategory = getProductCategoryByKey(productCategoryKey);
+    if (!productCategory) {
+      return Response.json({ ok: false, error: 'product_category_not_found' }, { status: 404 });
+    }
+    productCategoryId = productCategory.productCategoryId;
+  }
+
   const recommendation = createRecommendation(
     leadId,
     payload.title ?? '',
     payload.body ?? '',
     normalizeCategory(payload.category),
-    payload.createdBy?.trim() || 'operator_local'
+    payload.createdBy?.trim() || 'operator_local',
+    productCategoryId
   );
 
   if (!recommendation) {

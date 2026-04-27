@@ -1,8 +1,15 @@
 import {
   deleteRecommendation,
   evaluateBasicSuitabilityGateForLead,
+  getProductCategory,
+  getRecommendation,
   publishRecommendation
 } from '../../../../../../../lib/intake-storage';
+import {
+  canRecommendProduct,
+  isClientProfileActiveForRecommendation
+} from '@savastano-advisory/core';
+import { getCurrentClientProfile } from '../../../../../../../lib/storage/suitability';
 import { writeAuditLog } from '../../../../../../../lib/storage/audit-log';
 import { requireCockpitSession } from '../../../../../../../lib/cockpit-session';
 
@@ -44,12 +51,45 @@ export async function PATCH(
 
   const payload = await parsePayload(request).catch(() => ({ returnTo: '' } as RecommendationActionPayload));
 
-  // AI-3 Cycle 1: gate de suitability obrigatório antes de publicar recomendação
-  // (Resolução CVM 30/2021, Art. 6º). Sem perfil ativo a publicação é bloqueada;
-  // operador pode override conscientemente passando overrideSuitabilityGate=true
-  // + overrideReason — caso em que o evento é gravado no audit_log para
-  // rastreabilidade regulatória.
-  const gate = evaluateBasicSuitabilityGateForLead(leadId);
+  // AI-3 Cycle 1: gate básico de suitability (apenas perfil ativo).
+  // AI-3 Cycle 2: quando a recomendação aponta para uma product_category, o
+  // gate completo (canRecommendProduct) também checa adequação produto↔perfil,
+  // categoria de investidor, custos excessivos, complexidade e necessidade de
+  // revisão humana. Sem product_category, mantém gate básico.
+  const recommendationForGate = getRecommendation(recommendationId, leadId);
+  const productCategory = recommendationForGate?.productCategoryId
+    ? getProductCategory(recommendationForGate.productCategoryId)
+    : null;
+
+  let gate: {
+    ok: boolean;
+    decision: string;
+    reasons: readonly string[];
+    cvmReferences: readonly string[];
+  };
+
+  if (productCategory && recommendationForGate) {
+    const profile = getCurrentClientProfile(leadId);
+    const fullOutcome = canRecommendProduct(profile, productCategory, {
+      humanReviewed: false,
+      costAssessment: undefined
+    });
+    gate = {
+      ok: fullOutcome.ok,
+      decision: fullOutcome.decision,
+      reasons: fullOutcome.reasons,
+      cvmReferences: fullOutcome.cvmReferences
+    };
+  } else {
+    const basic = evaluateBasicSuitabilityGateForLead(leadId);
+    gate = {
+      ok: basic.ok,
+      decision: basic.decision,
+      reasons: basic.reasons,
+      cvmReferences: basic.cvmReferences
+    };
+  }
+
   if (!gate.ok) {
     const overrideRequested = Boolean(payload.overrideSuitabilityGate);
     const overrideReason = payload.overrideReason?.trim() ?? '';

@@ -386,6 +386,14 @@ function ensureCockpitAuthColumns(db: DatabaseSync) {
   addNullableColumnIfMissing(db, auditLogTable, 'actor_id');
 }
 
+function ensureRecommendationProductCategoryColumn(db: DatabaseSync) {
+  // AI-3 Cycle 2: link opcional entre lead_recommendations e product_categories.
+  // Quando preenchido, a publicação da recomendação aciona o gate completo
+  // (canRecommendProduct) com a categoria do produto. Quando nulo, a publicação
+  // cai no gate básico (apenas client_profile ativo).
+  addNullableColumnIfMissing(db, leadRecommendationsTable, 'product_category_id');
+}
+
 export function getDatabase() {
   if (database) {
     return database;
@@ -1079,6 +1087,7 @@ export function getDatabase() {
   ensureLeadCrmColumns(db);
   ensureReviewQueueColumns(db);
   ensureCockpitAuthColumns(db);
+  ensureRecommendationProductCategoryColumn(db);
   db.exec(`CREATE INDEX IF NOT EXISTS idx_intake_leads_commercial_stage ON ${leadsTable}(commercial_stage);`);
   migrateLegacyJsonlData(db);
   ensureAiBootstrapSeeds(db);
