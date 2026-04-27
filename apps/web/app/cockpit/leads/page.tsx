@@ -38,6 +38,9 @@ export default function LeadsCockpitPage() {
           <a className="btn btn-secondary" href="/cockpit/audit-log">
             Audit log
           </a>
+          <a className="btn btn-secondary" href="/cockpit/product-categories">
+            Categorias de produtos
+          </a>
           <a className="btn btn-secondary" href="/">
             Landing
           </a>
