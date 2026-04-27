@@ -261,6 +261,17 @@ export default async function CockpitSuitabilityReviewPage({
           </form>
         </section>
       )}
+
+      <section className="card" style={{ marginTop: 16 }}>
+        <div className="kicker">IA: resumir respostas e apontar inconsistências</div>
+        <p>Gera um resumo via IA do assessment atual + caps + flags. Não decide perfil — apenas ajuda na sua revisão.</p>
+        <form
+          method="post"
+          action={`/cockpit/leads/${leadId}/suitability/${assessmentId}/submit-action?action=ai_summary`}
+        >
+          <button className="btn btn-secondary" type="submit">Gerar resumo IA</button>
+        </form>
+      </section>
     </main>
   );
 }

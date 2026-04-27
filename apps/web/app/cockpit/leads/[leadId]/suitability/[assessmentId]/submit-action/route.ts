@@ -4,6 +4,7 @@ import {
   requestClarification
 } from '../../../../../../../lib/intake-storage';
 import { requireCockpitSession } from '../../../../../../../lib/cockpit-session';
+import { POST as suitabilitySummaryPost } from '../../../../../../api/cockpit/leads/[leadId]/ai/suitability-summary/route';
 
 // AI-3 Cycle 2 — rota POST para os forms HTML da página de revisão de
 // suitability no cockpit. Forms HTML não suportam PATCH; esta rota recebe
@@ -80,6 +81,27 @@ export async function POST(
     }
 
     return Response.redirect(new URL(`${reviewPagePath}?action=clarification_requested`, request.url), 303);
+  }
+
+  if (action === 'ai_summary') {
+    // Delega para a surface IA passando o assessmentId como focusHint.
+    const aiRequest = new Request(`${url.origin}/api/cockpit/leads/${leadId}/ai/suitability-summary`, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        cookie: request.headers.get('cookie') ?? ''
+      },
+      body: JSON.stringify({ focusHint: assessmentId })
+    });
+    const aiResponse = await suitabilitySummaryPost(aiRequest, { params: Promise.resolve({ leadId }) });
+    if (!aiResponse.ok) {
+      const detail = await aiResponse.text().catch(() => '');
+      return Response.redirect(
+        new URL(`${reviewPagePath}?action=error&error=ai_summary_failed&detail=${encodeURIComponent(detail.slice(0, 120))}`, request.url),
+        303
+      );
+    }
+    return Response.redirect(new URL(`${reviewPagePath}?action=ai_summary_generated`, request.url), 303);
   }
 
   return Response.redirect(new URL(`${reviewPagePath}?action=error&error=invalid_action`, request.url), 303);

@@ -1174,6 +1174,7 @@ function ensureAiBootstrapSeeds(db: DatabaseSync) {
   `).run(memoPromptBody, now);
 
   ensureAiCycle2Cycle1Surfaces(db, now);
+  ensureAi3SuitabilitySummarySurface(db, now);
 }
 
 // AI-2 Cycle 1 surfaces: research summary, pre-call brief, follow-up draft, pending checklist.
@@ -1269,6 +1270,54 @@ function ensureAiCycle2Cycle1Surfaces(db: DatabaseSync, now: string) {
     pendingChecklistBody,
     now
   );
+}
+
+// AI-3 Cycle 3 — surface IA suitability_summary. Resume respostas, caps,
+// flags e constraints do assessment para apoio à decisão do consultor.
+// Não emite perfil; não recomenda produto. Apenas narra o que está no
+// contexto fornecido.
+function ensureAi3SuitabilitySummarySurface(db: DatabaseSync, now: string) {
+  const body = [
+    'Você é um assistente interno de um consultor de valores mobiliários registrado na CVM.',
+    'Tarefa: resumir um suitability assessment para apoiar a decisão do consultor sobre aprovar, pedir esclarecimento ou reclassificar o perfil de risco do cliente.',
+    '',
+    'Regras absolutas:',
+    '- NÃO emita o perfil de risco final. O scoring é determinístico e o consultor decide.',
+    '- NÃO recomende produto, alocação ou estratégia.',
+    '- NÃO prometa retorno; NÃO minimize risco.',
+    '- Use APENAS o contexto fornecido (respostas, caps, flags, constraints).',
+    '- Quando faltar informação, liste em "clarification_suggestions" em vez de inferir.',
+    '',
+    'Retorne JSON válido com as chaves:',
+    '- summary (string, 2 a 4 parágrafos em português do Brasil resumindo o que o cliente respondeu, sem mencionar o computed/capped profile)',
+    '- inconsistencies (array de strings — apontamentos onde respostas em seções diferentes parecem desalinhadas, ex.: tolerância alta a perda mas reserva de emergência inexistente)',
+    '- risk_observations (array de strings — observações sobre risco DECLARADAS pelo cliente que merecem atenção do consultor, sem julgar o perfil)',
+    '- clarification_suggestions (array de strings — perguntas concretas que o consultor poderia fazer para reduzir ambiguidade, focadas em pontos do questionário)',
+    '',
+    'Tom: técnico, conciso, em português do Brasil.'
+  ].join('\n');
+
+  db.prepare(`
+    INSERT OR IGNORE INTO ${aiPromptTemplatesTable} (
+      template_id, name, version, purpose, body, output_schema, requires_grounding,
+      model_compatibility_min, model_compatibility_max, allowed_surfaces, active,
+      created_at, deactivated_at
+    ) VALUES (
+      'seed-suitability-summary-v0-1-0',
+      'suitability_summary',
+      '0.1.0',
+      'Resumir respostas + caps + flags do suitability assessment para apoio à decisão do consultor.',
+      ?,
+      '{"type":"object","required":["summary","inconsistencies","risk_observations","clarification_suggestions"]}',
+      0,
+      'claude-sonnet-4-6',
+      NULL,
+      '["cockpit_copilot"]',
+      1,
+      ?,
+      NULL
+    )
+  `).run(body, now);
 }
 
 export function normalizeLeadBillingRecord(row: Record<string, unknown>): LeadBillingRecord | null {

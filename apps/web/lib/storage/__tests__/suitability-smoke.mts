@@ -33,6 +33,10 @@ const TEST_COCKPIT_SECRET = 'ai-3-cycle-1-smoke-secret';
 process.env.COCKPIT_SECRET = TEST_COCKPIT_SECRET;
 const TEST_INTERNAL_CRON_TOKEN = 'ai-3-cycle-1.5-cron-secret';
 process.env.INTERNAL_CRON_TOKEN = TEST_INTERNAL_CRON_TOKEN;
+// Cycle 3: roda IA em mock mode para evitar custo real no smoke. Bruno
+// autoriza chamada genuína em separado em produção.
+process.env.AI_ENABLED = 'true';
+process.env.AI_USE_MOCK = '1';
 const cockpitCookie = `cockpit_token=${TEST_COCKPIT_SECRET}`;
 const headers = { 'content-type': 'application/json', cookie: cockpitCookie };
 
@@ -729,5 +733,63 @@ const queueJson = await jsonOf(queueRes);
 const suitabilityItems = (queueJson.body.items ?? []).filter((it: { type: string }) => it.type === 'suitability_assessment');
 console.log(`[smoke 2] review queue tem ${suitabilityItems.length} item(s) suitability`);
 
-console.log('[smoke] OK — AI-3 Cycles 1 + 1.5 + 2 end-to-end via rotas HTTP.');
+// ----------------------------------------------------------------------------
+// Cycle 3 — surface IA suitability_summary em mock mode
+// ----------------------------------------------------------------------------
+
+console.log('[smoke] --- Cycle 3 scenarios ---');
+
+// O MockAiProvider expõe provider name='mock'. Seedamos o model_version
+// correspondente para que a rota encontre uma entrada ativa em
+// (provider='mock', model_id='claude-sonnet-4-6').
+const sqliteDbSeed = new DatabaseSync(path.join(tempRoot, 'data', 'dev', 'savastano-advisory.sqlite3'));
+sqliteDbSeed.prepare(`
+  INSERT OR IGNORE INTO ai_model_versions (
+    model_version_id, provider, model_id, display_name, status,
+    input_price_json, output_price_json, pinned_at, deprecated_at, blocked_at, notes,
+    created_at, updated_at
+  ) VALUES (
+    'smoke-mock-sonnet',
+    'mock',
+    'claude-sonnet-4-6',
+    'Mock Sonnet (smoke)',
+    'active',
+    '{"centsPerMillion":0,"cachedCentsPerMillion":0}',
+    '{"centsPerMillion":0}',
+    ?, NULL, NULL,
+    'Mock model_version seedado pelo smoke; nunca para produção.',
+    ?, ?
+  )
+`).run(new Date().toISOString(), new Date().toISOString(), new Date().toISOString());
+sqliteDbSeed.close();
+
+const suitabilitySummaryRoute = loadUserland('api/cockpit/leads/[leadId]/ai/suitability-summary');
+const aiSummaryRes = await suitabilitySummaryRoute.POST(
+  new Request(`http://localhost/api/cockpit/leads/${leadIdPortal}/ai/suitability-summary`, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({ focusHint: portalAssessmentId })
+  }),
+  { params: Promise.resolve({ leadId: leadIdPortal }) }
+);
+const aiSummaryJson = await jsonOf(aiSummaryRes);
+assert.ok(aiSummaryJson.status === 200 || aiSummaryJson.status === 201, `ai summary 200/201, got ${aiSummaryJson.status}: ${JSON.stringify(aiSummaryJson.body)}`);
+assert.ok(aiSummaryJson.body.jobId, 'job criado');
+assert.ok(aiSummaryJson.body.artifactId, 'artifact criado');
+console.log(`[smoke 3] surface IA suitability_summary executou via mock — jobId=${aiSummaryJson.body.jobId} artifactId=${aiSummaryJson.body.artifactId} costCents=${aiSummaryJson.body.costCents}`);
+
+// Confirma que prompt template foi seedado
+const sqliteDb3 = new DatabaseSync(path.join(tempRoot, 'data', 'dev', 'savastano-advisory.sqlite3'), { readOnly: true });
+const templateRow = sqliteDb3.prepare(`SELECT name, version, active FROM ai_prompt_templates WHERE name = 'suitability_summary'`).get() as { name: string; version: string; active: number } | undefined;
+assert.ok(templateRow, 'suitability_summary template seedado');
+assert.equal(templateRow!.active, 1);
+console.log(`[smoke 3] template suitability_summary v${templateRow!.version} seedado e ativo`);
+
+// Confirma artifact aparece em pending_review
+const artifactRow = sqliteDb3.prepare(`SELECT artifact_type, status FROM ai_artifacts WHERE artifact_id = ?`).get(aiSummaryJson.body.artifactId) as { artifact_type: string; status: string } | undefined;
+assert.ok(artifactRow, 'artifact persistido');
+assert.equal(artifactRow!.artifact_type, 'suitability_summary');
+sqliteDb3.close();
+
+console.log('[smoke] OK — AI-3 Cycles 1 + 1.5 + 2 + 3 end-to-end via rotas HTTP.');
 void portalClarifyRoute;
